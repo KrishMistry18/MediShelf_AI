@@ -1,0 +1,38 @@
+{
+  "dataset_name": "MediShelf AI Storage Risk Simulation Dataset",
+  "description": "Simulation-derived storage excursion dataset mapped against 25 USP/FDA monographs.",
+  "random_seed": 42,
+  "total_samples": 6000,
+  "class_distribution": {
+    "LOW": 2706,
+    "MODERATE": 1755,
+    "HIGH": 1539
+  },
+  "features": [
+    "dosage_form",
+    "category",
+    "temperature",
+    "humidity",
+    "storage_min_temp",
+    "storage_max_temp",
+    "temp_deviation_below",
+    "temp_deviation_above",
+    "temp_deviation_magnitude",
+    "excursion_duration_hours",
+    "excursion_severity_index",
+    "requires_cold_chain",
+    "is_liquid_or_injection",
+    "has_humidity_requirement",
+    "humidity_deviation",
+    "days_to_expiry",
+    "near_expiry"
+  ],
+  "target": "risk_level",
+  "target_classes": [
+    "LOW",
+    "MODERATE",
+    "HIGH"
+  ],
+  "source_catalog_size": 25,
+  "notice": "The Phase 5 training data is simulation-derived from documented medicine storage requirements and is intended to demonstrate an ML-based storage-risk estimation pipeline. It is not a clinically validated dataset and the resulting model must not be interpreted as a clinical prediction model."
+}
