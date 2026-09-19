@@ -43,7 +43,7 @@ export const MedicinesPage: React.FC = () => {
   useEffect(() => {
     fetchCategories()
       .then((cats) => setCategories(cats))
-      .catch((err) => console.warn('Could not load categories:', err));
+      .catch(() => {});
   }, []);
 
   // Fetch medicines based on current filters
@@ -89,8 +89,8 @@ export const MedicinesPage: React.FC = () => {
     try {
       const fullMed = await fetchMedicineById(med.medicine_id);
       setSelectedMedicine(fullMed);
-    } catch (err) {
-      console.warn('Failed to refresh detail:', err);
+    } catch {
+      // Retain already selected medicine if detail refresh is unavailable
     }
   };
 
