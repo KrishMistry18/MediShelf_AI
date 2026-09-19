@@ -4,9 +4,9 @@
   "random_seed": 42,
   "total_samples": 6000,
   "class_distribution": {
-    "LOW": 2706,
-    "MODERATE": 1755,
-    "HIGH": 1539
+    "LOW": 2646,
+    "MODERATE": 1741,
+    "HIGH": 1613
   },
   "features": [
     "dosage_form",

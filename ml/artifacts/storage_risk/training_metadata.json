@@ -1,7 +1,7 @@
 {
   "model_name": "MediShelf AI Storage Risk Classifier",
   "model_version": "1.0.0",
-  "trained_at": "2026-09-19T13:47:32.107688+00:00",
+  "trained_at": "2026-09-19T13:51:27.743616+00:00",
   "python_version": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
   "algorithm": "GradientBoostingClassifier",
   "random_seed": 42,

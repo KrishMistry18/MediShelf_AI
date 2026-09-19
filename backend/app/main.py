@@ -8,6 +8,7 @@ from app.api.health import router as health_router
 from app.api.v1.medicines import router as medicines_router
 from app.api.v1.scan import router as scan_router
 from app.api.v1.ocr import router as ocr_router
+from app.api.v1.storage_risk import router as storage_risk_router
 from app.database.session import engine, SessionLocal
 from app.database.base import Base
 from app.models.medicine import Medicine
@@ -65,6 +66,10 @@ app.include_router(scan_router, prefix="/api/v1")
 # Mount OCR endpoint under both /api and /api/v1
 app.include_router(ocr_router, prefix="/api")
 app.include_router(ocr_router, prefix="/api/v1")
+
+# Mount Storage Risk Assessment endpoint under both /api and /api/v1 (Phase 5)
+app.include_router(storage_risk_router, prefix="/api")
+app.include_router(storage_risk_router, prefix="/api/v1")
 
 
 @app.get("/", tags=["Root"])

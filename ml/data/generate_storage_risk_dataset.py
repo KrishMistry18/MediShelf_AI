@@ -158,9 +158,12 @@ def generate_dataset(num_samples: int = NUM_SAMPLES, seed: int = RANDOM_SEED) ->
             ] else 0
             has_humidity_req = 1 if (med["storage_min_humidity"] or med["storage_max_humidity"]) else 0
             
-            # Days to expiry: random between 5 and 730 days
+            # Days to expiry: random between -60 (expired) and 730 days
             if regime == "normal":
-                days_to_expiry = random.randint(30, 730)
+                if random.random() < 0.05:
+                    days_to_expiry = random.randint(-30, 0)  # Expired stock in normal temp
+                else:
+                    days_to_expiry = random.randint(30, 730)
                 temp = round(random.uniform(min_temp, max_temp), 1)
                 duration_hours = round(random.uniform(0.0, 4.0), 1)
             elif regime == "mild_excursion":
@@ -173,7 +176,10 @@ def generate_dataset(num_samples: int = NUM_SAMPLES, seed: int = RANDOM_SEED) ->
                     temp = round(random.uniform(max_temp + 0.5, max_temp + 6.0), 1)
                     duration_hours = round(random.uniform(2.0, 18.0), 1)
             elif regime == "severe_excursion":
-                days_to_expiry = random.randint(5, 365)
+                if random.random() < 0.2:
+                    days_to_expiry = random.randint(-60, 0)  # Expired stock
+                else:
+                    days_to_expiry = random.randint(1, 365)
                 if requires_cold_chain:
                     if random.random() < 0.3:
                         temp = round(random.uniform(-5.0, 0.0), 1)  # Freezing
