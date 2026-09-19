@@ -193,3 +193,76 @@ export interface ScanResponse {
   message: string;
 }
 
+// Phase 5: Storage Risk ML Types
+export interface StorageRiskRequest {
+  medicine_id: string;
+  current_temperature: number;
+  current_humidity?: number | null;
+  excursion_duration_hours?: number;
+  days_to_expiry?: number | null;
+  expiry_date?: string | null;
+}
+
+export interface StorageRequirementsInfo {
+  min_temperature: number;
+  max_temperature: number;
+  min_humidity?: number | null;
+  max_humidity?: number | null;
+  temperature_unit: string;
+  regulatory_source: string;
+  source_url: string;
+  has_quantified_humidity: boolean;
+  humidity_monograph_notice: string;
+}
+
+export interface DeterministicCompliance {
+  is_compliant: boolean;
+  temp_compliant: boolean;
+  temp_deviation: number;
+  humidity_compliant?: boolean | null;
+  humidity_status_text: string;
+  summary: string;
+}
+
+export interface MLFactorImportance {
+  feature: string;
+  feature_label: string;
+  importance_weight: number;
+  observed_value: string | number;
+  interpretation: string;
+}
+
+export interface MLRiskPrediction {
+  level: 'LOW' | 'MODERATE' | 'HIGH';
+  confidence: number;
+  probabilities: {
+    LOW: number;
+    MODERATE: number;
+    HIGH: number;
+    [key: string]: number;
+  };
+  top_factors: MLFactorImportance[];
+  model_name: string;
+  model_version: string;
+  training_dataset_type: string;
+}
+
+export interface StorageRiskResponse {
+  medicine: Medicine;
+  storage_requirements: StorageRequirementsInfo;
+  deterministic_compliance: DeterministicCompliance;
+  ml_risk: MLRiskPrediction;
+  disclaimer: string;
+  evaluated_at: string;
+}
+
+export interface ModelMetadataResponse {
+  model_name: string;
+  model_version: string;
+  algorithm: string;
+  dataset_type: string;
+  features: string[];
+  target_classes: string[];
+  disclaimer: string;
+}
+

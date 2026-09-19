@@ -1,4 +1,14 @@
-import type { SystemHealth, Medicine, MedicineListResponse, CategoryCount, ScanResponse, OCRResponse } from '../types';
+import type {
+  SystemHealth,
+  Medicine,
+  MedicineListResponse,
+  CategoryCount,
+  ScanResponse,
+  OCRResponse,
+  StorageRiskRequest,
+  StorageRiskResponse,
+  ModelMetadataResponse,
+} from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
@@ -133,6 +143,37 @@ export async function scanOCR(file: File): Promise<OCRResponse> {
   if (!res.ok) {
     const errorBody = await res.json().catch(() => ({}));
     throw new Error(errorBody.detail || `OCR request failed with HTTP ${res.status}`);
+  }
+
+  return await res.json();
+}
+
+export async function predictStorageRisk(payload: StorageRiskRequest): Promise<StorageRiskResponse> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/storage-risk/predict`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json().catch(() => ({}));
+    throw new Error(errorBody.detail || `Storage risk prediction failed with HTTP ${res.status}`);
+  }
+
+  return await res.json();
+}
+
+export async function fetchStorageRiskMetadata(): Promise<ModelMetadataResponse> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/storage-risk/metadata`, {
+    method: 'GET',
+    headers: { 'Accept': 'application/json' },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to load storage risk model metadata: HTTP ${res.status}`);
   }
 
   return await res.json();

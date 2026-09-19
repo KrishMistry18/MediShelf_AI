@@ -32,6 +32,7 @@ import {
   SectionHeader,
   StatusBadge,
 } from '../components/common';
+import { StorageRiskAssessment } from '../components/storage/StorageRiskAssessment';
 
 interface ScanPageProps {
   onNavigateToMedicines?: () => void;
@@ -815,6 +816,15 @@ export const ScanPage: React.FC<ScanPageProps> = ({ onNavigateToMedicines }) => 
                     </a>
                   </div>
                 </Card>
+              )}
+
+              {/* 5. Phase 5: Storage Risk AI/ML Assessment */}
+              {scanResult.medicine && (
+                <StorageRiskAssessment
+                  medicineId={scanResult.medicine.medicine_id}
+                  medicineName={scanResult.medicine.medicine_name}
+                  initialExpiryDate={corrections['expiry_date'] || scanResult.ocr?.fields?.expiry_date?.value || undefined}
+                />
               )}
             </div>
           ) : (

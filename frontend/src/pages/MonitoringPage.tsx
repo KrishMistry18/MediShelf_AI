@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   LineChart as RechartsLine,
   Line,
@@ -15,8 +15,10 @@ import {
   Card,
   PageHeader,
   SectionHeader,
+  Select,
   StatCard,
 } from '../components/common';
+import { StorageRiskAssessment } from '../components/storage/StorageRiskAssessment';
 
 export const MonitoringPage: React.FC = () => {
   // Ambient tracking telemetry points
@@ -40,17 +42,28 @@ export const MonitoringPage: React.FC = () => {
     { time: '20:00', humidity: 50, safeMin: 35, safeMax: 60 },
   ];
 
+  const [selectedMedId, setSelectedMedId] = useState<string>('MED-001');
+
+  const medicineOptions = [
+    { value: 'MED-001', label: 'Paracetamol 500mg Tablets (Permissible: 20°C – 25°C)' },
+    { value: 'MED-014', label: 'Human Insulin Regular 100U/mL (Cold Chain: 2°C – 8°C)' },
+    { value: 'MED-005', label: 'Atorvastatin Calcium 20mg Tablets (Permissible: 20°C – 25°C)' },
+    { value: 'MED-004', label: 'Metformin HCl 500mg Tablets (Permissible: 20°C – 25°C)' },
+    { value: 'MED-006', label: 'Omeprazole 20mg Delayed-Release (Permissible: 15°C – 30°C)' },
+    { value: 'MED-016', label: 'Albuterol Sulfate Inhalation Aerosol (Permissible: 15°C – 25°C)' },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <PageHeader
         badge={
           <Badge variant="info" size="sm" dot>
-            Environmental Storage Telemetry
+            Environmental Telemetry & ML Risk (Phase 5 Active)
           </Badge>
         }
         title="Environmental Storage Conditions Monitoring"
-        description="Historical storage atmosphere tracking evaluated against verified pharmaceutical stability boundaries. Current evaluation uses deterministic threshold rules; machine-learning degradation risk estimation is scheduled for Phase 5."
+        description="Atmospheric telemetry tracking mapped to USP/FDA monograph boundaries. Features real-time deterministic compliance checking and trained AI/ML storage-risk degradation estimation."
         actions={
           <div className="rounded-xl border border-slate-800 bg-slate-900/90 px-4 py-2 text-xs text-slate-300">
             Current Ambient:{' '}
@@ -191,6 +204,43 @@ export const MonitoringPage: React.FC = () => {
           </ResponsiveContainer>
         </div>
       </Card>
+
+      {/* Phase 5: Storage Risk ML Assessment Section */}
+      <div className="space-y-4 pt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+          <div>
+            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-cyan-400" />
+              Live Storage Risk Evaluation by Catalog Medicine
+            </h4>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Select any medicine monograph to simulate stability degradation against current ambient or stress conditions.
+            </p>
+          </div>
+
+          <div className="w-full sm:w-80">
+            <Select
+              value={selectedMedId}
+              onChange={(e) => setSelectedMedId(e.target.value)}
+              className="text-xs"
+            >
+              {medicineOptions.map((opt) => (
+                <option key={opt.value} value={opt.value} className="bg-slate-900 text-slate-200">
+                  {opt.label}
+                </option>
+              ))}
+            </Select>
+          </div>
+        </div>
+
+        <StorageRiskAssessment
+          medicineId={selectedMedId}
+          medicineName={medicineOptions.find((m) => m.value === selectedMedId)?.label.split('(')[0].trim()}
+          initialTemp={22.0}
+          initialHumidity={50.0}
+        />
+      </div>
     </div>
   );
 };
+

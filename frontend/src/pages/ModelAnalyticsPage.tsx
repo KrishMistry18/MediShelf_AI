@@ -6,6 +6,7 @@ import {
   Scan,
   Info,
   Layers,
+  Brain,
 } from 'lucide-react';
 import {
   Badge,
@@ -247,6 +248,177 @@ export const ModelAnalyticsPage: React.FC = () => {
           </div>
         </Card>
       </div>
+
+      {/* Phase 5: Storage Risk ML Model Benchmark & Evaluation */}
+      <Card className="p-6 space-y-5 border-cyan-500/30 bg-slate-900/90">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-cyan-500/20 pb-4">
+          <SectionHeader
+            icon={<Brain className="h-5 w-5 text-cyan-400" />}
+            title="Phase 5: Storage Risk ML Model Benchmark & Evaluation"
+            description="Trained degradation risk classifier evaluated on 6,000 simulation-derived scenarios grounded in USP/FDA monographs."
+          />
+          <Badge variant="success" size="sm" className="font-mono self-start sm:self-auto">
+            GradientBoostingClassifier v1.0
+          </Badge>
+        </div>
+
+        {/* Phase 5 Test Set Metrics Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+            <span className="text-[11px] text-slate-400 block font-medium">Test Accuracy</span>
+            <span className="text-xl font-bold font-mono text-emerald-400 mt-1 block">99.56%</span>
+            <span className="text-[10px] text-slate-500">900 isolated test samples</span>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+            <span className="text-[11px] text-slate-400 block font-medium">Test Macro F1</span>
+            <span className="text-xl font-bold font-mono text-cyan-400 mt-1 block">0.9958</span>
+            <span className="text-[10px] text-slate-500">Unweighted class average</span>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+            <span className="text-[11px] text-slate-400 block font-medium">Test Weighted F1</span>
+            <span className="text-xl font-bold font-mono text-cyan-400 mt-1 block">0.9956</span>
+            <span className="text-[10px] text-slate-500">Support-weighted score</span>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+            <span className="text-[11px] text-slate-400 block font-medium">Training Scenarios</span>
+            <span className="text-xl font-bold font-mono text-indigo-400 mt-1 block">6,000</span>
+            <span className="text-[10px] text-slate-500">70% train / 15% val / 15% test</span>
+          </div>
+        </div>
+
+        {/* Model Comparison Table & Feature Importances */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+          {/* Candidate Models Comparison */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
+              Candidate Models Validation Comparison
+            </h4>
+            <div className="overflow-x-auto rounded-xl border border-slate-800">
+              <table className="w-full text-left text-xs text-slate-300">
+                <thead className="bg-slate-950/80 text-[11px] text-slate-400 border-b border-slate-800">
+                  <tr>
+                    <th className="py-2.5 px-3">Model Candidate</th>
+                    <th className="py-2.5 px-3">Val Accuracy</th>
+                    <th className="py-2.5 px-3">Val Macro F1</th>
+                    <th className="py-2.5 px-3 text-right">Selection</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60 bg-slate-900/40">
+                  <tr className="hover:bg-slate-800/30">
+                    <td className="py-2.5 px-3 font-medium text-slate-200">Logistic Regression (StandardScaler)</td>
+                    <td className="py-2.5 px-3 font-mono text-slate-300">91.90%</td>
+                    <td className="py-2.5 px-3 font-mono text-slate-300">0.9171</td>
+                    <td className="py-2.5 px-3 text-right text-slate-500">Baseline</td>
+                  </tr>
+                  <tr className="hover:bg-slate-800/30">
+                    <td className="py-2.5 px-3 font-medium text-slate-200">Random Forest Classifier (100 trees)</td>
+                    <td className="py-2.5 px-3 font-mono text-emerald-400">99.67%</td>
+                    <td className="py-2.5 px-3 font-mono text-emerald-400">0.9966</td>
+                    <td className="py-2.5 px-3 text-right text-slate-400">Strong</td>
+                  </tr>
+                  <tr className="bg-cyan-950/20 hover:bg-cyan-950/30 border-l-2 border-l-cyan-400">
+                    <td className="py-2.5 px-3 font-bold text-white">Gradient Boosting Classifier</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-cyan-300">99.78%</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-cyan-300">0.9979</td>
+                    <td className="py-2.5 px-3 text-right">
+                      <Badge variant="success" size="sm">Selected</Badge>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Feature Importances */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
+              Trained Model Feature Importances
+            </h4>
+            <div className="space-y-2 bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 text-xs">
+              <div>
+                <div className="flex justify-between text-slate-300 mb-1">
+                  <span>Cumulative Thermal Severity (Excursion × Hours)</span>
+                  <span className="font-mono text-cyan-400 font-bold">85.2%</span>
+                </div>
+                <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-cyan-400 rounded-full" style={{ width: '85.2%' }} />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-slate-300 mb-1">
+                  <span>Days to Expiry (Remaining Shelf Life)</span>
+                  <span className="font-mono text-indigo-400 font-bold">5.8%</span>
+                </div>
+                <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-indigo-400 rounded-full" style={{ width: '5.8%' }} />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-slate-300 mb-1">
+                  <span>Observed Ambient Temperature</span>
+                  <span className="font-mono text-teal-400 font-bold">4.6%</span>
+                </div>
+                <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-teal-400 rounded-full" style={{ width: '4.6%' }} />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-slate-300 mb-1">
+                  <span>Near-Expiry Threshold State</span>
+                  <span className="font-mono text-amber-400 font-bold">1.2%</span>
+                </div>
+                <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-amber-400 rounded-full" style={{ width: '1.2%' }} />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-slate-300 mb-1">
+                  <span>Heat Excursion Above Upper Limit</span>
+                  <span className="font-mono text-rose-400 font-bold">1.1%</span>
+                </div>
+                <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-rose-400 rounded-full" style={{ width: '1.1%' }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Confusion Matrix (Test Set) */}
+        <div className="pt-2">
+          <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider mb-2">
+            Isolated Test Set Confusion Matrix (900 Scenarios)
+          </h4>
+          <div className="grid grid-cols-4 max-w-md text-center text-xs border border-slate-800 rounded-xl overflow-hidden font-mono">
+            <div className="bg-slate-950 p-2 text-slate-500 font-sans text-[11px]">True \ Pred</div>
+            <div className="bg-slate-950 p-2 text-slate-300 font-bold">Pred LOW</div>
+            <div className="bg-slate-950 p-2 text-slate-300 font-bold">Pred MOD</div>
+            <div className="bg-slate-950 p-2 text-slate-300 font-bold">Pred HIGH</div>
+
+            <div className="bg-slate-900/90 p-2 text-slate-300 font-bold font-sans text-left pl-3">True LOW</div>
+            <div className="bg-emerald-950/40 p-2 text-emerald-400 font-bold">396</div>
+            <div className="bg-slate-900/60 p-2 text-slate-400">1</div>
+            <div className="bg-slate-900/60 p-2 text-slate-500">0</div>
+
+            <div className="bg-slate-900/90 p-2 text-slate-300 font-bold font-sans text-left pl-3">True MOD</div>
+            <div className="bg-slate-900/60 p-2 text-slate-400">3</div>
+            <div className="bg-amber-950/40 p-2 text-amber-400 font-bold">258</div>
+            <div className="bg-slate-900/60 p-2 text-slate-500">0</div>
+
+            <div className="bg-slate-900/90 p-2 text-slate-300 font-bold font-sans text-left pl-3">True HIGH</div>
+            <div className="bg-slate-900/60 p-2 text-slate-500">0</div>
+            <div className="bg-slate-900/60 p-2 text-slate-500">0</div>
+            <div className="bg-rose-950/40 p-2 text-rose-400 font-bold">242</div>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };
