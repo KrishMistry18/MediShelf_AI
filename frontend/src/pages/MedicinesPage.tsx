@@ -1,21 +1,28 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Search,
-  Filter,
   ExternalLink,
   ChevronLeft,
   ChevronRight,
   RefreshCw,
-  Info,
   Thermometer,
-  Droplets,
-  AlertCircle,
-  X,
-  FileText,
   ShieldCheck,
+  X,
 } from 'lucide-react';
 import type { Medicine, CategoryCount } from '../types';
 import { fetchMedicines, fetchCategories, fetchMedicineById } from '../services/api';
+import {
+  Badge,
+  Button,
+  Card,
+  Input,
+  Select,
+  Modal,
+  PageHeader,
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from '../components/common';
 
 export const MedicinesPage: React.FC = () => {
   const [medicines, setMedicines] = useState<Medicine[]>([]);
@@ -63,11 +70,10 @@ export const MedicinesPage: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       loadMedicines();
-    }, 250); // slight debounce
+    }, 250);
     return () => clearTimeout(timer);
   }, [loadMedicines]);
 
-  // Reset to page 1 on filter changes
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     setCurrentPage(1);
@@ -92,120 +98,104 @@ export const MedicinesPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header & Provenance Notice */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300 mb-2">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            <span>FDA DailyMed & USP Sourced ground truth</span>
+      {/* Page Header */}
+      <PageHeader
+        badge={
+          <Badge variant="success" size="sm" dot>
+            Phase 2 Database: Verified Pharmaceutical Standards
+          </Badge>
+        }
+        title="Medicine Storage Catalog & Specifications"
+        description="Comprehensive pharmaceutical storage reference catalog. Storage tolerances are verified manufacturer monograph specifications sourced from official FDA DailyMed & USP monographs and are never fabricated by AI."
+        actions={
+          <div className="rounded-xl border border-slate-800 bg-slate-900/90 px-4 py-2 text-xs text-slate-300">
+            Total Monograph Classes:{' '}
+            <span className="font-semibold text-cyan-400 font-mono">{totalCount} SKUs</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-            Medicine Storage Catalog & Specifications
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Curated pharmaceutical storage standards. Storage tolerances are verified manufacturer monograph specifications and never invented by AI.
-          </p>
-        </div>
-
-        <div className="rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-2 text-xs text-slate-300">
-          Total Monitored SKU: <span className="font-semibold text-cyan-400 font-mono">{totalCount} Classes</span>
-        </div>
-      </div>
+        }
+      />
 
       {/* Search & Filter Toolbar */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search medicine name, generic API, brand or SKU (e.g. Paracetamol, Insulin, MED-001)..."
+          <Input
+            placeholder="Search medicine name, active generic API, or SKU (e.g. Paracetamol, Insulin, MED-001)..."
             value={search}
             onChange={handleSearchChange}
-            className="w-full rounded-xl border border-slate-800 bg-slate-900/80 py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none transition"
+            leftIcon={<Search className="h-4 w-4" />}
+            rightAction={
+              search ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearch('');
+                    setCurrentPage(1);
+                  }}
+                  className="text-slate-400 hover:text-white p-1"
+                  aria-label="Clear search input"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              ) : undefined
+            }
           />
-          {search && (
-            <button
-              onClick={() => {
-                setSearch('');
-                setCurrentPage(1);
-              }}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Filter className="h-4 w-4 text-slate-400" />
-          <select
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-            className="w-full sm:w-auto rounded-xl border border-slate-800 bg-slate-900/80 py-2.5 px-3 text-xs text-slate-300 focus:border-cyan-500 focus:outline-none"
-          >
-            <option value="ALL">All Categories ({totalCount})</option>
-            {categories.map((c) => (
-              <option key={c.category} value={c.category}>
-                {c.category} ({c.count})
-              </option>
-            ))}
-          </select>
+          <div className="w-full sm:w-56">
+            <Select value={selectedCategory} onChange={handleCategoryChange}>
+              <option value="ALL">All Categories ({totalCount})</option>
+              {categories.map((c) => (
+                <option key={c.category} value={c.category}>
+                  {c.category} ({c.count})
+                </option>
+              ))}
+            </Select>
+          </div>
 
-          <button
+          <Button
+            variant="secondary"
+            size="md"
             onClick={() => loadMedicines()}
             disabled={loading}
             title="Reload dataset"
-            className="rounded-xl border border-slate-800 bg-slate-900/80 p-2.5 text-slate-400 hover:bg-slate-800 hover:text-white transition disabled:opacity-50"
-          >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin text-cyan-400' : ''}`} />
-          </button>
+            icon={<RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin text-cyan-400' : ''}`} />}
+            aria-label="Reload medicine catalog"
+          />
         </div>
       </div>
 
-      {/* Main Table View */}
-      <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 shadow-xl">
+      {/* Main Table / Grid View */}
+      <Card className="overflow-hidden">
         {error ? (
-          <div className="p-8 text-center space-y-3">
-            <AlertCircle className="mx-auto h-8 w-8 text-rose-400" />
-            <h3 className="text-sm font-semibold text-white">Error Loading Medicine Data</h3>
-            <p className="text-xs text-slate-400">{error}</p>
-            <button
-              onClick={() => loadMedicines()}
-              className="rounded-xl bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700 transition"
-            >
-              Retry
-            </button>
-          </div>
+          <ErrorState
+            title="Unable to Load Medicine Catalog"
+            message={error}
+            onRetry={() => loadMedicines()}
+          />
         ) : loading ? (
-          <div className="p-12 text-center space-y-3">
-            <RefreshCw className="mx-auto h-8 w-8 animate-spin text-cyan-400" />
-            <p className="text-xs text-slate-400">Loading verified pharmaceutical catalog...</p>
-          </div>
+          <LoadingState
+            message="Loading verified pharmaceutical monographs..."
+            subtext="Connecting to SQLAlchemy database"
+          />
         ) : medicines.length === 0 ? (
-          <div className="p-12 text-center space-y-3">
-            <Info className="mx-auto h-8 w-8 text-slate-500" />
-            <h3 className="text-sm font-semibold text-white">No Medicines Found</h3>
-            <p className="text-xs text-slate-400">
-              No records match your current search query "{search}" or category filter.
-            </p>
-            <button
-              onClick={() => {
-                setSearch('');
-                setSelectedCategory('ALL');
-                setCurrentPage(1);
-              }}
-              className="rounded-xl bg-cyan-500/10 border border-cyan-500/20 px-4 py-2 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 transition"
-            >
-              Reset Filters
-            </button>
-          </div>
+          <EmptyState
+            title="No Matching Medicines Found"
+            description={`No pharmaceutical records match your current filter "${search}".`}
+            actionLabel="Reset Search & Filters"
+            onAction={() => {
+              setSearch('');
+              setSelectedCategory('ALL');
+              setCurrentPage(1);
+            }}
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-800 bg-slate-950/60 text-slate-400 uppercase font-mono">
+              <thead className="border-b border-slate-800 bg-slate-950/80 text-slate-400 uppercase font-mono">
                 <tr>
                   <th className="px-5 py-3.5">SKU / Class</th>
-                  <th className="px-5 py-3.5">Medicine Name</th>
+                  <th className="px-5 py-3.5">Medicine Name & API</th>
                   <th className="px-5 py-3.5">Category</th>
                   <th className="px-5 py-3.5">Storage Limits</th>
                   <th className="px-5 py-3.5">Expiry Threshold</th>
@@ -234,14 +224,18 @@ export const MedicinesPage: React.FC = () => {
                     <td className="px-5 py-4 text-slate-400">{med.category}</td>
                     <td className="px-5 py-4 font-mono">
                       <div className="flex items-center gap-1.5">
-                        <Thermometer className={`h-3.5 w-3.5 ${isColdChain(med) ? 'text-blue-400' : 'text-amber-400'}`} />
+                        <Thermometer
+                          className={`h-3.5 w-3.5 ${
+                            isColdChain(med) ? 'text-blue-400' : 'text-amber-400'
+                          }`}
+                        />
                         <span className="font-semibold text-slate-200">
                           {med.storage_min_temperature}°C – {med.storage_max_temperature}°C
                         </span>
                         {isColdChain(med) && (
-                          <span className="rounded bg-blue-500/20 px-1 py-0.2 text-[9px] font-bold text-blue-300 border border-blue-500/30">
+                          <Badge variant="primary" size="sm">
                             COLD CHAIN
-                          </span>
+                          </Badge>
                         )}
                       </div>
                       <div className="text-[11px] text-slate-500 mt-0.5">
@@ -254,15 +248,16 @@ export const MedicinesPage: React.FC = () => {
                       {med.expiry_warning_days} days notice
                     </td>
                     <td className="px-5 py-4 text-right">
-                      <button
+                      <Button
+                        variant="secondary"
+                        size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleOpenDetail(med);
                         }}
-                        className="rounded-lg bg-slate-800/60 border border-slate-700 px-3 py-1.5 text-[11px] font-semibold text-slate-300 hover:bg-cyan-500/20 hover:text-cyan-300 hover:border-cyan-500/30 transition"
                       >
-                        Details
-                      </button>
+                        Monograph
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -283,170 +278,136 @@ export const MedicinesPage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1 text-slate-300 hover:bg-slate-800 disabled:opacity-40 transition"
+                icon={<ChevronLeft className="h-3.5 w-3.5" />}
               >
-                <ChevronLeft className="h-3.5 w-3.5" />
-                <span>Prev</span>
-              </button>
+                Prev
+              </Button>
               <span className="px-2 font-mono text-slate-300">
                 Page {currentPage} of {totalPages}
               </span>
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1 text-slate-300 hover:bg-slate-800 disabled:opacity-40 transition"
               >
                 <span>Next</span>
-                <ChevronRight className="h-3.5 w-3.5" />
-              </button>
+                <ChevronRight className="h-3.5 w-3.5 ml-1" />
+              </Button>
             </div>
           </div>
         )}
-      </div>
+      </Card>
 
-      {/* Detailed Medicine Monograph Modal */}
+      {/* Detailed Pharmaceutical Monograph Modal */}
       {selectedMedicine && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto"
-          onClick={() => setSelectedMedicine(null)}
+        <Modal
+          isOpen={true}
+          onClose={() => setSelectedMedicine(null)}
+          title={
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-sm text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/20">
+                {selectedMedicine.medicine_id}
+              </span>
+              <h2 className="text-lg font-bold text-white tracking-tight">
+                {selectedMedicine.medicine_name}
+              </h2>
+            </div>
+          }
+          subtitle={`Therapeutic Category: ${selectedMedicine.category}`}
+          maxWidth="2xl"
         >
-          <div
-            className="relative w-full max-w-2xl rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl space-y-5 my-8 max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-slate-800 pb-4">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="rounded bg-cyan-500/20 px-2 py-0.5 text-xs font-mono font-bold text-cyan-300 border border-cyan-500/30">
-                    {selectedMedicine.medicine_id}
-                  </span>
-                  <span className="text-xs font-medium text-slate-400">
-                    CV Class: <code className="font-mono text-slate-300">{selectedMedicine.image_class}</code>
-                  </span>
-                </div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
-                  {selectedMedicine.medicine_name}
-                </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  {selectedMedicine.generic_name} • {selectedMedicine.strength}
+          <div className="space-y-4 text-xs">
+            {/* Core Identification Specs */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+                <span className="text-slate-400 text-[10px] uppercase font-semibold">Active Ingredient</span>
+                <p className="font-semibold text-white mt-0.5">{selectedMedicine.generic_name}</p>
+              </div>
+              <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+                <span className="text-slate-400 text-[10px] uppercase font-semibold">Strength & Form</span>
+                <p className="font-semibold text-white mt-0.5">
+                  {selectedMedicine.strength} • {selectedMedicine.dosage_form}
                 </p>
               </div>
-
-              <button
-                onClick={() => setSelectedMedicine(null)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition"
-              >
-                <X className="h-5 w-5" />
-              </button>
+              <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+                <span className="text-slate-400 text-[10px] uppercase font-semibold">Brand / Trade Name</span>
+                <p className="font-semibold text-white mt-0.5">
+                  {selectedMedicine.brand_name || 'Generic Product'}
+                </p>
+              </div>
             </div>
 
-            {/* Storage Criteria Card */}
-            <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-3">
+            {/* Storage Specifications Banner */}
+            <div className="p-4 rounded-xl border border-cyan-500/30 bg-cyan-950/20 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                  Official Storage Specification
+                <span className="font-semibold text-cyan-200 flex items-center gap-1.5">
+                  <Thermometer className="w-4 h-4 text-cyan-400" />
+                  Regulatory Storage Tolerances
                 </span>
                 {isColdChain(selectedMedicine) && (
-                  <span className="rounded bg-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-300 border border-blue-500/30">
-                    Strict Refrigeration (2°C - 8°C)
-                  </span>
+                  <Badge variant="primary" size="sm">
+                    Cold Chain Storage (2°C - 8°C)
+                  </Badge>
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-1">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-emerald-500/20 p-2 text-emerald-400">
-                    <Thermometer className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <div className="text-[11px] text-slate-400">Temperature Tolerance</div>
-                    <div className="text-base font-bold font-mono text-white">
-                      {selectedMedicine.storage_min_temperature}°C – {selectedMedicine.storage_max_temperature}°C
-                    </div>
-                  </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div>
+                  <span className="text-slate-400 text-[11px]">Temperature Range:</span>
+                  <p className="font-mono font-bold text-white text-sm mt-0.5">
+                    {selectedMedicine.storage_min_temperature}°C – {selectedMedicine.storage_max_temperature}°C
+                  </p>
                 </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-cyan-500/20 p-2 text-cyan-400">
-                    <Droplets className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <div className="text-[11px] text-slate-400">Relative Humidity (% RH)</div>
-                    <div className="text-sm font-semibold text-slate-200">
-                      {selectedMedicine.storage_max_humidity
-                        ? `${selectedMedicine.storage_min_humidity || 0}% – ${selectedMedicine.storage_max_humidity}%`
-                        : 'Protect from moisture (USP)'}
-                    </div>
-                  </div>
+                <div>
+                  <span className="text-slate-400 text-[11px]">Permissible Humidity:</span>
+                  <p className="font-mono font-bold text-white text-sm mt-0.5">
+                    {selectedMedicine.storage_max_humidity
+                      ? `${selectedMedicine.storage_min_humidity || 0}% – ${selectedMedicine.storage_max_humidity}% RH`
+                      : 'Not specified (Dry place)'}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-slate-400 text-[11px]">Expiry Advance Warning:</span>
+                  <p className="font-mono font-bold text-amber-400 text-sm mt-0.5">
+                    {selectedMedicine.expiry_warning_days} Days
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* General Specs Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <div className="text-slate-400 mb-0.5">Therapeutic Category</div>
-                <div className="font-semibold text-white">{selectedMedicine.category}</div>
-              </div>
-
-              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <div className="text-slate-400 mb-0.5">Brand / Trade Name</div>
-                <div className="font-semibold text-white">{selectedMedicine.brand_name || 'Generic Formulation'}</div>
-              </div>
-
-              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <div className="text-slate-400 mb-0.5">Dosage Form</div>
-                <div className="font-semibold text-white">{selectedMedicine.dosage_form}</div>
-              </div>
-
-              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <div className="text-slate-400 mb-0.5">Manufacturer</div>
-                <div className="font-semibold text-white">{selectedMedicine.manufacturer || 'Standard Pharmaceutical'}</div>
-              </div>
-
-              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <div className="text-slate-400 mb-0.5">Expiry Notice Window</div>
-                <div className="font-semibold text-cyan-400 font-mono">{selectedMedicine.expiry_warning_days} days</div>
-              </div>
-
-              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <div className="text-slate-400 mb-0.5">Database ID</div>
-                <div className="font-mono text-slate-300"># {selectedMedicine.id}</div>
-              </div>
+            {/* Technical CV Mapping */}
+            <div className="p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 space-y-1">
+              <span className="text-slate-400 text-[10px] uppercase font-semibold">Computer Vision Class Identifier</span>
+              <p className="font-mono text-cyan-300 text-xs">{selectedMedicine.image_class}</p>
             </div>
 
-            {/* Official Provenance Citation */}
-            <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 space-y-2 text-xs">
-              <div className="flex items-center gap-1.5 font-semibold text-slate-300">
-                <FileText className="h-4 w-4 text-cyan-400" />
-                <span>Regulatory Ground Truth Source</span>
+            {/* Provenance & Monograph Link */}
+            <div className="pt-2 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-slate-400">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" />
+                <span>Source Authority: <strong className="text-slate-300">{selectedMedicine.source}</strong></span>
               </div>
-              <p className="text-slate-400 leading-relaxed">
-                {selectedMedicine.source}
-              </p>
-              <div className="pt-1">
+
+              {selectedMedicine.source_url && (
                 <a
                   href={selectedMedicine.source_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 hover:underline font-mono text-[11px]"
+                  className="inline-flex items-center gap-1 text-cyan-400 hover:text-cyan-300 font-medium"
                 >
-                  <span>View Official FDA DailyMed Package Insert</span>
-                  <ExternalLink className="h-3 w-3" />
+                  <span>View Official FDA DailyMed Monograph</span>
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </a>
-              </div>
-            </div>
-
-            {/* Mandatory Academic / Ethical Provenance Disclaimer */}
-            <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 text-[11px] text-amber-300 leading-relaxed">
-              <strong>Data Provenance Notice:</strong> These storage parameters are established by regulatory pharmacopeias (USP/FDA) and manufacturer package inserts. AI/ML models in this system operate on this ground truth to predict environmental risk, and <em>never generate or hallucinate</em> storage boundaries.
+              )}
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );
