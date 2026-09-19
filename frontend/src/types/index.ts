@@ -9,7 +9,7 @@ export interface SystemHealth {
   details?: Record<string, unknown> | null;
 }
 
-export type TabKey = 'overview' | 'monitoring' | 'medicines' | 'scan' | 'alerts' | 'models';
+export type TabKey = 'home' | 'overview' | 'assessment' | 'monitoring' | 'medicines' | 'scan' | 'alerts' | 'models';
 
 export interface Medicine {
   id: number;
@@ -195,7 +195,7 @@ export interface ScanResponse {
   message: string;
 }
 
-// Phase 5: Storage Risk ML Types
+// Storage Risk ML Types
 export interface StorageRiskRequest {
   medicine_id: string;
   current_temperature: number;

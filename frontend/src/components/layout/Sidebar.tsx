@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   LayoutDashboard,
-  LineChart,
+  Thermometer,
   Pill,
   Camera,
   Bell,
@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   ChevronRight,
   X,
+  Home,
 } from 'lucide-react';
 import type { TabKey } from '../../types';
 
@@ -34,12 +35,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
 }) => {
   const navItems: NavItem[] = [
-    { key: 'overview', label: 'Dashboard Overview', icon: LayoutDashboard },
-    { key: 'medicines', label: 'Medicine Catalog', icon: Pill, badge: '25 Monographs', badgeVariant: 'info' },
-    { key: 'scan', label: 'Scan & Camera', icon: Camera, badge: 'CV + OCR', badgeVariant: 'success' },
-    { key: 'monitoring', label: 'Storage Telemetry', icon: LineChart },
-    { key: 'alerts', label: 'Active Alerts', icon: Bell },
-    { key: 'models', label: 'Model Benchmarks', icon: Cpu, badge: 'Phase 3 CV', badgeVariant: 'neutral' },
+    { key: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+    { key: 'medicines', label: 'Medicines', icon: Pill, badge: '25 Monographs', badgeVariant: 'info' },
+    { key: 'scan', label: 'Scan Medicine', icon: Camera, badge: 'CV + OCR', badgeVariant: 'success' },
+    { key: 'assessment', label: 'Storage Assessment', icon: Thermometer },
+    { key: 'alerts', label: 'Storage Alerts', icon: Bell },
+    { key: 'models', label: 'Model Information', icon: Cpu },
   ];
 
   return (
@@ -62,7 +63,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Mobile close bar */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-800 md:hidden">
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Navigation Menu
+            Workspace Menu
           </span>
           <button
             onClick={onCloseMobile}
@@ -73,14 +74,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
+        {/* Public Website Switcher Link */}
+        <div className="pt-1 pb-3">
+          <button
+            type="button"
+            onClick={() => {
+              onSelectTab('home');
+              onCloseMobile();
+            }}
+            className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition cursor-pointer border ${
+              activeTab === 'home'
+                ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30'
+                : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 border-slate-800/80'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Home className="h-4 w-4 text-cyan-400" />
+              <span>Public Product Site</span>
+            </div>
+            <ChevronRight className="h-3 w-3 text-slate-500" />
+          </button>
+        </div>
+
         {/* Navigation list */}
-        <nav className="space-y-1 mt-2 md:mt-0" aria-label="Main platform navigation">
+        <nav className="space-y-1 mt-1" aria-label="Main platform navigation">
           <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-            Platform Modules
+            Product Workspace
           </p>
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeTab === item.key;
+            const isActive =
+              activeTab === item.key ||
+              (item.key === 'assessment' && activeTab === 'monitoring');
 
             return (
               <button
@@ -126,14 +151,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="mt-auto pt-4 border-t border-slate-800/80">
           <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-xs text-slate-400 space-y-1.5">
             <div className="flex items-center gap-1.5 font-semibold text-slate-200">
-              <ShieldCheck className="h-4 w-4 text-cyan-400 shrink-0" />
-              <span>Phases 1–4 Complete</span>
+              <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" />
+              <span>Verified Monograph Ground Truth</span>
             </div>
             <p className="text-[11px] leading-relaxed text-slate-400">
-              CV visual classification + EasyOCR multi-modal pipeline with verified FDA DailyMed monographs.
+              Official FDA DailyMed & USP monographs with MobileNetV3 visual recognition and trained storage-risk estimation.
             </p>
-            <div className="pt-1 text-[10px] font-mono text-cyan-400/90 flex items-center justify-between border-t border-slate-800/60">
-              <span>Next: Phase 5 Storage Risk ML</span>
+            <div className="pt-1 text-[10px] font-mono text-emerald-400/90 flex items-center justify-between border-t border-slate-800/60">
+              <span>Software-Only Decision Support</span>
             </div>
           </div>
         </div>

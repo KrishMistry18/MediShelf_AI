@@ -1,246 +1,272 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
-  LineChart as RechartsLine,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  ReferenceLine,
-} from 'recharts';
-import { Thermometer, Droplets, ShieldCheck } from 'lucide-react';
+  Thermometer,
+  ShieldCheck,
+  Search,
+  ExternalLink,
+  Pill,
+  Info,
+} from 'lucide-react';
 import {
   Badge,
   Card,
   PageHeader,
   SectionHeader,
   Select,
-  StatCard,
 } from '../components/common';
 import { StorageRiskAssessment } from '../components/storage/StorageRiskAssessment';
+import { fetchMedicines } from '../services/api';
+import type { Medicine } from '../types';
 
 export const MonitoringPage: React.FC = () => {
-  // Ambient tracking telemetry points
-  const temperatureData = [
-    { time: '08:00', temp: 21, safeMin: 15, safeMax: 25 },
-    { time: '10:00', temp: 23, safeMin: 15, safeMax: 25 },
-    { time: '12:00', temp: 26, safeMin: 15, safeMax: 25 },
-    { time: '14:00', temp: 27, safeMin: 15, safeMax: 25 },
-    { time: '16:00', temp: 25, safeMin: 15, safeMax: 25 },
-    { time: '18:00', temp: 24, safeMin: 15, safeMax: 25 },
-    { time: '20:00', temp: 22, safeMin: 15, safeMax: 25 },
-  ];
-
-  const humidityData = [
-    { time: '08:00', humidity: 45, safeMin: 35, safeMax: 60 },
-    { time: '10:00', humidity: 48, safeMin: 35, safeMax: 60 },
-    { time: '12:00', humidity: 55, safeMin: 35, safeMax: 60 },
-    { time: '14:00', humidity: 58, safeMin: 35, safeMax: 60 },
-    { time: '16:00', humidity: 62, safeMin: 35, safeMax: 60 },
-    { time: '18:00', humidity: 54, safeMin: 35, safeMax: 60 },
-    { time: '20:00', humidity: 50, safeMin: 35, safeMax: 60 },
-  ];
-
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedMedId, setSelectedMedId] = useState<string>('MED-001');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const medicineOptions = [
-    { value: 'MED-001', label: 'Paracetamol 500mg Tablets (Permissible: 20°C – 25°C)' },
-    { value: 'MED-014', label: 'Human Insulin Regular 100U/mL (Cold Chain: 2°C – 8°C)' },
-    { value: 'MED-005', label: 'Atorvastatin Calcium 20mg Tablets (Permissible: 20°C – 25°C)' },
-    { value: 'MED-004', label: 'Metformin HCl 500mg Tablets (Permissible: 20°C – 25°C)' },
-    { value: 'MED-006', label: 'Omeprazole 20mg Delayed-Release (Permissible: 15°C – 30°C)' },
-    { value: 'MED-016', label: 'Albuterol Sulfate Inhalation Aerosol (Permissible: 15°C – 25°C)' },
-  ];
+  // Fallback initial list if API is starting up
+  const fallbackMedicines = useMemo(
+    () => [
+      {
+        id: 1,
+        medicine_id: 'MED-001',
+        medicine_name: 'Paracetamol 500 mg Tablet',
+        generic_name: 'Acetaminophen',
+        strength: '500 mg',
+        dosage_form: 'Tablet',
+        category: 'Analgesic',
+        storage_min_temperature: 20.0,
+        storage_max_temperature: 25.0,
+        storage_min_humidity: null,
+        storage_max_humidity: null,
+        expiry_warning_days: 90,
+        image_class: 'paracetamol',
+        source: 'DailyMed / USP Monograph',
+        source_url: 'https://dailymed.nlm.nih.gov/dailymed/',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      {
+        id: 14,
+        medicine_id: 'MED-014',
+        medicine_name: 'Human Insulin Regular 100 units/mL',
+        generic_name: 'Insulin Human',
+        strength: '100 units/mL',
+        dosage_form: 'Injection',
+        category: 'Antidiabetic',
+        storage_min_temperature: 2.0,
+        storage_max_temperature: 8.0,
+        storage_min_humidity: null,
+        storage_max_humidity: null,
+        expiry_warning_days: 28,
+        image_class: 'insulin_regular',
+        source: 'DailyMed / FDA Package Insert',
+        source_url: 'https://dailymed.nlm.nih.gov/dailymed/',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadCatalog = async () => {
+      setLoading(true);
+      try {
+        const res = await fetchMedicines({ pageSize: 100 });
+        if (isMounted && res.items && res.items.length > 0) {
+          setMedicines(res.items);
+          if (!res.items.some((m) => m.medicine_id === selectedMedId)) {
+            setSelectedMedId(res.items[0].medicine_id);
+          }
+        } else if (isMounted) {
+          setMedicines(fallbackMedicines);
+        }
+      } catch {
+        if (isMounted) {
+          setMedicines(fallbackMedicines);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    loadCatalog();
+    return () => {
+      isMounted = false;
+    };
+  }, [fallbackMedicines, selectedMedId]);
+
+  const activeMedicineList = medicines.length > 0 ? medicines : fallbackMedicines;
+
+  const filteredMedicines = useMemo(() => {
+    if (!searchQuery.trim()) return activeMedicineList;
+    const q = searchQuery.toLowerCase();
+    return activeMedicineList.filter(
+      (m) =>
+        m.medicine_name.toLowerCase().includes(q) ||
+        m.generic_name.toLowerCase().includes(q) ||
+        m.medicine_id.toLowerCase().includes(q) ||
+        m.category.toLowerCase().includes(q)
+    );
+  }, [activeMedicineList, searchQuery]);
+
+  const selectedMedicine = useMemo(() => {
+    return (
+      activeMedicineList.find((m) => m.medicine_id === selectedMedId) ||
+      activeMedicineList[0]
+    );
+  }, [activeMedicineList, selectedMedId]);
 
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <PageHeader
         badge={
-          <Badge variant="info" size="sm" dot>
-            Environmental Telemetry & ML Risk (Phase 5 Active)
+          <Badge variant="success" size="sm" dot>
+            Verified Monograph Database
           </Badge>
         }
-        title="Environmental Storage Conditions Monitoring"
-        description="Atmospheric telemetry tracking mapped to USP/FDA monograph boundaries. Features real-time deterministic compliance checking and trained AI/ML storage-risk degradation estimation."
+        title="Storage Assessment"
+        description="Assess medicine storage conditions against documented requirements and obtain an AI-assisted storage-risk estimate."
         actions={
-          <div className="rounded-xl border border-slate-800 bg-slate-900/90 px-4 py-2 text-xs text-slate-300">
-            Current Ambient:{' '}
-            <span className="font-semibold text-emerald-400 font-mono">22°C / 50% RH</span>
+          <div className="rounded-xl border border-slate-800 bg-slate-900/90 px-4 py-2 text-xs text-slate-300 flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            <span>Database Records:</span>
+            <span className="font-semibold text-emerald-400 font-mono">
+              {activeMedicineList.length} Verified
+            </span>
           </div>
         }
       />
 
-      {/* Ambient Quick Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatCard
-          title="Ambient Temperature"
-          value="22.0°C"
-          subtitle="Nominal Room Temperature (15-25°C)"
-          icon={<Thermometer className="h-5 w-5" />}
-          theme="cyan"
-        />
-        <StatCard
-          title="Relative Humidity"
-          value="50% RH"
-          subtitle="Nominal Humidity Window (35-60% RH)"
-          icon={<Droplets className="h-5 w-5" />}
-          theme="emerald"
-        />
-        <StatCard
-          title="Storage Compliance"
-          value="Nominal"
-          subtitle="Deterministic range compliance active"
-          icon={<ShieldCheck className="h-5 w-5" />}
-          theme="emerald"
-        />
+      {/* Honest Operational Notice */}
+      <div className="rounded-2xl border border-cyan-500/20 bg-cyan-950/20 p-4 text-xs text-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 text-cyan-200 font-medium">
+          <Info className="h-4 w-4 text-cyan-400 shrink-0" />
+          <span>Manual Storage Evaluation (Software-Only Decision Support)</span>
+        </div>
+        <p className="text-[11px] text-slate-400">
+          No live sensors connected. Enter observed environmental conditions manually to assess compliance and risk.
+        </p>
       </div>
 
-      {/* Temperature Trend Chart */}
-      <Card className="p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      {/* Medicine Selection & Monograph Reference Card */}
+      <Card className="p-6 space-y-5 border-slate-800 bg-slate-900/80">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-4">
           <SectionHeader
-            icon={<Thermometer className="h-5 w-5 text-cyan-400" />}
-            title="Temperature Trajectory (°C)"
-            description="Green dashed boundaries indicate standard USP Controlled Room Temperature (15°C – 25°C)"
+            icon={<Pill className="h-5 w-5 text-cyan-400" />}
+            title="Step 1: Select Medicine from Verified Catalog"
+            description="Choose any medicine monograph from the official database to retrieve documented storage boundaries."
           />
-          <Badge variant="info" size="sm">
-            Telemetry Stream
-          </Badge>
-        </div>
 
-        <div className="h-64 w-full pt-2">
-          <ResponsiveContainer width="100%" height="100%">
-            <RechartsLine data={temperatureData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="time" stroke="#64748b" fontSize={12} />
-              <YAxis domain={[10, 35]} stroke="#64748b" fontSize={12} unit="°C" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#0f172a',
-                  borderColor: '#334155',
-                  borderRadius: '12px',
-                  color: '#f8fafc',
-                  fontSize: '12px',
-                }}
-                labelStyle={{ color: '#94a3b8' }}
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+            {/* Search Filter */}
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Filter by name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950/80 pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
               />
-              <ReferenceLine
-                y={25}
-                stroke="#10b981"
-                strokeDasharray="3 3"
-                label={{ value: 'USP Max (25°C)', fill: '#10b981', fontSize: 10, position: 'top' }}
-              />
-              <ReferenceLine
-                y={15}
-                stroke="#10b981"
-                strokeDasharray="3 3"
-                label={{ value: 'USP Min (15°C)', fill: '#10b981', fontSize: 10, position: 'bottom' }}
-              />
-              <Line
-                type="monotone"
-                dataKey="temp"
-                stroke="#38bdf8"
-                strokeWidth={2.5}
-                dot={{ fill: '#38bdf8', r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-            </RechartsLine>
-          </ResponsiveContainer>
-        </div>
-      </Card>
+            </div>
 
-      {/* Humidity Trend Chart */}
-      <Card className="p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <SectionHeader
-            icon={<Droplets className="h-5 w-5 text-emerald-400" />}
-            title="Relative Humidity Trajectory (% RH)"
-            description="Green dashed boundaries indicate standard pharmaceutical packaging humidity safe window (35% – 60% RH)"
-          />
-          <Badge variant="success" size="sm">
-            Hygrometry Stream
-          </Badge>
-        </div>
-
-        <div className="h-64 w-full pt-2">
-          <ResponsiveContainer width="100%" height="100%">
-            <RechartsLine data={humidityData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="time" stroke="#64748b" fontSize={12} />
-              <YAxis domain={[20, 80]} stroke="#64748b" fontSize={12} unit="%" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#0f172a',
-                  borderColor: '#334155',
-                  borderRadius: '12px',
-                  color: '#f8fafc',
-                  fontSize: '12px',
-                }}
-                labelStyle={{ color: '#94a3b8' }}
-              />
-              <ReferenceLine
-                y={60}
-                stroke="#10b981"
-                strokeDasharray="3 3"
-                label={{ value: 'Safe Max (60% RH)', fill: '#10b981', fontSize: 10, position: 'top' }}
-              />
-              <ReferenceLine
-                y={35}
-                stroke="#10b981"
-                strokeDasharray="3 3"
-                label={{ value: 'Safe Min (35% RH)', fill: '#10b981', fontSize: 10, position: 'bottom' }}
-              />
-              <Line
-                type="monotone"
-                dataKey="humidity"
-                stroke="#34d399"
-                strokeWidth={2.5}
-                dot={{ fill: '#34d399', r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-            </RechartsLine>
-          </ResponsiveContainer>
-        </div>
-      </Card>
-
-      {/* Phase 5: Storage Risk ML Assessment Section */}
-      <div className="space-y-4 pt-2">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-          <div>
-            <h4 className="text-sm font-bold text-white flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-cyan-400" />
-              Live Storage Risk Evaluation by Catalog Medicine
-            </h4>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Select any medicine monograph to simulate stability degradation against current ambient or stress conditions.
-            </p>
-          </div>
-
-          <div className="w-full sm:w-80">
-            <Select
-              value={selectedMedId}
-              onChange={(e) => setSelectedMedId(e.target.value)}
-              className="text-xs"
-            >
-              {medicineOptions.map((opt) => (
-                <option key={opt.value} value={opt.value} className="bg-slate-900 text-slate-200">
-                  {opt.label}
-                </option>
-              ))}
-            </Select>
+            {/* Dropdown Select */}
+            <div className="w-full sm:w-80">
+              <Select
+                value={selectedMedId}
+                onChange={(e) => setSelectedMedId(e.target.value)}
+                className="text-xs"
+                disabled={loading}
+              >
+                {filteredMedicines.map((m) => (
+                  <option key={m.medicine_id} value={m.medicine_id} className="bg-slate-900 text-slate-200">
+                    {m.medicine_name} ({m.strength})
+                  </option>
+                ))}
+              </Select>
+            </div>
           </div>
         </div>
 
-        <StorageRiskAssessment
-          medicineId={selectedMedId}
-          medicineName={medicineOptions.find((m) => m.value === selectedMedId)?.label.split('(')[0].trim()}
-          initialTemp={22.0}
-          initialHumidity={50.0}
-        />
+        {/* Monograph Facts Grid for Selected Medicine */}
+        {selectedMedicine && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+            <div className="space-y-1">
+              <span className="text-[11px] font-medium text-slate-400 block">Medicine & Active Ingredient</span>
+              <p className="text-xs font-semibold text-white truncate">{selectedMedicine.medicine_name}</p>
+              <p className="text-[11px] text-slate-400 font-mono">{selectedMedicine.generic_name}</p>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[11px] font-medium text-slate-400 block">Documented Storage Range</span>
+              <div className="flex items-center gap-1.5 font-mono text-emerald-400 font-bold text-xs">
+                <Thermometer className="h-3.5 w-3.5" />
+                <span>
+                  {selectedMedicine.storage_min_temperature}°C – {selectedMedicine.storage_max_temperature}°C
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-500">
+                {selectedMedicine.storage_max_temperature <= 8.0 ? 'Cold chain requirement' : 'Controlled room temperature'}
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[11px] font-medium text-slate-400 block">Dosage Form & Category</span>
+              <p className="text-xs font-medium text-slate-200">
+                {selectedMedicine.dosage_form} ({selectedMedicine.strength})
+              </p>
+              <Badge variant="neutral" size="sm" className="font-mono text-[10px]">
+                {selectedMedicine.category}
+              </Badge>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[11px] font-medium text-slate-400 block">Authoritative Provenance</span>
+              <p className="text-xs text-cyan-300 font-medium truncate">{selectedMedicine.source}</p>
+              {selectedMedicine.source_url && (
+                <a
+                  href={selectedMedicine.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[10px] text-cyan-400 hover:text-cyan-300 transition"
+                >
+                  <span>Monograph Link</span>
+                  <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+      </Card>
+
+      {/* Step 2: Input Actual Conditions & Run Assessment */}
+      <div className="space-y-3">
+        <div className="px-1 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-emerald-400" />
+            <span>Step 2: Enter Observed Environmental Conditions</span>
+          </h3>
+          <span className="text-xs text-slate-400">
+            Real ML Inference + Deterministic Compliance
+          </span>
+        </div>
+
+        {selectedMedicine && (
+          <StorageRiskAssessment
+            key={selectedMedicine.medicine_id}
+            medicineId={selectedMedicine.medicine_id}
+            medicineName={selectedMedicine.medicine_name}
+            initialTemp={selectedMedicine.storage_max_temperature <= 8 ? 5.0 : 22.0}
+            initialHumidity={50.0}
+          />
+        )}
       </div>
     </div>
   );
 };
 
+export const StorageAssessmentPage = MonitoringPage;

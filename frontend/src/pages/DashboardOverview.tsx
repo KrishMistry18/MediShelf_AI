@@ -1,10 +1,8 @@
 import React from 'react';
 import {
   ShieldCheck,
-  AlertTriangle,
   Pill,
   ArrowUpRight,
-  Server,
   Workflow,
   Camera,
   Database,
@@ -12,7 +10,9 @@ import {
   FileText,
   Thermometer,
   Layers,
-  Sparkles,
+  Brain,
+  Search,
+  Activity,
 } from 'lucide-react';
 import type { SystemHealth } from '../types';
 import {
@@ -26,72 +26,102 @@ import {
 interface DashboardOverviewProps {
   health: SystemHealth | null;
   onNavigateToScan: () => void;
+  onNavigateToAssessment?: () => void;
+  onNavigateToMedicines?: () => void;
 }
 
 export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
-  health,
   onNavigateToScan,
+  onNavigateToAssessment,
+  onNavigateToMedicines,
 }) => {
-  const statCards = [
+  const capabilityCards = [
     {
-      title: 'Monitored Medicines',
+      title: 'Verified Medicines',
       value: '25',
-      subtitle: 'Verified DailyMed monographs (Phase 2)',
+      subtitle: 'Authoritative FDA DailyMed & USP monographs',
       icon: <Pill className="h-5 w-5" />,
-      theme: 'cyan' as const,
-    },
-    {
-      title: 'CV Packaging Classes',
-      value: '10',
-      subtitle: 'MobileNetV3 trained models (Phase 3)',
-      icon: <Scan className="h-5 w-5" />,
       theme: 'emerald' as const,
     },
     {
-      title: 'OCR Label Parsing',
-      value: 'Active',
-      subtitle: 'EasyOCR CRAFT + CRNN engine (Phase 4)',
+      title: 'Vision Recognition',
+      value: '10 Classes',
+      subtitle: 'MobileNetV3 packaging classifier',
+      icon: <Scan className="h-5 w-5" />,
+      theme: 'cyan' as const,
+    },
+    {
+      title: 'Label Text Extraction',
+      value: 'Available',
+      subtitle: 'EasyOCR deep character recognition',
       icon: <FileText className="h-5 w-5" />,
       theme: 'cyan' as const,
     },
     {
-      title: 'Storage Risk Engine',
-      value: 'Pending',
-      subtitle: 'Planned for Phase 5 development',
-      icon: <AlertTriangle className="h-5 w-5" />,
-      theme: 'amber' as const,
+      title: 'Storage Risk Inference',
+      value: 'Available',
+      subtitle: 'Trained Gradient Boosting ML model',
+      icon: <Brain className="h-5 w-5" />,
+      theme: 'cyan' as const,
     },
   ];
 
-  const workflowSteps = [
-    { step: 1, title: 'Capture Package', desc: 'Mobile camera or file upload', icon: Camera },
-    { step: 2, title: 'Quality Gate', desc: 'Sharpness, exposure, resolution', icon: ShieldCheck },
-    { step: 3, title: 'CV Classifier', desc: 'MobileNetV3-Small trade dress', icon: Scan },
-    { step: 4, title: 'Deep OCR', desc: 'Expiry, batch, dosage strength', icon: FileText },
-    { step: 5, title: 'Decision Fusion', desc: 'Consensus scoring & conflict check', icon: Layers },
-    { step: 6, title: 'Monograph Lookup', desc: 'Official DailyMed storage bounds', icon: Database },
-    { step: 7, title: 'Storage Safety', desc: 'Deterministic compliance check', icon: Thermometer },
+  const quickActions = [
+    {
+      title: 'Scan a Medicine',
+      desc: 'Capture or upload package imagery to identify branding, extract text, and verify requirements.',
+      icon: Camera,
+      action: onNavigateToScan,
+      buttonText: 'Launch Scanner',
+      variant: 'primary' as const,
+    },
+    {
+      title: 'Assess Storage Conditions',
+      desc: 'Enter temperature, humidity, and duration to receive deterministic compliance and ML risk estimates.',
+      icon: Thermometer,
+      action: onNavigateToAssessment || onNavigateToScan,
+      buttonText: 'Run Assessment',
+      variant: 'secondary' as const,
+    },
+    {
+      title: 'Browse Medicine Catalog',
+      desc: 'Explore the 25 verified pharmaceutical records with official storage monographs and citations.',
+      icon: Search,
+      action: onNavigateToMedicines || onNavigateToScan,
+      buttonText: 'View Catalog',
+      variant: 'secondary' as const,
+    },
+  ];
+
+  const pipelineSteps = [
+    { step: '1', title: 'Package Capture', desc: 'Camera or file upload', icon: Camera },
+    { step: '2', title: 'Quality Assessment', desc: 'Blur, brightness, resolution check', icon: ShieldCheck },
+    { step: '3', title: 'Visual Classifier', desc: 'MobileNetV3 trade dress match', icon: Scan },
+    { step: '4', title: 'OCR Label Parsing', desc: 'Active ingredient & strength extraction', icon: FileText },
+    { step: '5', title: 'Decision Fusion', desc: 'Multimodal consensus validation', icon: Layers },
+    { step: '6', title: 'Monograph Verification', desc: 'Official storage temperature range', icon: Database },
+    { step: '7', title: 'Storage-Risk AI', desc: 'ML degradation risk inference', icon: Brain },
   ];
 
   return (
     <div className="space-y-6">
-      {/* Top Banner / Welcome */}
-      <div className="rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/40 p-6 shadow-xl">
+      {/* Welcome Banner */}
+      <div className="rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/40 p-6 sm:p-8 shadow-xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-          <div className="space-y-2">
+          <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2">
               <Badge variant="success" size="sm" dot>
-                Phases 1–4 Fully Operational
+                Platform Fully Operational
               </Badge>
-              <Badge variant="warning" size="sm">
-                Phase 5 Storage Risk ML Next
+              <Badge variant="neutral" size="sm">
+                Grounded in FDA & USP Monographs
               </Badge>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              MediShelf AI Storage & Safety Platform
+              MediShelf AI Workspace
             </h1>
-            <p className="text-xs sm:text-sm text-slate-300/90 max-w-2xl leading-relaxed">
-              Software-only multi-modal intelligence system combining transfer-learning computer vision, deep OCR text parsing, and verified pharmaceutical storage monographs to safeguard medicine stability without mandatory physical hardware.
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Software-only decision-support platform combining deep visual package recognition, optical character extraction, and trained storage-risk estimation to safeguard medicine stability without mandatory physical sensor hardware.
             </p>
           </div>
 
@@ -100,16 +130,16 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             size="lg"
             onClick={onNavigateToScan}
             icon={<ArrowUpRight className="h-4 w-4 stroke-[2.5]" />}
-            className="self-start md:self-center shrink-0"
+            className="self-start md:self-center shrink-0 shadow-lg shadow-cyan-500/20"
           >
-            Launch Scanner
+            Scan Medicine
           </Button>
         </div>
       </div>
 
-      {/* Primary KPI Metrics Grid */}
+      {/* Primary Capability KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((card, idx) => (
+        {capabilityCards.map((card, idx) => (
           <StatCard
             key={idx}
             title={card.title}
@@ -121,89 +151,104 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         ))}
       </div>
 
-      {/* Two Column Layout: Safety Workflow & System Health */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Pipeline Architecture Card */}
-        <Card className="lg:col-span-8 p-6 space-y-4">
-          <SectionHeader
-            icon={<Workflow className="h-5 w-5 text-cyan-400" />}
-            title="Multi-Modal Intelligence & Safety Workflow"
-            badge={
-              <Badge variant="info" size="sm">
-                7-Step Pipeline
-              </Badge>
-            }
-            description="Strict architectural separation between AI/ML estimations, deterministic rules, and authoritative pharmaceutical monographs."
-          />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pt-2">
-            {workflowSteps.map((s) => {
-              const StepIcon = s.icon;
-              return (
-                <div
-                  key={s.step}
-                  className="rounded-xl border border-slate-800/80 bg-slate-950/50 p-3.5 space-y-1.5 hover:border-slate-700 transition"
+      {/* Quick Actions Grid */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+          Quick Actions
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {quickActions.map((qa, idx) => {
+            const Icon = qa.icon;
+            return (
+              <Card
+                key={idx}
+                className="p-5 flex flex-col justify-between space-y-4 hover:border-slate-700 transition"
+              >
+                <div className="space-y-2">
+                  <div className="rounded-xl bg-slate-800/80 p-2.5 w-fit text-cyan-400">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-sm font-bold text-white tracking-tight">
+                    {qa.title}
+                  </h3>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    {qa.desc}
+                  </p>
+                </div>
+                <Button
+                  variant={qa.variant}
+                  size="sm"
+                  onClick={qa.action}
+                  className="w-full justify-center"
                 >
+                  {qa.buttonText}
+                </Button>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Pipeline Architecture Workflow */}
+      <Card className="p-6 space-y-4 border-slate-800">
+        <SectionHeader
+          icon={<Workflow className="h-5 w-5 text-cyan-400" />}
+          title="Intelligence & Verification Pipeline"
+          badge={
+            <Badge variant="info" size="sm">
+              7-Step Architecture
+            </Badge>
+          }
+          description="Strict separation between AI/ML estimations, deterministic rules, and authoritative pharmaceutical monographs."
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3 pt-2">
+          {pipelineSteps.map((s) => {
+            const StepIcon = s.icon;
+            return (
+              <div
+                key={s.step}
+                className="rounded-xl border border-slate-800/80 bg-slate-950/50 p-3.5 space-y-1.5 hover:border-slate-700 transition flex flex-col justify-between"
+              >
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-800 text-[10px] font-bold text-slate-300 font-mono">
                       {s.step}
                     </span>
                     <StepIcon className="h-3.5 w-3.5 text-cyan-400" />
                   </div>
-                  <h3 className="text-xs font-semibold text-slate-200">{s.title}</h3>
-                  <p className="text-[11px] text-slate-400 leading-snug">{s.desc}</p>
+                  <h4 className="text-xs font-semibold text-slate-200">{s.title}</h4>
                 </div>
-              );
-            })}
-          </div>
-        </Card>
+                <p className="text-[11px] text-slate-400 leading-snug">{s.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
 
-        {/* Backend & Environment Diagnostics Card */}
-        <Card className="lg:col-span-4 p-6 space-y-4">
-          <SectionHeader
-            icon={<Server className="h-5 w-5 text-emerald-400" />}
-            title="System Diagnostics"
-            description="Real-time operational verification communicating with the FastAPI backend."
-          />
-
-          <div className="space-y-3 rounded-xl border border-slate-800/80 bg-slate-950/70 p-4 text-xs">
-            <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
-              <span className="text-slate-400">FastAPI API:</span>
-              <span className="font-mono font-semibold text-emerald-400 uppercase">
-                {health?.status || 'connecting'}
-              </span>
-            </div>
-            <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
-              <span className="text-slate-400">Database Engine:</span>
-              <span className="font-mono text-cyan-300">
-                {health?.database === 'connected' ? 'SQLite (SQLAlchemy 2.0)' : 'Disconnected'}
-              </span>
-            </div>
-            <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
-              <span className="text-slate-400">Runtime Environment:</span>
-              <span className="font-mono text-slate-300">{health?.environment || 'development'}</span>
-            </div>
-            <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
-              <span className="text-slate-400">Backend Version:</span>
-              <span className="font-mono text-slate-300">v{health?.version || '0.1.0'}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Hardware Dependency:</span>
-              <span className="font-semibold text-emerald-400">None (Software-Only)</span>
-            </div>
+      {/* Recent Activity: Honest Session State */}
+      <Card className="p-6 space-y-4 border-slate-800 bg-slate-900/60">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <Activity className="h-4 w-4 text-emerald-400" />
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              Recent Session Activity
+            </h3>
           </div>
+          <Badge variant="neutral" size="sm" className="font-mono">
+            Active Session
+          </Badge>
+        </div>
 
-          <div className="rounded-xl border border-cyan-500/20 bg-cyan-950/20 p-3 text-xs text-cyan-300 space-y-1">
-            <div className="flex items-center gap-1.5 font-semibold text-cyan-200">
-              <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
-              <span>Phase 1–4 Release Ready</span>
-            </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              Medicine dataset, CV model, and EasyOCR pipeline verified. Architecture prepared for Phase 5 storage-risk model integration.
-            </p>
-          </div>
-        </Card>
-      </div>
+        <div className="py-6 text-center space-y-2">
+          <p className="text-xs text-slate-300 font-medium">
+            No recent activity recorded in this session.
+          </p>
+          <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
+            Activity logs populate dynamically when medicine packaging is scanned or storage conditions are evaluated.
+          </p>
+        </div>
+      </Card>
     </div>
   );
 };

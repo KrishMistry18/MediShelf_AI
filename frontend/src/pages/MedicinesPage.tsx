@@ -102,7 +102,7 @@ export const MedicinesPage: React.FC = () => {
       <PageHeader
         badge={
           <Badge variant="success" size="sm" dot>
-            Phase 2 Database: Verified Pharmaceutical Standards
+            Verified Pharmaceutical Standards (Ground Truth)
           </Badge>
         }
         title="Medicine Storage Catalog & Specifications"

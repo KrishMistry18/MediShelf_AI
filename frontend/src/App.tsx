@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { AppLayout } from './components/layout/AppLayout';
+import { LandingPage } from './pages/LandingPage';
 import { DashboardOverview } from './pages/DashboardOverview';
 import { MonitoringPage } from './pages/MonitoringPage';
 import { MedicinesPage } from './pages/MedicinesPage';
@@ -10,7 +11,7 @@ import type { SystemHealth, TabKey } from './types';
 import { fetchSystemHealth } from './services/api';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabKey>('overview');
+  const [activeTab, setActiveTab] = useState<TabKey>('home');
   const [health, setHealth] = useState<SystemHealth | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -49,28 +50,41 @@ export const App: React.FC = () => {
 
   const renderActivePage = () => {
     switch (activeTab) {
+      case 'home':
+        return (
+          <LandingPage
+            onExploreApp={() => setActiveTab('overview')}
+          />
+        );
       case 'overview':
         return (
           <DashboardOverview
             health={health}
             onNavigateToScan={() => setActiveTab('scan')}
+            onNavigateToAssessment={() => setActiveTab('assessment')}
+            onNavigateToMedicines={() => setActiveTab('medicines')}
           />
         );
       case 'medicines':
         return <MedicinesPage />;
       case 'scan':
         return <ScanPage onNavigateToMedicines={() => setActiveTab('medicines')} />;
+      case 'assessment':
       case 'monitoring':
         return <MonitoringPage />;
       case 'alerts':
-        return <AlertsPage />;
+        return (
+          <AlertsPage
+            onNavigateToAssessment={() => setActiveTab('assessment')}
+            onNavigateToScan={() => setActiveTab('scan')}
+          />
+        );
       case 'models':
         return <ModelAnalyticsPage />;
       default:
         return (
-          <DashboardOverview
-            health={health}
-            onNavigateToScan={() => setActiveTab('scan')}
+          <LandingPage
+            onExploreApp={() => setActiveTab('overview')}
           />
         );
     }

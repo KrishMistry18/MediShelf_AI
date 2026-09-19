@@ -107,7 +107,7 @@ export const StorageRiskAssessment: React.FC<StorageRiskAssessmentProps> = ({
           <div className="flex items-center gap-2">
             <Brain className="w-5 h-5 text-cyan-400" />
             <h3 className="text-base font-bold text-white tracking-tight">
-              Storage-Risk AI Assessment (Phase 5)
+              AI-Assisted Storage-Risk Assessment
             </h3>
             <Badge variant="info" size="sm">
               ML Model Active
@@ -129,7 +129,7 @@ export const StorageRiskAssessment: React.FC<StorageRiskAssessmentProps> = ({
       {/* Preset Quick Scenarios */}
       <div className="space-y-2">
         <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-          Simulated Environmental Presets:
+          Scenario Simulation (Demo Presets) — Not live sensor data:
         </label>
         <div className="flex flex-wrap gap-2">
           <Button

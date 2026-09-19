@@ -299,7 +299,7 @@ export const ScanPage: React.FC<ScanPageProps> = ({ onNavigateToMedicines }) => 
       <PageHeader
         badge={
           <Badge variant="success" size="sm" dot>
-            Phase 3 & 4 Active: Computer Vision + EasyOCR Pipeline
+            Computer Vision + EasyOCR Pipeline
           </Badge>
         }
         title="Medicine Packaging Scanner & Label OCR"
@@ -818,7 +818,7 @@ export const ScanPage: React.FC<ScanPageProps> = ({ onNavigateToMedicines }) => 
                 </Card>
               )}
 
-              {/* 5. Phase 5: Storage Risk AI/ML Assessment */}
+              {/* 5. Storage-Risk AI/ML Assessment */}
               {scanResult.medicine && (
                 <StorageRiskAssessment
                   medicineId={scanResult.medicine.medicine_id}

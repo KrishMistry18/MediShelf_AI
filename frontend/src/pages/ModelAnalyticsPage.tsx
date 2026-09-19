@@ -16,7 +16,7 @@ import {
 } from '../components/common';
 
 export const ModelAnalyticsPage: React.FC = () => {
-  // Authentic Phase 3 evaluation benchmark metrics from ml/artifacts/metrics/test_metrics.json
+  // Authentic MobileNetV3 evaluation benchmark metrics from ml/artifacts/metrics/test_metrics.json
   const benchmarkMetrics = {
     top1Accuracy: '50.0%',
     top3Accuracy: '80.0%',
@@ -47,11 +47,11 @@ export const ModelAnalyticsPage: React.FC = () => {
       <PageHeader
         badge={
           <Badge variant="info" size="sm" dot>
-            Phase 3 Empirical Benchmark Report
+            Technical Specification
           </Badge>
         }
-        title="AI/ML Model Benchmarks & Academic Evaluation"
-        description="Standardized evaluation metrics, model architecture benchmarks, and training methodology. Figures reflect authentic isolated test split evaluations on authentic NIH DailyMed SPL packaging."
+        title="Model Information & Technical Methodology"
+        description="Standardized evaluation metrics, model architecture benchmarks, and training methodology. Figures reflect authentic isolated test evaluations on NIH DailyMed SPL packaging and simulation-derived stability scenarios."
       />
 
       {/* Primary KPI Grid */}
@@ -94,9 +94,9 @@ export const ModelAnalyticsPage: React.FC = () => {
         />
       </div>
 
-      {/* Model Architectures & Phase Status Cards */}
+      {/* Model Architectures & Component Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Active Phase 3 CV Classifier */}
+        {/* Active MobileNetV3 CV Classifier */}
         <Card className="p-6 space-y-4 border-cyan-500/30">
           <div className="flex items-center justify-between">
             <div>
@@ -107,7 +107,7 @@ export const ModelAnalyticsPage: React.FC = () => {
               <p className="text-xs text-cyan-400 font-mono mt-1">MobileNetV3-Small (Transfer Learning)</p>
             </div>
             <Badge variant="success" size="sm" dot>
-              Phase 3 Implemented
+              MobileNetV3 Active
             </Badge>
           </div>
 
@@ -131,7 +131,7 @@ export const ModelAnalyticsPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* Active Phase 5 Storage Risk Model */}
+        {/* Active Storage Risk Model */}
         <Card className="p-6 space-y-4 border-indigo-500/30">
           <div className="flex items-center justify-between">
             <div>
@@ -142,7 +142,7 @@ export const ModelAnalyticsPage: React.FC = () => {
               <p className="text-xs text-indigo-400 font-mono mt-1">GradientBoostingClassifier (Scikit-Learn)</p>
             </div>
             <Badge variant="success" size="sm" dot>
-              Phase 5 Implemented
+              Gradient Boosting Active
             </Badge>
           </div>
 
@@ -253,12 +253,12 @@ export const ModelAnalyticsPage: React.FC = () => {
         </Card>
       </div>
 
-      {/* Phase 5: Storage Risk ML Model Benchmark & Evaluation */}
+      {/* Storage Risk ML Model Benchmark & Evaluation */}
       <Card className="p-6 space-y-5 border-cyan-500/30 bg-slate-900/90">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-cyan-500/20 pb-4">
           <SectionHeader
             icon={<Brain className="h-5 w-5 text-cyan-400" />}
-            title="Phase 5: Storage Risk ML Model Benchmark & Evaluation"
+            title="Storage-Risk ML Model Benchmark & Evaluation"
             description="Trained degradation risk classifier evaluated on 6,000 simulation-derived scenarios grounded in USP/FDA monographs."
           />
           <Badge variant="success" size="sm" className="font-mono self-start sm:self-auto">
@@ -266,7 +266,7 @@ export const ModelAnalyticsPage: React.FC = () => {
           </Badge>
         </div>
 
-        {/* Phase 5 Test Set Metrics Grid */}
+        {/* Storage Risk Test Set Metrics Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
             <span className="text-[11px] text-slate-400 block font-medium">Test Accuracy</span>
@@ -422,17 +422,20 @@ export const ModelAnalyticsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Scientific & Academic Disclaimer Notice */}
+        {/* Scientific & Operational Honesty Disclaimer Notice */}
         <div className="rounded-xl border border-cyan-500/20 bg-cyan-950/20 p-4 text-xs text-slate-300 leading-relaxed space-y-1.5">
           <div className="flex items-center gap-2 text-cyan-300 font-semibold">
             <Info className="h-4 w-4" />
             <span>Simulation-Derived Benchmark Notice:</span>
           </div>
           <p className="text-[11px] text-slate-300 leading-relaxed">
-            The 99.56% test accuracy and 0.9958 Macro F1 score are evaluated strictly on the 900-sample held-out simulated storage-risk benchmark. Because proprietary real-world pharmaceutical stability excursion test data is protected under commercial trade secrets, the model is trained on simulation-derived scenarios grounded in official USP/FDA monographs. Predictions provide AI-assisted decision support and do not guarantee chemical stability or clinical safety.
+            The storage-risk model was trained and evaluated using simulation-derived scenarios grounded in documented medicine storage constraints. Its benchmark performance does not establish clinical or real-world pharmaceutical stability validity. Predictions provide AI-assisted decision support and do not guarantee chemical stability or replace professional pharmaceutical verification.
           </p>
         </div>
       </Card>
     </div>
   );
 };
+
+export const ModelInformationPage = ModelAnalyticsPage;
+

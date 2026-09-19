@@ -1,6 +1,6 @@
 import React from 'react';
-import { Activity, ShieldAlert, Database, RefreshCw, Menu } from 'lucide-react';
-import type { SystemHealth } from '../../types';
+import { Activity, ShieldCheck, Database, RefreshCw, Menu, Home, LayoutDashboard } from 'lucide-react';
+import type { SystemHealth, TabKey } from '../../types';
 import { Badge } from '../common/Badge';
 
 interface HeaderProps {
@@ -8,6 +8,8 @@ interface HeaderProps {
   loading: boolean;
   onRefreshHealth: () => void;
   onToggleSidebar: () => void;
+  activeTab?: TabKey;
+  onSelectTab?: (tab: TabKey) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -15,6 +17,8 @@ export const Header: React.FC<HeaderProps> = ({
   loading,
   onRefreshHealth,
   onToggleSidebar,
+  activeTab,
+  onSelectTab,
 }) => {
   const isHealthy = health?.status === 'healthy';
   const isDbConnected = health?.database === 'connected';
@@ -30,7 +34,10 @@ export const Header: React.FC<HeaderProps> = ({
           <Menu className="h-5 w-5" />
         </button>
 
-        <div className="flex items-center gap-2.5">
+        <button
+          onClick={() => onSelectTab && onSelectTab('home')}
+          className="flex items-center gap-2.5 cursor-pointer text-left focus:outline-none"
+        >
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 shadow-md shadow-emerald-500/20">
             <Activity className="h-5 w-5 text-slate-950 stroke-[2.5]" />
           </div>
@@ -47,8 +54,38 @@ export const Header: React.FC<HeaderProps> = ({
               Intelligent Medicine Storage & Safety Assessment
             </p>
           </div>
-        </div>
+        </button>
       </div>
+
+      {/* Center Navigation Switcher for Desktop */}
+      {onSelectTab && (
+        <div className="hidden md:flex items-center gap-1 rounded-xl bg-slate-950/70 p-1 border border-slate-800 text-xs">
+          <button
+            type="button"
+            onClick={() => onSelectTab('home')}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium transition cursor-pointer ${
+              activeTab === 'home'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                : 'text-slate-400 hover:text-white border border-transparent'
+            }`}
+          >
+            <Home className="h-3.5 w-3.5" />
+            <span>Public Site</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onSelectTab('overview')}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium transition cursor-pointer ${
+              activeTab !== 'home'
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                : 'text-slate-400 hover:text-white border border-transparent'
+            }`}
+          >
+            <LayoutDashboard className="h-3.5 w-3.5" />
+            <span>Workspace</span>
+          </button>
+        </div>
+      )}
 
       {/* Right side: Live System Status Badges */}
       <div className="flex items-center gap-2.5">
@@ -80,13 +117,13 @@ export const Header: React.FC<HeaderProps> = ({
           <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin text-cyan-400' : ''}`} />
         </button>
 
-        {/* Academic Disclaimer Pill */}
+        {/* Decision Support Prototype Pill */}
         <div
           title={health?.disclaimer}
-          className="hidden lg:flex items-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 text-[11px] font-medium text-amber-300"
+          className="hidden lg:flex items-center gap-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-1 text-[11px] font-medium text-cyan-300"
         >
-          <ShieldAlert className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-          <span>Academic Research Platform</span>
+          <ShieldCheck className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+          <span>Decision Support</span>
         </div>
       </div>
     </header>
