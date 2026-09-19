@@ -92,12 +92,7 @@ This executes `tsc -b` (strict TypeScript validation) followed by Vite productio
 | **Phase 2** | Medicine Dataset & Schema | 25 curated medicine classes, storage criteria (USP/WHO/FDA DailyMed standard), SQLAlchemy ORM models, idempotent seed script, REST APIs, and interactive frontend integration. | **COMPLETED** |
 | **Phase 3** | CV Recognition Pipeline | MobileNetV3-Small transfer learning, NIH DailyMed SPL dataset (70/20/10 split), 0.60 confidence thresholding, test benchmark metrics, scan endpoint. | **COMPLETED** |
 | **Phase 4** | OCR Label Extraction & Fusion | EasyOCR 1.7.2, Image Quality Gate, CLAHE enhancement, YYYY-MM expiry normalization, batch/strength regex parsing, fuzzy DB matching, decision fusion, manual edit UI. | **COMPLETED** |
-| **Phase 5** | Environmental Feature Engineering | Deviation metrics, time-to-expiry features, ambient telemetry processing. | Upcoming |
-| **Phase 6** | ML Storage Risk Model | Gradient Boosting / Random Forest classifier with training/val/test splits, ROC-AUC, confusion matrices. | Upcoming |
-| **Phase 7** | Explainable Combined Engine | Merging ML probabilities with deterministic rule validation; explainability factor tree. | Upcoming |
-| **Phase 8** | Interactive Dashboard & Alerts | Real-time telemetry monitoring charts, warning and deviation notifications. | Upcoming |
-| **Phase 9** | Mobile Camera Optimization | In-browser camera UX, file size compression, mobile orientation handling. | Upcoming |
-| **Phase 10** | Testing, Academic Benchmarks & Docs | Comprehensive test coverage, model cards, deployment packaging. | Upcoming |
+| **Phase 5** | Storage-Risk AI/ML Model | GradientBoostingClassifier (6,000 simulation-derived scenarios, 15 kinetic/product features, 99.56% test accuracy, 0.9958 Macro F1), prediction REST APIs, explainability, and interactive UI. | **COMPLETED** |
 
 ---
 
