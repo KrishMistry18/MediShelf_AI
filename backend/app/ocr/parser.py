@@ -57,6 +57,18 @@ STRENGTH_PATTERNS = [
     re.compile(r"\b(\d+(?:\.\d+)?)\s*(mg|mcg|IU|U|g)\b", re.IGNORECASE),
 ]
 
+# Dosage Form patterns (ordered from most specific multi-word to generic single-word)
+DOSAGE_FORM_PATTERNS = [
+    (re.compile(r"\bnasal\s+spray(?:\s+suspension)?\b", re.IGNORECASE), "Nasal Spray Suspension"),
+    (re.compile(r"\binhalation(?:\s+aerosol)?\b|\binhalers?\b|\baerosol\b", re.IGNORECASE), "Inhalation Aerosol"),
+    (re.compile(r"\b(?:subcutaneous\s+)?injection\b|\bvials?\b|\bprefilled\s+pen\b", re.IGNORECASE), "Subcutaneous Injection"),
+    (re.compile(r"\b(?:delayed[- ]release\s+)?capsules?\b|\bcaps?\b", re.IGNORECASE), "Capsule"),
+    (re.compile(r"\b(?:film[- ]coated\s+)?tablets?\b|\btabs?\b|\bcaplets?\b", re.IGNORECASE), "Tablet"),
+    (re.compile(r"\b(?:oral\s+)?suspension\b", re.IGNORECASE), "Oral Suspension"),
+    (re.compile(r"\b(?:oral\s+)?solution\b|\bsyrups?\b|\belixirs?\b", re.IGNORECASE), "Solution"),
+    (re.compile(r"\bcreams?\b|\bointments?\b|\bgels?\b", re.IGNORECASE), "Topical"),
+]
+
 # Manufacturer indicator keywords
 MANUFACTURER_KEYWORDS = [
     "manufactured by", "manufactured for", "mfg by", "mfg for",
@@ -239,6 +251,25 @@ def extract_strength(lines: List[OCRTextLine]) -> Tuple[Optional[str], Optional[
 
 
 # ---------------------------------------------------------------------------
+# Dosage Form Extraction
+# ---------------------------------------------------------------------------
+
+def extract_dosage_form(lines: List[OCRTextLine]) -> Tuple[Optional[str], Optional[str], Optional[float], float]:
+    """
+    Scans OCR lines for pharmaceutical dosage form keywords (e.g. tablet, capsule, suspension).
+    Returns: (normalized_dosage_form, raw_snippet, ocr_engine_conf, parser_conf)
+    """
+    for line in lines:
+        text = line.text
+        for pattern, canonical in DOSAGE_FORM_PATTERNS:
+            m = pattern.search(text)
+            if m:
+                return canonical, m.group(0), line.confidence, 0.90
+
+    return None, None, None, 0.0
+
+
+# ---------------------------------------------------------------------------
 # Manufacturer Extraction
 # ---------------------------------------------------------------------------
 
@@ -408,7 +439,22 @@ def parse_structured_fields(lines: List[OCRTextLine], db: Session) -> Tuple[Stru
         ),
     )
 
-    # 5. Manufacturer
+    # 5. Dosage Form
+    df_val, df_raw, df_ocr_conf, df_parser_conf = extract_dosage_form(lines)
+    dosage_form_field = ExtractedField(
+        field_name="dosage_form",
+        value=df_val,
+        raw_text=df_raw,
+        original_text=df_raw,
+        ocr_engine_confidence=df_ocr_conf,
+        parser_confidence=df_parser_conf if df_val else None,
+        confidence=ConfidenceBreakdown(
+            ocr_engine_confidence=df_ocr_conf,
+            parser_confidence=df_parser_conf if df_val else None,
+        ),
+    )
+
+    # 6. Manufacturer
     man_val, man_raw, man_ocr_conf, man_parser_conf = extract_manufacturer(lines)
     manufacturer_field = ExtractedField(
         field_name="manufacturer",
@@ -423,7 +469,7 @@ def parse_structured_fields(lines: List[OCRTextLine], db: Session) -> Tuple[Stru
         ),
     )
 
-    # 6. Medicine Name & Database Match
+    # 7. Medicine Name & Database Match
     med_val, gen_val, med_ocr_conf, med_parser_conf, db_score, candidates = match_medicine_catalog(lines, db)
     med_name_field = ExtractedField(
         field_name="medicine_name",
@@ -458,6 +504,7 @@ def parse_structured_fields(lines: List[OCRTextLine], db: Session) -> Tuple[Stru
         medicine_name=med_name_field,
         generic_name=generic_name_field,
         strength=strength_field,
+        dosage_form=dosage_form_field,
         batch_number=batch_field,
         expiry_date=expiry_field,
         manufacturing_date=mfg_field,

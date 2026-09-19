@@ -106,12 +106,12 @@ This executes `tsc -b` (strict TypeScript validation) followed by Vite productio
 * **Medicine Matching**: Fuzzy similarity against SQLite catalog with `difflib.SequenceMatcher`, handling uppercase/mixed-case differences and common OCR noise (e.g. `AM0XICILLIN` -> `Amoxicillin`).
 
 ### Multi-Modal Decision Fusion
-* Synthesizes visual predictions with OCR packaging text into 4 statuses:
-  - `CONFIRMED`: High CV confidence corroborating OCR active ingredient/medicine title.
-  - `PARTIAL`: Moderate CV confidence or OCR catalog match with incomplete agreement.
-  - `DIVERGENT`: Conflicting evidence between visual class and extracted packaging text.
+* Synthesizes visual predictions with OCR packaging text into 4 evidence statuses:
+  - `CONFIRMED`: Active ingredient identity agrees + strength agrees when provided on both sides + dosage form agrees when provided on both sides.
+  - `PARTIAL`: Active ingredient identity corroborated, but important product specifications differ (e.g. strength mismatch such as 500mg vs 160mg, or dosage form mismatch such as tablet vs oral suspension) or are incomplete.
+  - `DIVERGENT`: Conflicting evidence between visual class and extracted packaging text (genuinely different active medicines).
   - `UNCONFIRMED`: Neither modality produces sufficient evidence.
-* **Important Terminology**: Fusion reflects evidence consistency across modalities; it does not claim certified medical diagnosis or chemical authenticity.
+* **Important Terminology**: Fusion reflects evidence consistency across modalities; it does not claim certified medical diagnosis, product genuineness, or chemical safety.
 
 ### Known Limitations
 1. **OCR Is Not Guaranteed**: Physical reflections on blister foils, motion blur, and low-contrast typography can cause characters to be misread.

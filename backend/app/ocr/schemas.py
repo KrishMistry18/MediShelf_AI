@@ -57,6 +57,7 @@ class StructuredFields(BaseModel):
     medicine_name: ExtractedField = Field(default_factory=ExtractedField)
     generic_name: ExtractedField = Field(default_factory=ExtractedField)
     strength: ExtractedField = Field(default_factory=ExtractedField)
+    dosage_form: ExtractedField = Field(default_factory=ExtractedField)
     batch_number: ExtractedField = Field(default_factory=ExtractedField)
     expiry_date: ExtractedField = Field(default_factory=ExtractedField)
     manufacturing_date: ExtractedField = Field(default_factory=ExtractedField)
@@ -70,6 +71,7 @@ class FusionAssessment(BaseModel):
     cv_prediction: Optional[str] = Field(None, description="Class predicted by CV classifier")
     ocr_match: Optional[str] = Field(None, description="Best medicine title matched by OCR")
     strength_match: bool = Field(default=False, description="True if extracted strength agrees with catalog record")
+    dosage_form_match: Optional[bool] = Field(default=None, description="True if dosage form agrees with catalog record")
     reasons: List[str] = Field(default_factory=list, description="Human-readable decision justifications")
 
 

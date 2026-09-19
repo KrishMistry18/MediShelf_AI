@@ -125,6 +125,7 @@ export interface StructuredFields {
   medicine_name: ExtractedField;
   generic_name: ExtractedField;
   strength: ExtractedField;
+  dosage_form?: ExtractedField;
   batch_number: ExtractedField;
   expiry_date: ExtractedField;
   manufacturing_date: ExtractedField;
@@ -147,6 +148,7 @@ export interface FusionAssessment {
   cv_prediction?: string | null;
   ocr_match?: string | null;
   strength_match: boolean;
+  dosage_form_match?: boolean | null;
   reasons: string[];
 }
 

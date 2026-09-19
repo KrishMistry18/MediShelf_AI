@@ -9,9 +9,10 @@ from app.main import app
 from app.database.session import SessionLocal
 from app.models.medicine import Medicine
 from app.ocr.extractor import get_ocr_extractor
-from app.ocr.fusion import compute_cv_ocr_fusion
+from app.ocr.fusion import compute_cv_ocr_fusion, normalize_strength, normalize_dosage_form
 from app.ocr.parser import (
     extract_batch_lot,
+    extract_dosage_form,
     extract_expiry_date,
     extract_manufacturing_date,
     extract_strength,
@@ -325,6 +326,257 @@ def test_fusion_unconfirmed_status():
     )
     assert fusion.identification_status == "UNCONFIRMED"
     assert any("Neither computer vision nor OCR" in r for r in fusion.reasons)
+
+
+# ---------------------------------------------------------------------------
+# 6b. Regression Tests: Fusion Semantics, Strength & Dosage Form Normalization
+# ---------------------------------------------------------------------------
+
+def test_strength_normalization_contract():
+    """
+    Ensures equivalent representations normalize identically (500mg vs 500 mg),
+    while distinct strengths (500mg vs 160mg) or formulations (100mg/5mL vs 100mg)
+    are strictly NOT equal.
+    """
+    assert normalize_strength("500 mg") == "500 mg"
+    assert normalize_strength("500mg") == "500 mg"
+    assert normalize_strength("500 MG") == "500 mg"
+    assert normalize_strength("500 mg") == normalize_strength("500mg") == normalize_strength("500 MG")
+
+    # Distinct strengths must never be equal
+    assert normalize_strength("500 mg") != normalize_strength("160 mg")
+    assert normalize_strength("20 mg") != normalize_strength("40 mg")
+
+    # Concentrations must never equal single unit strengths
+    assert normalize_strength("100 mg/5 mL") != normalize_strength("100 mg")
+    assert normalize_strength("160 mg/5 mL") != normalize_strength("160 mg")
+
+    # Combination strengths
+    assert normalize_strength("875 mg / 125 mg") == normalize_strength("875mg/125mg")
+
+
+def test_dosage_form_normalization_contract():
+    """
+    Ensures equivalent dosage forms normalize consistently (tablet/tablets/tab),
+    while mutually incompatible dosage forms (tablet vs suspension/injection) never match.
+    """
+    # Tablet forms
+    assert normalize_dosage_form("tablet") == "tablet"
+    assert normalize_dosage_form("tablets") == "tablet"
+    assert normalize_dosage_form("tab") == "tablet"
+    assert normalize_dosage_form("Film-Coated Tablet") == "tablet"
+
+    # Capsule forms
+    assert normalize_dosage_form("capsule") == "capsule"
+    assert normalize_dosage_form("capsules") == "capsule"
+    assert normalize_dosage_form("cap") == "capsule"
+    assert normalize_dosage_form("Delayed-Release Capsule") == "capsule"
+
+    # Mutual incompatibility
+    assert normalize_dosage_form("tablet") != normalize_dosage_form("oral suspension")
+    assert normalize_dosage_form("tablet") != normalize_dosage_form("injection")
+    assert normalize_dosage_form("tablet") != normalize_dosage_form("vial")
+    assert normalize_dosage_form("capsule") != normalize_dosage_form("oral suspension")
+
+
+def test_dosage_form_extraction_from_ocr_lines():
+    test_cases = [
+        ("Paracetamol 500mg tablets", "Tablet"),
+        ("Each film-coated tablet contains", "Tablet"),
+        ("Omeprazole 20mg delayed-release capsules", "Capsule"),
+        ("Amoxicillin 500mg cap", "Capsule"),
+        ("Acetaminophen 160mg/5mL oral suspension", "Oral Suspension"),
+        ("Humulin R 100 U/mL subcutaneous injection", "Subcutaneous Injection"),
+        ("ProAir HFA inhalation aerosol", "Inhalation Aerosol"),
+        ("Flonase nasal spray suspension", "Nasal Spray Suspension"),
+    ]
+    for text, expected in test_cases:
+        lines = [OCRTextLine(text=text, confidence=0.92)]
+        val, raw, ocr_conf, parser_conf = extract_dosage_form(lines)
+        assert val is not None, f"Failed to extract dosage form from: '{text}'"
+        assert val == expected, f"For '{text}': got '{val}', expected '{expected}'"
+
+
+def test_fusion_case1_exact_agreement():
+    """Case 1 — Exact agreement: CV=Paracetamol 500mg tablet, OCR=Paracetamol 500mg tablet -> CONFIRMED"""
+    db = SessionLocal()
+    try:
+        med = db.query(Medicine).filter(Medicine.image_class == "paracetamol_500mg_tablet").first()
+        assert med is not None
+
+        fields = StructuredFields(
+            medicine_name=ExtractedField(value="Paracetamol"),
+            generic_name=ExtractedField(value="Acetaminophen"),
+            strength=ExtractedField(value="500 mg"),
+            dosage_form=ExtractedField(value="Tablet"),
+        )
+        candidates = [
+            CandidateMatch(
+                medicine_id=med.medicine_id,
+                medicine_name=med.medicine_name,
+                generic_name=med.generic_name,
+                strength=med.strength,
+                dosage_form=med.dosage_form,
+                similarity_score=0.95,
+                matched_token="Paracetamol 500mg Tablet",
+            )
+        ]
+
+        fusion = compute_cv_ocr_fusion(
+            cv_class=med.image_class,
+            cv_confidence=0.82,
+            cv_threshold=0.60,
+            ocr_fields=fields,
+            candidate_matches=candidates,
+            matched_medicine=med,
+        )
+        assert fusion.identification_status == "CONFIRMED"
+        assert fusion.strength_match is True
+        assert fusion.dosage_form_match is True
+        assert fusion.agreement_score >= 0.85
+        assert any("Identification evidence is consistent" in r for r in fusion.reasons)
+    finally:
+        db.close()
+
+
+def test_fusion_case2_strength_mismatch_yields_partial():
+    """Case 2 — Generic agreement but strength mismatch: CV=Paracetamol 500mg tablet, OCR=Acetaminophen 160mg -> PARTIAL"""
+    db = SessionLocal()
+    try:
+        med = db.query(Medicine).filter(Medicine.image_class == "paracetamol_500mg_tablet").first()
+        assert med is not None
+
+        fields = StructuredFields(
+            medicine_name=ExtractedField(value="Acetaminophen"),
+            generic_name=ExtractedField(value="Acetaminophen"),
+            strength=ExtractedField(value="160 mg"),  # Mismatch: 160 mg vs 500 mg
+            dosage_form=ExtractedField(value="Tablet"),
+        )
+        candidates = [
+            CandidateMatch(
+                medicine_id=med.medicine_id,
+                medicine_name=med.medicine_name,
+                generic_name=med.generic_name,
+                strength="160 mg",
+                dosage_form="Tablet",
+                similarity_score=0.88,
+                matched_token="Acetaminophen 160mg",
+            )
+        ]
+
+        fusion = compute_cv_ocr_fusion(
+            cv_class=med.image_class,
+            cv_confidence=0.80,
+            cv_threshold=0.60,
+            ocr_fields=fields,
+            candidate_matches=candidates,
+            matched_medicine=med,
+        )
+        # CRUCIAL: Must NOT be CONFIRMED! Must be PARTIAL due to strength mismatch.
+        assert fusion.identification_status == "PARTIAL"
+        assert fusion.strength_match is False
+        assert any("differs from catalog specification" in r for r in fusion.reasons)
+    finally:
+        db.close()
+
+
+def test_fusion_case3_dosage_form_mismatch_yields_partial():
+    """Case 3 — Generic agreement but dosage-form mismatch: CV=Paracetamol 500mg tablet, OCR=Acetaminophen 500mg oral suspension -> PARTIAL"""
+    db = SessionLocal()
+    try:
+        med = db.query(Medicine).filter(Medicine.image_class == "paracetamol_500mg_tablet").first()
+        assert med is not None
+
+        fields = StructuredFields(
+            medicine_name=ExtractedField(value="Acetaminophen"),
+            generic_name=ExtractedField(value="Acetaminophen"),
+            strength=ExtractedField(value="500 mg"),
+            dosage_form=ExtractedField(value="Oral Suspension"),  # Mismatch: Oral Suspension vs Tablet
+        )
+        candidates = [
+            CandidateMatch(
+                medicine_id=med.medicine_id,
+                medicine_name=med.medicine_name,
+                generic_name=med.generic_name,
+                strength="500 mg",
+                dosage_form="Oral Suspension",
+                similarity_score=0.88,
+                matched_token="Acetaminophen 500mg Oral Suspension",
+            )
+        ]
+
+        fusion = compute_cv_ocr_fusion(
+            cv_class=med.image_class,
+            cv_confidence=0.80,
+            cv_threshold=0.60,
+            ocr_fields=fields,
+            candidate_matches=candidates,
+            matched_medicine=med,
+        )
+        # CRUCIAL: Must NOT be CONFIRMED! Must be PARTIAL due to dosage form mismatch.
+        assert fusion.identification_status == "PARTIAL"
+        assert fusion.dosage_form_match is False
+        assert any("dosage form" in r.lower() and "differs" in r.lower() for r in fusion.reasons)
+    finally:
+        db.close()
+
+
+def test_fusion_case4_divergent_different_medicine():
+    """Case 4 — Different medicine: CV=Paracetamol 500mg tablet, OCR=Ibuprofen 400mg tablet -> DIVERGENT"""
+    db = SessionLocal()
+    try:
+        med_para = db.query(Medicine).filter(Medicine.image_class == "paracetamol_500mg_tablet").first()
+        med_ibup = db.query(Medicine).filter(Medicine.image_class == "ibuprofen_400mg_tablet").first()
+        assert med_para is not None and med_ibup is not None
+
+        fields = StructuredFields(
+            medicine_name=ExtractedField(value=med_ibup.medicine_name),
+            generic_name=ExtractedField(value=med_ibup.generic_name),
+            strength=ExtractedField(value=med_ibup.strength),
+            dosage_form=ExtractedField(value=med_ibup.dosage_form),
+        )
+        candidates = [
+            CandidateMatch(
+                medicine_id=med_ibup.medicine_id,
+                medicine_name=med_ibup.medicine_name,
+                generic_name=med_ibup.generic_name,
+                strength=med_ibup.strength,
+                dosage_form=med_ibup.dosage_form,
+                similarity_score=0.94,
+                matched_token="Ibuprofen 400mg Tablets",
+            )
+        ]
+
+        fusion = compute_cv_ocr_fusion(
+            cv_class=med_para.image_class,
+            cv_confidence=0.78,
+            cv_threshold=0.60,
+            ocr_fields=fields,
+            candidate_matches=candidates,
+            matched_medicine=med_para,
+        )
+        assert fusion.identification_status == "DIVERGENT"
+        assert fusion.ocr_match == med_ibup.medicine_name
+        assert any("disagree" in r.lower() or "divergence" in r.lower() for r in fusion.reasons)
+    finally:
+        db.close()
+
+
+def test_fusion_case5_insufficient_evidence_unconfirmed():
+    """Case 5 — Insufficient evidence: Low CV confidence, no OCR text -> UNCONFIRMED"""
+    fields = StructuredFields()
+    candidates = []
+
+    fusion = compute_cv_ocr_fusion(
+        cv_class="unknown",
+        cv_confidence=0.25,
+        cv_threshold=0.60,
+        ocr_fields=fields,
+        candidate_matches=candidates,
+        matched_medicine=None,
+    )
+    assert fusion.identification_status == "UNCONFIRMED"
+    assert any("inconclusive" in r.lower() or "neither computer vision nor ocr" in r.lower() for r in fusion.reasons)
 
 
 # ---------------------------------------------------------------------------

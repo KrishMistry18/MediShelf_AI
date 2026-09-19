@@ -7,8 +7,8 @@
 
 ## ⚠️ Academic & Healthcare Disclaimer
 
-**MediShelf AI is an academic engineering and research prototype.**
-- Predictions, computer vision detections, OCR extractions, and storage-risk estimations are **AI-assisted estimations** designed for demonstration and study.
+**MediShelf AI is an AI-assisted medicine identification and storage-risk assessment system. It is a software research and academic engineering platform and does not provide clinical certification or guarantee medicine safety.**
+- Predictions, computer vision detections, OCR extractions, and storage-risk estimations are **AI-assisted estimations** designed for demonstration and educational study.
 - This platform does **not** provide clinical validation, chemical degradation guarantees, or certified pharmaceutical testing.
 - Do not rely on this software as a replacement for licensed pharmacists, medical practitioners, official manufacturer packaging inserts, or accredited stability testing laboratories.
 - All identified medicines and storage parameters require human user verification.
@@ -216,10 +216,10 @@ Regex rules extract key regulatory metadata:
 - **Active Ingredient**: Cross-references detected tokens against active database generic names.
 
 ### Multi-Modal Fusion States
-- `CONFIRMED`: Computer vision class and OCR catalog match agree (agreement score ≥ 0.70).
-- `PARTIAL`: One modality identified a confident match while the other detected partial tokens or fell below confidence gate.
-- `DIVERGENT`: Visual prediction and packaging text indicate different medicines (explicit warning displayed).
-- `UNCONFIRMED`: Neither modality produced sufficient confidence; manual catalog verification required.
+- `CONFIRMED`: Active ingredient identity agrees + packaging strength agrees (when provided) + dosage form agrees (when provided).
+- `PARTIAL`: Active ingredient identity corroborated, but important product specifications differ (e.g. strength mismatch such as 500mg vs 160mg, or dosage form mismatch such as tablet vs oral suspension) or are incomplete (e.g. missing strength on label).
+- `DIVERGENT`: Visual prediction and packaging text identify genuinely different active medicines (divergence alert generated).
+- `UNCONFIRMED`: Insufficient evidence from both modalities to confirm identity; manual catalog verification required.
 
 ---
 
@@ -293,18 +293,18 @@ npm run dev
 
 ## 🧪 Testing & Verification
 
-The test suite covers 62 comprehensive unit and integration tests across health, database, CV classifier, OCR pipeline, decision fusion, and ML storage-risk estimation:
+The test suite covers 70 comprehensive unit and integration tests across health, database, CV classifier, OCR pipeline, decision fusion, and ML storage-risk estimation:
 
 ```powershell
 $env:PYTHONPATH = "backend;ml;."
 python -m pytest tests/ -v
 ```
 
-### Test Coverage Summary (62 Tests)
+### Test Coverage Summary (70 Tests)
 - `tests/backend/test_health.py` (3 tests): Health endpoint status, DB connectivity query, and schema validation.
 - `tests/backend/test_medicines.py` (12 tests): Pagination, search filtering, category aggregation, monograph lookups, 404 responses.
 - `tests/backend/test_cv_recognition.py` (14 tests): Image validation, RGBA-to-RGB conversion, minimum resolution rejection, MobileNetV3 inference, ranked predictions, threshold gating, metrics file integrity.
-- `tests/backend/test_ocr_pipeline.py` (18 tests): Expiry date formats (YYYY-MM normalization, no day hallucination), batch/lot extraction, catalog matching, fusion agreement (`CONFIRMED`, `PARTIAL`, `DIVERGENT`, `UNCONFIRMED`), image quality assessment, and composite `/api/scan` payloads.
+- `tests/backend/test_ocr_pipeline.py` (26 tests): Expiry date formats (YYYY-MM normalization), manufacturing dates, batch/lot extraction, strength patterns, catalog matching, image quality metrics, fusion semantics (`CONFIRMED`, `PARTIAL`, `DIVERGENT`, `UNCONFIRMED`), strength normalization contract (`500 mg` == `500mg` != `160 mg`), dosage form normalization contract (`tablet` == `tab` != `suspension`), and composite scan payloads.
 - `tests/backend/test_storage_risk_api.py` (9 tests): Metadata endpoint, in-range ambient predictions (`LOW`), cold-chain insulin breach (`HIGH`), tablet heatwave excursion (`HIGH`), missing humidity handling, expiry date parsing, expired product handling, 404/422 validation, route aliases.
 - `tests/backend/test_storage_risk_ml.py` (6 tests): Dataset reproducibility, column schema preservation, scientific disclaimer in metadata, model artifact loading, probability calibration (sums to 1.0), cold-chain freeze/heat detection, feature importance rankings.
 
