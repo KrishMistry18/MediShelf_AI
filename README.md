@@ -1,44 +1,72 @@
 # MediShelf AI — Intelligent Medicine Storage & Safety Assessment
 
-> **A software-only AI/ML healthcare engineering and research platform.**
-> Combines transfer-learning computer vision, OCR label extraction, and machine learning risk estimation to assess pharmaceutical storage safety without mandatory physical hardware.
+> **An academic research demonstration and software-only engineering platform.**
+> Integrates transfer-learning computer vision, deep OCR text parsing, and authoritative pharmaceutical storage monographs to assist medicine identification and monitor storage compliance without physical IoT hardware.
 
 ---
 
-## ⚠️ Academic Healthcare Disclaimer
+## ⚠️ Academic & Healthcare Disclaimer
 
-**MediShelf AI is an academic research demonstration and engineering project.**
-* Machine-learning predictions and computer-vision outputs are supplementary estimations.
-* The system does **not** provide certified clinical diagnoses, chemical degradation guarantees, or formal pharmaceutical compliance certifications.
-* Do not rely on this software as a replacement for licensed medical practitioners, manufacturer guidelines, or accredited pharmaceutical testing laboratories.
+**MediShelf AI is an academic engineering and research prototype.**
+- Predictions, computer vision detections, and OCR extractions are **AI-assisted estimations** designed for demonstration and study.
+- This platform does **not** provide clinical validation, chemical degradation guarantees, or certified pharmaceutical testing.
+- Do not rely on this software as a replacement for licensed pharmacists, medical practitioners, official manufacturer packaging inserts, or accredited stability testing laboratories.
+- All identified medicines and storage parameters require human user verification.
 
 ---
 
-## 🌟 Core System Architecture & User Flow
+## 🔬 Problem Statement
 
-The application enforces a strict separation between **AI/ML predictions**, **deterministic rules**, and **curated pharmaceutical metadata**:
+Improper storage of pharmaceutical products—particularly exposure to adverse temperatures and humidity—causes chemical degradation, loss of therapeutic potency, and the formation of toxic degradation byproducts. Sensitive pharmaceuticals such as biologics, insulins, antibiotics, and cardiovascular tablets require strict adherence to standard storage boundaries (e.g. USP Controlled Room Temperature: 15°C–25°C; Cold Chain: 2°C–8°C).
 
+**MediShelf AI** addresses this challenge through a **software-only pipeline** that combines:
+1. **Computer vision** to recognize medicine packaging trade dress.
+2. **Optical Character Recognition (OCR)** to parse printed text (expiration dates, batch/lot numbers, dosage strengths).
+3. **Curated pharmaceutical database monographs** sourced from official NIH DailyMed and USP records.
+4. **Deterministic boundary validation** to verify compliance against safe temperature and shelf-life thresholds.
+
+---
+
+## 🏛️ System Architecture & Multi-Modal Separation
+
+The system maintains strict architectural separation between **statistical AI/ML predictions**, **database monograph facts**, and **deterministic validation rules**:
+
+```text
+               User Input (Mobile Camera / Desktop File Upload)
+                                      │
+                                      ▼
+                      Pre-OCR Image Quality Gate
+                 (Laplacian Sharpness, Exposure, Resolution)
+                                      │
+                   ┌──────────────────┴──────────────────┐
+                   ▼                                     ▼
+        Computer Vision Model                    Deep OCR Pipeline
+      (MobileNetV3-Small Transfer)             (EasyOCR 1.7.2 CRAFT+CRNN)
+     Visual Trade Dress Prediction             Printed Text & RegEx Parsing
+      [Top-3 Ranked Probabilities]             [Expiry YYYY-MM, Batch, API]
+                   │                                     │
+                   └──────────────────┬──────────────────┘
+                                      │
+                                      ▼
+                        Multi-Modal Decision Fusion
+             (Consensus Scoring: CONFIRMED, PARTIAL, DIVERGENT)
+                                      │
+                                      ▼
+                       Official Monograph Lookup
+                 (FDA DailyMed & USP Database Records)
+              [Safe Temperature Bounds, Humidity, Category]
+                                      │
+                                      ▼
+                      Deterministic Safety Evaluation
+                (Compliance Rules: Temp Excursion, Expired)
+             [Phase 5: Future Machine Learning Risk Engine]
 ```
-User opens MediShelf AI
-        ↓
-Scan medicine package (Mobile Camera API / Desktop Upload)
-        ↓
-Image Preprocessing & Normalization
-        ↓
-Medicine Recognition Model (Transfer Learning: MobileNetV3 / EfficientNet)
-        ↓
-OCR Engine (Label, Strength, Batch & Expiration Extraction)
-        ↓
-Medicine Identity Confirmation & Pharmaceutical Metadata Retrieval
-        ↓
-Environmental Input (Temperature & Relative Humidity)
-        ↓
-AI/ML Storage Risk Engine (Gradient Boosting / Random Forest)
-        ↓
-Deterministic Expiry & Storage Validation Rules
-        ↓
-Combined Assessment & Explainable Risk Factor Report
-```
+
+### Key Engineering Guarantees
+- **No Expiration Day Hallucination**: When packaging specifies only month and year (e.g., `EXP 08/2027`), dates are normalized strictly to `YYYY-MM` without inventing a fictional day.
+- **Explainable Fusion**: Disagreements between visual appearance and printed text are tagged as `DIVERGENT` and presented transparently to the user.
+- **Audit Trails**: Manual inline corrections to extracted fields are flagged with a permanent `User corrected` indicator.
+- **Verified Facts vs AI Predictions**: Monograph storage tolerances are loaded from verified database records and never generated by an AI language model or heuristic estimator.
 
 ---
 
@@ -48,121 +76,178 @@ Combined Assessment & Explainable Risk Factor Report
 | :--- | :--- |
 | **Frontend** | React 19, TypeScript, Vite 8, Tailwind CSS v4, Recharts, Lucide React |
 | **Backend** | Python 3.14, FastAPI, SQLAlchemy 2.0, Pydantic v2, Uvicorn |
-| **AI / ML** | PyTorch, torchvision, scikit-learn, OpenCV, NumPy, Pandas |
-| **Database** | SQLite (development) / PostgreSQL (production-ready via SQLAlchemy) |
-| **Inference Hardware** | Software-only (desktop & mobile browser camera via HTML5 Media APIs) |
+| **Computer Vision** | PyTorch, torchvision (MobileNetV3-Small), OpenCV, PIL |
+| **OCR Engine** | EasyOCR 1.7.2 (CRAFT text detection + CRNN recognition), CLAHE contrast enhancement |
+| **Database** | SQLite (development) / PostgreSQL-ready via SQLAlchemy ORM |
+| **Testing** | pytest, pytest-cov, httpx, oxlint, TypeScript compiler (`tsc -b`) |
+| **Hardware** | None required (operates on standard browser camera APIs and image files) |
 
 ---
 
-## 📂 Repository Structure
+## 📅 Development Phases Status
 
-```text
-MediShelf_AI/
-├── backend/
-│   ├── app/
-│   │   ├── api/             # REST endpoints (health, v1 routers)
-│   │   ├── config.py        # Environment & pydantic-settings
-│   │   ├── database/        # SQLAlchemy engine, session & declarative base
-│   │   ├── models/          # ORM data models (Phase 2)
-│   │   ├── ocr/             # OCR pipeline & text parsers (Phase 4)
-│   │   ├── risk_engine/     # ML feature preprocessing & inference (Phase 6)
-│   │   ├── schemas/         # Pydantic request/response schemas
-│   │   ├── services/        # Business logic & repository layer
-│   │   └── main.py          # FastAPI application entrypoint
-│   ├── requirements.txt
-│   └── .env.example
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # UI components (Header, Sidebar, AppLayout)
-│   │   ├── pages/           # Views: Overview, Monitoring, Medicines, Scan, Alerts, Models
-│   │   ├── services/        # API client & backend health check
-│   │   ├── types/           # TypeScript data contracts
-│   │   ├── App.tsx          # Main view controller & live polling
-│   │   └── index.css        # Tailwind v4 theme & base typography
-│   ├── package.json
-│   ├── vite.config.ts
-│   └── tsconfig.json
-│
-├── ml/
-│   ├── datasets/            # Training/Val/Test splits (Phase 3 & 6)
-│   ├── preprocessing/       # Computer vision & tabular feature transformations
-│   ├── training/            # Model training routines (isolated from runtime)
-│   ├── evaluation/          # Confusion matrices, ROC-AUC, F1 metrics
-│   ├── inference/           # Production model wrappers
-│   └── artifacts/           # Serialized models (.pt, .joblib)
-│
-├── data/
-│   ├── medicines/           # Structured metadata & storage range definitions
-│   └── README.md
-│
-├── tests/
-│   ├── backend/             # Pytest test suite (health, API endpoints)
-│   └── frontend/            # Frontend unit/component tests
-│
-├── docs/
-│   ├── ARCHITECTURE.md      # Architectural design specification
-│   └── DEVELOPMENT.md       # Developer setup and roadmap
-└── README.md
-```
+- [x] **Phase 1 — Foundation**: FastAPI clean architecture, SQLAlchemy session management, system health diagnostics, React 19 / TypeScript / Tailwind CSS dashboard shell.
+- [x] **Phase 2 — Medicine Dataset & Database Integration**: 25 curated pharmaceutical classes with official FDA DailyMed & USP monographs, SQLite database schema, idempotent database seeder, REST API query layer (`/api/medicines`), and interactive catalog with monograph modal.
+- [x] **Phase 3 — Computer Vision Recognition**: Transfer learning (MobileNetV3-Small) trained on 10 core packaging classes from NIH DailyMed SPL archive, stratified 70/20/10 dataset split, confidence threshold gate (0.60 default), and `POST /api/scan` endpoint.
+- [x] **Phase 4 — OCR Label Extraction & Structured Pipeline**: Genuine EasyOCR 1.7.2 CRAFT + CRNN integration, pre-OCR image quality gate (blur score, exposure, minimum resolution), regex field parser (strictly YYYY-MM expiry, lot/batch, dosage strength), multi-modal decision fusion (`CONFIRMED`, `PARTIAL`, `DIVERGENT`, `UNCONFIRMED`), and inline field correction with `User corrected` status.
+- [ ] **Phase 5 — Storage-Risk AI/ML Model (Upcoming)**: *Not implemented yet.* Will introduce synthetic degradation datasets, environmental feature engineering (temperature excursion delta, humidity exposure duration, shelf-life degradation), gradient boosting / random forest risk classifier, and risk scoring APIs.
 
 ---
 
-## 🚀 Quick Start Guide
+## 📊 Computer Vision Model & Benchmark
+
+The computer vision subsystem utilizes **MobileNetV3-Small** fine-tuned on packaging images from the National Library of Medicine DailyMed Structured Product Labeling (SPL) repository.
+
+### Dataset Partitions
+- **Total Images**: 100 authentic pharmaceutical packaging images across 10 core classes.
+- **Train Split (70%)**: 70 images (7 per class) with random horizontal flip, affine rotation (±10°), color jitter, and ImageNet normalization.
+- **Validation Split (20%)**: 20 images (2 per class).
+- **Isolated Test Split (10%)**: 10 images (1 per class), unobserved during training and hyperparameter optimization.
+
+### Test Set Empirical Evaluation
+Evaluated strictly against the isolated 10-sample test split (`ml/artifacts/metrics/test_metrics.json`):
+
+| Metric | Score | Note |
+| :--- | :--- | :--- |
+| **Top-1 Accuracy** | **50.0%** | Primary candidate match (5 of 10) |
+| **Top-3 Accuracy** | **80.0%** | True class in top-3 candidates (8 of 10) |
+| **Macro Precision** | **0.4000** | Unweighted mean across 10 classes |
+| **Macro Recall** | **0.5000** | Unweighted class sensitivity |
+| **Macro F1-Score** | **0.4333** | Harmonic mean of macro precision and recall |
+| **Weighted F1-Score**| **0.4333** | Balanced across test samples |
+
+> [!NOTE]
+> **Academic Benchmark Transparency**: The isolated test set contains exactly one image per class. These metrics serve as an initial academic research baseline and demonstrate the critical necessity of combining visual classification with OCR label reading (decision fusion) rather than relying on computer vision alone.
+
+### Class Coverage Scope
+- **10 Trained Packaging Classes**:
+  1. `paracetamol_500mg_tablet` (Precision: 1.00, Recall: 1.00, F1: 1.00)
+  2. `humulin_r_100u_vial` (Precision: 1.00, Recall: 1.00, F1: 1.00)
+  3. `atorvastatin_20mg_tablet` (Precision: 1.00, Recall: 1.00, F1: 1.00)
+  4. `metformin_500mg_tablet` (Precision: 0.50, Recall: 1.00, F1: 0.67)
+  5. `ibuprofen_400mg_tablet` (Precision: 0.50, Recall: 1.00, F1: 0.67)
+  6. `amoxicillin_500mg_capsule` (Misclassified in isolated test split)
+  7. `cetirizine_10mg_tablet` (Misclassified in isolated test split)
+  8. `ciprofloxacin_500mg_tablet` (Misclassified in isolated test split)
+  9. `losartan_50mg_tablet` (Misclassified in isolated test split)
+  10. `omeprazole_20mg_capsule` (Misclassified in isolated test split)
+- **15 Catalog-Only Classes**: Included in the verified monograph database (`data/medicines/medicines.csv`) with fuzzy text search and OCR candidate matching, pending future training expansion.
+
+---
+
+## 🔍 OCR Pipeline & Decision Fusion
+
+### Pre-OCR Image Quality Gate
+Before OCR text recognition runs, images are evaluated to prevent garbage-in garbage-out failures:
+- **Sharpness**: Laplacian variance score (threshold: ≥ 100.0 for optimal recognition).
+- **Brightness**: Mean pixel luminance (acceptable: 40 to 220).
+- **Resolution**: Minimum 64 × 64 pixels required.
+- Images with low contrast automatically pass through **Contrast Limited Adaptive Histogram Equalization (CLAHE)**.
+
+### Structured Field Parser
+Regex rules extract key regulatory metadata:
+- **Expiration Date**: Recognizes formats such as `EXP 08/2027`, `EXP: 08-2027`, `EXP 15/08/2027`. Formats lacking a day are strictly normalized to `YYYY-MM`.
+- **Batch / Lot Number**: Matches tokens following `LOT`, `BATCH`, `B/N`, or `BN:`.
+- **Dosage Strength**: Identifies strength quantities (e.g., `500mg`, `20 mg`, `100U/mL`).
+- **Active Ingredient**: Cross-references detected tokens against active database generic names.
+
+### Multi-Modal Fusion States
+- `CONFIRMED`: Computer vision class and OCR catalog match agree (agreement score ≥ 0.70).
+- `PARTIAL`: One modality identified a confident match while the other detected partial tokens or fell below confidence gate.
+- `DIVERGENT`: Visual prediction and packaging text indicate different medicines (explicit warning displayed).
+- `UNCONFIRMED`: Neither modality produced sufficient confidence; manual catalog verification required.
+
+---
+
+## 🌐 API Reference
+
+All endpoints are available under both `/api` and `/api/v1` prefixes.
+
+### Health
+- `GET /api/health`: Operational status, database connectivity (`connected` / `disconnected`), version, and academic disclaimer.
+
+### Medicines Catalog
+- `GET /api/medicines`: Paginated list with `page`, `page_size`, `category`, and `search` query parameters.
+- `GET /api/medicines/search?q={query}&limit=10`: Fast substring and token autocomplete matching name, generic API, brand, and SKU.
+- `GET /api/medicines/categories`: List of distinct therapeutic categories with SKU counts.
+- `GET /api/medicines/{medicine_id}`: Detailed pharmaceutical monograph by SKU (`MED-001`) or primary key.
+
+### Multi-Modal Scan & OCR
+- `POST /api/scan`: Accepts multipart image file (`image/jpeg`, `image/png`, `image/webp`, max 15MB) and optional `threshold` query parameter. Returns composite payload with CV predictions, EasyOCR parsed fields, quality metrics, decision fusion assessment, and verified monograph storage specifications.
+- `POST /api/ocr`: Standalone OCR endpoint returning extracted text lines, quality assessment, and structured fields.
+
+Interactive OpenAPI documentation is accessible at `http://127.0.0.1:8000/docs`.
+
+---
+
+## 💻 Local Setup & Execution
 
 ### Prerequisites
-- **Node.js**: v18+ (tested on Node v24)
-- **Python**: 3.10+ (tested on Python 3.14)
+- **Python**: 3.10 to 3.14 (Verified on Python 3.14)
+- **Node.js**: 18+ (Verified on Node.js 24)
+- **Git**: Installed and configured
 
-### 1. Backend Setup & Run
+### 1. Backend Setup
+```powershell
+# From the repository root
+# Set PYTHONPATH to include backend and ml modules
+$env:PYTHONPATH = "backend;ml;."
 
-```bash
-# From workspace root
-# Install dependencies
-python -m pip install -r backend/requirements.txt
+# Install Python dependencies
+pip install -r backend/requirements.txt
 
-# Run automated tests
-$env:PYTHONPATH = ".;backend"
+# Run backend test suite (47 tests)
 python -m pytest tests/backend/ -v
 
-# Start FastAPI server (runs on http://127.0.0.1:8000)
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
-
-# Run evaluation on isolated test split
-python ml/evaluation/evaluate_classifier.py
+# Start FastAPI development server (runs on http://127.0.0.1:8000)
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-* Swagger API documentation: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-* Health endpoint: [http://127.0.0.1:8000/api/health](http://127.0.0.1:8000/api/health)
-* Scan endpoint: `POST /api/scan` (accepts multipart image file)
-
-### 2. Frontend Setup & Run
-
-```bash
-# In another terminal
+### 2. Frontend Setup
+```powershell
+# In a second terminal window
 cd frontend
 
-# Install packages
+# Install npm dependencies
 npm install
 
-# Start Vite development server (runs on http://localhost:5173)
-npm run dev
+# Run linter
+npm run lint
 
 # Build production bundle
 npm run build
+
+# Start Vite dev server (runs on http://localhost:5173, proxies /api to port 8000)
+npm run dev
 ```
 
 ---
 
-## 📅 Development Roadmap
+## 🧪 Testing & Verification
 
-- [x] **Phase 1: Project Foundation** — Clean architecture, FastAPI health check, SQLite/SQLAlchemy layer, React/TypeScript/Tailwind dashboard shell, verified live with browser subagent.
-- [x] **Phase 2: Medicine Dataset & Database Integration** — 25 curated medicine classes with official FDA DailyMed / USP monographs, dataset validation script, SQLAlchemy Medicine model, idempotent seed script, REST APIs, and interactive frontend table with detailed provenance modal.
-- [x] **Phase 3: Medicine Image Preprocessing & CV Recognition Pipeline** — Transfer learning (MobileNetV3-Small) trained on authentic NIH DailyMed SPL packaging archive (10 core classes, 70/20/10 train/val/test split), isolated test benchmark evaluation (50.0% Top-1, 80.0% Top-3, 0.4333 Macro F1), confidence thresholding (0.60 gate), `POST /api/scan` endpoint, desktop upload + mobile camera capture, 1-click test packages in UI, and OCR stub interface.
-- [x] **Phase 4: OCR Label Extraction & Structured Medicine Information Pipeline** — Genuine EasyOCR 1.7.2 integration (CRAFT + CRNN), Pre-OCR Image Quality Gate (Laplacian blur, exposure check, minimum 64x64 resolution), CLAHE contrast enhancement, structured parser for expiry dates (strictly normalized to YYYY-MM without day hallucination), batch/lot numbers, dosage strengths, and manufacturers, fuzzy medicine catalog matching, explainable multi-modal decision fusion (`CONFIRMED`, `PARTIAL`, `DIVERGENT`, `UNCONFIRMED`), unified `POST /api/scan` and `POST /api/ocr` endpoints, and inline manual corrections with "User corrected" tags.
-- [ ] **Phase 5: Environmental Storage Feature Processing** — Normalization & stability window calculation.
-- [ ] **Phase 6: AI/ML Storage Risk Prediction Model** — Gradient Boosting / Random Forest multi-class risk classifier.
-- [ ] **Phase 7: Explainable Combined Assessment Engine** — Merging ML risk predictions with deterministic boundary checks.
-- [ ] **Phase 8: Real-Time Dashboard & Alerts** — Live charting and alert dispatches.
-- [ ] **Phase 9: Mobile Camera Field Testing** — Mobile browser `<input capture="environment">` UX optimization.
-- [ ] **Phase 10: Academic Documentation, Evaluation Benchmarks & Packaging**.
+The test suite covers unit and integration tests across health, database, CV classifier, OCR pipeline, and multi-modal fusion:
+
+```powershell
+$env:PYTHONPATH = "backend;ml;."
+python -m pytest tests/backend/ -v
+```
+
+### Test Coverage Summary (47 Tests)
+- `tests/backend/test_health.py`: Health endpoint status, DB connectivity query, and schema validation.
+- `tests/backend/test_medicines.py`: Pagination, search filtering, category aggregation, monograph lookups, 404 responses.
+- `tests/backend/test_cv_recognition.py`: Image validation, RGBA-to-RGB conversion, minimum resolution rejection, MobileNetV3 inference, ranked predictions, threshold gating, metrics file integrity.
+- `tests/backend/test_ocr_pipeline.py`: Expiry date formats (YYYY-MM normalization, no day hallucination), batch/lot extraction, catalog matching, fusion agreement (`CONFIRMED`, `PARTIAL`, `DIVERGENT`, `UNCONFIRMED`), image quality assessment, and composite `/api/scan` payloads.
+
+---
+
+## ⚠️ Known Limitations
+
+1. **CV Dataset Scope**: The visual model is currently trained on 10 packaging classes. 15 medicines in the database rely on fuzzy OCR matching and manual catalog search.
+2. **Evaluation Sample Size**: The isolated test set contains 1 image per class (10 images total). Benchmark numbers indicate small-sample baseline performance.
+3. **OCR Lighting & Glare**: Heavy glare, extreme blur, or low lighting degrade OCR confidence. The Pre-OCR Quality Gate detects these conditions and recommends user adjustment.
+4. **Phase 5 Not Implemented**: Storage-risk machine learning models, synthetic degradation datasets, and probabilistic stability risk scores are **future work** scheduled for Phase 5.
+
+---
+
+## 📄 License & Attribution
+MediShelf AI is developed for academic research and engineering demonstration purposes. Packaging images and monograph metadata are referenced from the National Institutes of Health (NIH) DailyMed public domain database and United States Pharmacopeia (USP) public standards.

@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +13,8 @@ from app.database.base import Base
 from app.models.medicine import Medicine
 from app.database.seed import seed_medicines
 
+logger = logging.getLogger("medishelf.startup")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -24,7 +27,7 @@ async def lifespan(app: FastAPI):
         if db.query(Medicine).count() == 0:
             seed_medicines(db=db)
     except Exception as exc:
-        print(f"Warning: Startup auto-seed skipped or encountered error: {exc}")
+        logger.warning(f"Startup auto-seed skipped or encountered error: {exc}")
     finally:
         db.close()
         
