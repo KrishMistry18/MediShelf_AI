@@ -1,0 +1,37 @@
+{
+  "model_name": "MediShelf AI Storage Risk Classifier",
+  "model_version": "1.0.0",
+  "trained_at": "2026-09-19T13:51:27.743616+00:00",
+  "python_version": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+  "algorithm": "GradientBoostingClassifier",
+  "random_seed": 42,
+  "dataset_samples": 6000,
+  "splits": {
+    "train_samples": 4199,
+    "val_samples": 901,
+    "test_samples": 900
+  },
+  "model_parameters": {
+    "ccp_alpha": 0.0,
+    "criterion": "deprecated",
+    "init": null,
+    "learning_rate": 0.1,
+    "loss": "log_loss",
+    "max_depth": 4,
+    "max_features": null,
+    "max_leaf_nodes": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "n_estimators": 100,
+    "n_iter_no_change": null,
+    "random_state": 42,
+    "subsample": 1.0,
+    "tol": 0.0001,
+    "validation_fraction": 0.1,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "notice": "The Phase 5 training data is simulation-derived from documented medicine storage requirements and is intended to demonstrate an ML-based storage-risk estimation pipeline. It is not a clinically validated dataset and the resulting model must not be interpreted as a clinical prediction model."
+}

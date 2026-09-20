@@ -1,0 +1,74 @@
+{
+  "model_name": "MediShelf MobileNetV3 Classifier",
+  "architecture": "mobilenet_v3_small",
+  "dataset_version": "1.0.0-dailymed-spl",
+  "class_count": 10,
+  "class_names": [
+    "amoxicillin_500mg_capsule",
+    "atorvastatin_20mg_tablet",
+    "cetirizine_10mg_tablet",
+    "ciprofloxacin_500mg_tablet",
+    "humulin_r_100u_vial",
+    "ibuprofen_400mg_tablet",
+    "losartan_50mg_tablet",
+    "metformin_500mg_tablet",
+    "omeprazole_20mg_capsule",
+    "paracetamol_500mg_tablet"
+  ],
+  "image_size": 224,
+  "training_date": "2026-09-19T08:24:42.261760+00:00",
+  "framework_version": "PyTorch 2.12.1+cpu",
+  "hyperparameters": {
+    "epochs": 6,
+    "batch_size": 8,
+    "lr": 0.001,
+    "seed": 42,
+    "optimizer": "AdamW",
+    "scheduler": "CosineAnnealingLR"
+  },
+  "best_val_accuracy": 0.5,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.1936,
+      "train_acc": 0.2571,
+      "val_loss": 2.0728,
+      "val_acc": 0.15
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.7601,
+      "train_acc": 0.4429,
+      "val_loss": 1.9505,
+      "val_acc": 0.3
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.1852,
+      "train_acc": 0.6143,
+      "val_loss": 2.1036,
+      "val_acc": 0.25
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.8772,
+      "train_acc": 0.7429,
+      "val_loss": 1.8932,
+      "val_acc": 0.5
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.7025,
+      "train_acc": 0.7286,
+      "val_loss": 1.6654,
+      "val_acc": 0.5
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.7374,
+      "train_acc": 0.7429,
+      "val_loss": 1.6359,
+      "val_acc": 0.5
+    }
+  ]
+}

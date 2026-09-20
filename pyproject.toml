@@ -1,0 +1,15 @@
+# Python tooling config for the MediShelf AI backend + ML side of this repository.
+# The frontend is configured separately via package.json / vite.config.ts.
+
+[tool.pytest.ini_options]
+# The backend imports `app.*` (rooted at backend/) and `ml.*` (rooted at the repo root),
+# so both directories have to be importable. Declaring them here means `pytest` works
+# from a clean shell without exporting PYTHONPATH first.
+pythonpath = [".", "backend"]
+testpaths = ["tests"]
+filterwarnings = [
+    # Surface an accidental scikit-learn downgrade as a test failure rather than a
+    # scrollback warning: the storage-risk model was fitted with 1.9.0 and unpickling it
+    # under an older release can silently change predictions.
+    "error::sklearn.exceptions.InconsistentVersionWarning",
+]

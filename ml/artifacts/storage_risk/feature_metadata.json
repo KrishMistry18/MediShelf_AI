@@ -1,0 +1,43 @@
+{
+  "features": [
+    "temperature",
+    "humidity",
+    "storage_min_temp",
+    "storage_max_temp",
+    "temp_deviation_below",
+    "temp_deviation_above",
+    "temp_deviation_magnitude",
+    "excursion_duration_hours",
+    "excursion_severity_index",
+    "requires_cold_chain",
+    "is_liquid_or_injection",
+    "has_humidity_requirement",
+    "humidity_deviation",
+    "days_to_expiry",
+    "near_expiry"
+  ],
+  "feature_count": 15,
+  "class_mapping": {
+    "LOW": 0,
+    "MODERATE": 1,
+    "HIGH": 2
+  },
+  "classes": ["LOW", "MODERATE", "HIGH"],
+  "feature_importances": {
+    "excursion_severity_index": 0.8519,
+    "days_to_expiry": 0.0581,
+    "temperature": 0.0457,
+    "near_expiry": 0.0122,
+    "temp_deviation_above": 0.0114,
+    "temp_deviation_magnitude": 0.0107,
+    "storage_min_temp": 0.0039,
+    "requires_cold_chain": 0.0024,
+    "storage_max_temp": 0.0013,
+    "excursion_duration_hours": 0.0011,
+    "temp_deviation_below": 0.0011,
+    "humidity": 0.0002,
+    "is_liquid_or_injection": 0.0,
+    "has_humidity_requirement": 0.0,
+    "humidity_deviation": 0.0
+  }
+}

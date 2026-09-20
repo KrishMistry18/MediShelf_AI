@@ -1,0 +1,61 @@
+{
+  "selected_model": "GradientBoostingClassifier",
+  "validation_comparison": {
+    "LogisticRegression": {
+      "accuracy": 0.919,
+      "macro_precision": 0.9218,
+      "macro_recall": 0.9132,
+      "macro_f1": 0.9171,
+      "weighted_f1": 0.9187
+    },
+    "RandomForestClassifier": {
+      "accuracy": 0.9967,
+      "macro_precision": 0.9971,
+      "macro_recall": 0.9961,
+      "macro_f1": 0.9966,
+      "weighted_f1": 0.9967
+    },
+    "GradientBoostingClassifier": {
+      "accuracy": 0.9978,
+      "macro_precision": 0.9983,
+      "macro_recall": 0.9975,
+      "macro_f1": 0.9979,
+      "weighted_f1": 0.9978
+    }
+  },
+  "test_metrics": {
+    "accuracy": 0.9956,
+    "macro_precision": 0.9962,
+    "macro_recall": 0.9953,
+    "macro_f1": 0.9958,
+    "weighted_f1": 0.9956
+  },
+  "confusion_matrix": {
+    "matrix": [
+      [396, 1, 0],
+      [3, 258, 0],
+      [0, 0, 242]
+    ],
+    "labels": ["LOW", "MODERATE", "HIGH"]
+  },
+  "per_class_metrics": {
+    "LOW": {
+      "precision": 0.9925,
+      "recall": 0.9975,
+      "f1_score": 0.995,
+      "support": 397
+    },
+    "MODERATE": {
+      "precision": 0.9961,
+      "recall": 0.9885,
+      "f1_score": 0.9923,
+      "support": 261
+    },
+    "HIGH": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 242
+    }
+  }
+}
