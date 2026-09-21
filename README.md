@@ -12,19 +12,25 @@ packaging photos, and a gradient-boosting classifier for storage degradation ris
 
 ## Quick start
 
-Two processes: the Python inference API and the web frontend.
+### Option A: Start both API and frontend together (Recommended)
+
+```powershell
+# One-time setup
+pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cpu
+pip install -r backend/requirements.txt
+npm install
+
+# Run backend API + Vite web UI concurrently
+npm start
+```
+
+### Option B: Run in separate terminals
 
 ```powershell
 # --- API (terminal 1) ---
-python -m venv $env:LOCALAPPDATA\medishelf-venv
-& "$env:LOCALAPPDATA\medishelf-venv\Scripts\Activate.ps1"
-pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cpu
-pip install -r backend/requirements.txt
-python -c "import easyocr; easyocr.Reader(['en'], gpu=False, download_enabled=True)"  # OCR weights, ~100 MB
 python tools/serve_api.py
 
 # --- frontend (terminal 2) ---
-npm install
 npm run dev
 ```
 

@@ -7,7 +7,7 @@
       "macro_f1": 0.4333,
       "mean_confidence": 0.721,
       "below_threshold": 3,
-      "mean_latency_ms": 25.24,
+      "mean_latency_ms": 23.73,
       "predicted_distribution": {
         "ciprofloxacin_500mg_tablet": 3,
         "atorvastatin_20mg_tablet": 1,
@@ -24,7 +24,7 @@
       "macro_f1": 0.4919,
       "mean_confidence": 0.6091,
       "below_threshold": 10,
-      "mean_latency_ms": 16.46,
+      "mean_latency_ms": 34.7,
       "predicted_distribution": {
         "losartan_50mg_tablet": 2,
         "ciprofloxacin_500mg_tablet": 3,
@@ -44,7 +44,7 @@
       "macro_f1": 0.6555,
       "mean_confidence": 0.7157,
       "below_threshold": 25,
-      "mean_latency_ms": 15.1,
+      "mean_latency_ms": 26.32,
       "predicted_distribution": {
         "amoxicillin_500mg_capsule": 11,
         "ciprofloxacin_500mg_tablet": 7,
@@ -65,7 +65,7 @@
       "macro_f1": 0.6173,
       "mean_confidence": 0.6949,
       "below_threshold": 38,
-      "mean_latency_ms": 14.89,
+      "mean_latency_ms": 25.98,
       "predicted_distribution": {
         "losartan_50mg_tablet": 13,
         "ciprofloxacin_500mg_tablet": 13,
