@@ -18,11 +18,22 @@ from __future__ import annotations
 
 import argparse
 import os
+import socket
 import sys
+import time
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BACKEND_ROOT = PROJECT_ROOT / "backend"
+
+
+def is_port_in_use(host: str, port: int) -> bool:
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.5)
+            return s.connect_ex((host, port)) == 0
+    except OSError:
+        return False
 
 
 def _configure_import_paths() -> None:
@@ -68,6 +79,15 @@ def main() -> int:
     # The SQLite file and its seed are resolved relative to the working directory, so pin
     # it to the repo root regardless of where the command was invoked from.
     os.chdir(PROJECT_ROOT)
+
+    # If another instance or server is already listening, stay alive gracefully
+    if is_port_in_use(args.host, args.port):
+        print(f"MediShelf AI API is already running at http://{args.host}:{args.port}")
+        try:
+            while True:
+                time.sleep(3600)
+        except KeyboardInterrupt:
+            return 0
 
     print(f"MediShelf AI API -> http://{args.host}:{args.port}  (docs at /docs)")
 
