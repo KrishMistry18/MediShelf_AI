@@ -169,6 +169,51 @@ def test_medicine_catalog_matching_exact_and_fuzzy():
         db.close()
 
 
+def test_medicine_catalog_matching_rejects_bare_dosage_form_tokens():
+    """
+    Regression test: an OCR line containing only generic strength/dosage-form text
+    (no ingredient or brand name) must not be scored as a confident match against a
+    catalog entry purely because that entry's name happens to start with a word
+    that also appears in the line (e.g. "500mg Tablets" vs "Paracetamol 500mg
+    Tablets"). Before the fix, `med_name_upper.split()[0] in token_upper` matched
+    on the shared strength/form text alone and returned a false 0.92 score.
+
+    Regression case: a real-world combination product (Glimepiride + Metformin,
+    labeled "Glimepiride 1 mg & Metformin Hydrochloride (SR) 500 mg Tablets", not
+    in the catalog) previously got OCR-matched to "Paracetamol 500mg Tablets"
+    solely on the shared "500 mg" / "Tablets" text.
+    """
+    db = SessionLocal()
+    try:
+        lines = [OCRTextLine(text="500mg Tablets", confidence=0.9)]
+        name, _, _, _, score, candidates = match_medicine_catalog(lines, db)
+        # No ingredient/brand name present, so nothing should be returned as a
+        # confident match (score below the 0.70 confirmation threshold).
+        assert name is None
+        assert score == 0.0
+        for candidate in candidates:
+            assert candidate.similarity_score < 0.70
+
+        # A genuinely unmatched combination product's full label must not be
+        # forced into an unrelated single-ingredient catalog entry either.
+        lines_unknown = [
+            OCRTextLine(
+                text="Glimepiride 1 mg & Metformin Hydrochloride (SR) 500 mg Tablets",
+                confidence=0.9,
+            )
+        ]
+        name_unknown, _, _, _, score_unknown, candidates_unknown = match_medicine_catalog(
+            lines_unknown, db
+        )
+        paracetamol_hits = [
+            c for c in candidates_unknown if c.medicine_name.upper().startswith("PARACETAMOL")
+        ]
+        for hit in paracetamol_hits:
+            assert hit.similarity_score < 0.70
+    finally:
+        db.close()
+
+
 # ---------------------------------------------------------------------------
 # 5. Image Quality Preprocessing Tests
 # ---------------------------------------------------------------------------

@@ -298,6 +298,35 @@ def extract_manufacturer(lines: List[OCRTextLine]) -> Tuple[Optional[str], Optio
 # Medicine Name & Database Matching
 # ---------------------------------------------------------------------------
 
+# Dosage-form, strength-unit and packaging words that appear on nearly every
+# medicine label. On their own they carry no information about WHICH medicine a
+# package contains, so they must never drive a catalog match.
+_GENERIC_LABEL_WORDS = {
+    "TABLET", "TABLETS", "TAB", "TABS", "CAPSULE", "CAPSULES", "CAP", "CAPS",
+    "INJECTION", "VIAL", "VIALS", "SOLUTION", "SUSPENSION", "SYRUP", "CREAM",
+    "OINTMENT", "GEL", "SPRAY", "AEROSOL", "INHALER", "PEN", "DELAYED",
+    "RELEASE", "EXTENDED", "COATED", "FILM", "ORAL", "NASAL", "SUBCUTANEOUS",
+    "SR", "ER", "XR", "MG", "MCG", "ML", "IU", "RX", "USP", "EACH", "CONTAINS",
+}
+
+
+def _identity_words(text: str) -> set:
+    """
+    Alphabetic words from a label line that could plausibly identify the product —
+    an active ingredient or brand name — with strengths, units and dosage-form
+    boilerplate removed.
+
+    This gate exists because substring containment alone is unsafe. The OCR line
+    "500mg Tablets" is a literal substring of the catalog name
+    "Paracetamol 500mg Tablets", so `token in medicine_name` scored it 0.95 and
+    reported a confident Paracetamol match for a package that never mentioned
+    paracetamol. Requiring at least one identity-bearing word means a match has
+    to rest on the ingredient or brand, not on shared packaging text.
+    """
+    words = re.findall(r"[A-Za-z]{3,}", text.upper())
+    return {w for w in words if w not in _GENERIC_LABEL_WORDS}
+
+
 def match_medicine_catalog(lines: List[OCRTextLine], db: Session) -> Tuple[Optional[str], Optional[str], Optional[float], float, float, List[CandidateMatch]]:
     """
     Scans OCR lines and matches candidate tokens against known medicines in the database.
@@ -321,20 +350,39 @@ def match_medicine_catalog(lines: List[OCRTextLine], db: Session) -> Tuple[Optio
     for ocr_token, line_conf in token_candidates:
         token_upper = ocr_token.upper()
 
+        # A line made up only of strength and dosage-form text ("500mg Tablets",
+        # "10 x 10 Tablets") says nothing about which medicine this is. Scoring it
+        # would match whichever catalog name happens to share that boilerplate.
+        if not _identity_words(ocr_token):
+            continue
+
         for med in medicines:
             score = 0.0
             med_name_upper = med.medicine_name.upper()
             generic_upper = med.generic_name.upper()
             brand_upper = med.brand_name.upper() if med.brand_name else ""
+            first_word = med_name_upper.split()[0]
+
+            # Every high-confidence branch below requires the OCR line and the
+            # catalog entry to share at least one identity-bearing word. Without
+            # that, substring containment alone matches on packaging boilerplate:
+            # "500mg Tablets" is a substring of "Paracetamol 500mg Tablets".
+            token_identity = _identity_words(ocr_token)
+            shares_identity = bool(
+                token_identity
+                & (_identity_words(med.medicine_name) | _identity_words(med.generic_name) | _identity_words(brand_upper))
+            )
 
             # Check exact presence of generic, brand, or catalog medicine name in OCR token
-            if med_name_upper in token_upper or token_upper in med_name_upper:
+            if shares_identity and (med_name_upper in token_upper or token_upper in med_name_upper):
                 score = max(score, 0.95)
-            elif generic_upper in token_upper or token_upper in generic_upper:
+            elif shares_identity and (generic_upper in token_upper or token_upper in generic_upper):
                 score = max(score, 0.92)
             elif brand_upper and any(b.strip() in token_upper for b in brand_upper.split("/")):
                 score = max(score, 0.92)
-            elif med_name_upper.split()[0] in token_upper:  # e.g. "PARACETAMOL" in "PARACETAMOL 500MG"
+            elif first_word not in _GENERIC_LABEL_WORDS and first_word in token_upper:
+                # e.g. "PARACETAMOL" in "PARACETAMOL 500MG" — but never for a bare
+                # dosage-form/strength word shared by unrelated medicines.
                 score = max(score, 0.92)
             else:
                 # Token-level similarity
