@@ -1,0 +1,497 @@
+{
+  "benchmark_timestamp": "2026-03-22T05:35:00Z",
+  "total_test_samples": 24,
+  "metrics": {
+    "top_1_accuracy": 0.875,
+    "top_3_accuracy": 0.875,
+    "known_medicine_accuracy": 1.0,
+    "unseen_medicine_identification": 1.0,
+    "unknown_rejection_rate": 0.8333,
+    "false_identification_rate": 0.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0
+  },
+  "latency_profile_ms": {
+    "average_retrieval_latency_ms": 19.92,
+    "average_total_latency_ms": 23.29
+  },
+  "groups": {
+    "known_cv": {
+      "total": 5,
+      "correct_status": 5,
+      "top_1": 5,
+      "false_ident": 0
+    },
+    "unseen_medicines": {
+      "total": 5,
+      "correct_status": 5,
+      "top_1": 5,
+      "false_ident": 0
+    },
+    "brand_trade_names": {
+      "total": 3,
+      "correct_status": 3,
+      "top_1": 3,
+      "false_ident": 0
+    },
+    "ocr_corruptions": {
+      "total": 3,
+      "correct_status": 3,
+      "top_1": 3,
+      "false_ident": 0
+    },
+    "mismatch_handling": {
+      "total": 2,
+      "correct_status": 2,
+      "top_1": 0,
+      "false_ident": 0
+    },
+    "conflicting_evidence": {
+      "total": 2,
+      "correct_status": 2,
+      "top_1": 2,
+      "false_ident": 0
+    },
+    "unknown_rejection": {
+      "total": 4,
+      "correct_status": 3,
+      "top_1": 3,
+      "false_ident": 0
+    }
+  },
+  "sample_details": [
+    {
+      "id": "known_01",
+      "group": "known_cv",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Paracetamol 500mg Tablets",
+      "top_score": 0.93,
+      "latency": {
+        "ocr_parsing_ms": 5.05,
+        "retrieval_ms": 71.7,
+        "arbitration_ms": 0.5,
+        "total_ms": 77.25
+      }
+    },
+    {
+      "id": "known_02",
+      "group": "known_cv",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Amoxicillin 500mg Capsules",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 3.65,
+        "retrieval_ms": 11.2,
+        "arbitration_ms": 0.11,
+        "total_ms": 14.95
+      }
+    },
+    {
+      "id": "known_03",
+      "group": "known_cv",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Childrens Zyrtec (Cetirizine Hydrochloride)",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 4.13,
+        "retrieval_ms": 7.02,
+        "arbitration_ms": 0.04,
+        "total_ms": 11.19
+      }
+    },
+    {
+      "id": "known_04",
+      "group": "known_cv",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Metformin Hydrochloride (Metformin Hydrochloride)",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 3.36,
+        "retrieval_ms": 10.35,
+        "arbitration_ms": 0.03,
+        "total_ms": 13.74
+      }
+    },
+    {
+      "id": "known_05",
+      "group": "known_cv",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "omeprazole 20 MG Delayed Release Oral Capsule",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 3.53,
+        "retrieval_ms": 7.25,
+        "arbitration_ms": 0.03,
+        "total_ms": 10.81
+      }
+    },
+    {
+      "id": "unseen_01",
+      "group": "unseen_medicines",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Widaplik (Telmisartan, Amlodipine And Indapamide)",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 4.06,
+        "retrieval_ms": 17.05,
+        "arbitration_ms": 0.0,
+        "total_ms": 21.11
+      }
+    },
+    {
+      "id": "unseen_02",
+      "group": "unseen_medicines",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "hydrochlorothiazide 12.5 MG / losartan potassium 50 MG Oral Tablet",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 4.28,
+        "retrieval_ms": 19.5,
+        "arbitration_ms": 0.0,
+        "total_ms": 23.78
+      }
+    },
+    {
+      "id": "unseen_03",
+      "group": "unseen_medicines",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 3.32,
+        "retrieval_ms": 8.22,
+        "arbitration_ms": 0.0,
+        "total_ms": 11.55
+      }
+    },
+    {
+      "id": "unseen_04",
+      "group": "unseen_medicines",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "amoxicillin 500 MG / clavulanate 125 MG Oral Tablet",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 3.14,
+        "retrieval_ms": 19.12,
+        "arbitration_ms": 0.0,
+        "total_ms": 22.26
+      }
+    },
+    {
+      "id": "unseen_05",
+      "group": "unseen_medicines",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Sulfamethoxazole And Trimethoprim (Sulfamethoxazole And Trimethoprim)",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 3.39,
+        "retrieval_ms": 4.48,
+        "arbitration_ms": 0.0,
+        "total_ms": 7.87
+      }
+    },
+    {
+      "id": "brand_01",
+      "group": "brand_trade_names",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Widaplik (Telmisartan, Amlodipine And Indapamide)",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 3.0,
+        "retrieval_ms": 16.18,
+        "arbitration_ms": 0.0,
+        "total_ms": 19.19
+      }
+    },
+    {
+      "id": "brand_02",
+      "group": "brand_trade_names",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Widaplik (Telmisartan, Amlodipine And Indapamide)",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 4.59,
+        "retrieval_ms": 15.78,
+        "arbitration_ms": 0.0,
+        "total_ms": 20.38
+      }
+    },
+    {
+      "id": "brand_03",
+      "group": "brand_trade_names",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Amoxicillin And Clavulanate Potassium (Amoxicillin And Clavulanate Potassium)",
+      "top_score": 0.9167,
+      "latency": {
+        "ocr_parsing_ms": 4.04,
+        "retrieval_ms": 11.2,
+        "arbitration_ms": 0.0,
+        "total_ms": 15.24
+      }
+    },
+    {
+      "id": "ocr_corrupt_01",
+      "group": "ocr_corruptions",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Amoxicillin 500mg Capsules",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 3.32,
+        "retrieval_ms": 13.3,
+        "arbitration_ms": 0.04,
+        "total_ms": 16.66
+      }
+    },
+    {
+      "id": "ocr_corrupt_02",
+      "group": "ocr_corruptions",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Paracetamol 500mg Tablets",
+      "top_score": 0.93,
+      "latency": {
+        "ocr_parsing_ms": 2.47,
+        "retrieval_ms": 63.86,
+        "arbitration_ms": 0.03,
+        "total_ms": 66.36
+      }
+    },
+    {
+      "id": "ocr_corrupt_03",
+      "group": "ocr_corruptions",
+      "expected_status": "IDENTIFIED",
+      "actual_status": "IDENTIFIED",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Childrens Zyrtec (Cetirizine Hydrochloride)",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 1.81,
+        "retrieval_ms": 6.06,
+        "arbitration_ms": 0.03,
+        "total_ms": 7.9
+      }
+    },
+    {
+      "id": "strength_mismatch_01",
+      "group": "mismatch_handling",
+      "expected_status": "PARTIAL_MATCH",
+      "actual_status": "PARTIAL_MATCH",
+      "status_correct": true,
+      "top_1_match": false,
+      "top_3_match": false,
+      "is_false_identification": false,
+      "top_candidate": "acetaminophen 650 MG Oral Tablet",
+      "top_score": 0.93,
+      "latency": {
+        "ocr_parsing_ms": 2.25,
+        "retrieval_ms": 65.99,
+        "arbitration_ms": 0.04,
+        "total_ms": 68.29
+      }
+    },
+    {
+      "id": "dosage_mismatch_01",
+      "group": "mismatch_handling",
+      "expected_status": "PARTIAL_MATCH",
+      "actual_status": "PARTIAL_MATCH",
+      "status_correct": true,
+      "top_1_match": false,
+      "top_3_match": false,
+      "is_false_identification": false,
+      "top_candidate": "acetaminophen 100 MG/ML Oral Suspension",
+      "top_score": 0.73,
+      "latency": {
+        "ocr_parsing_ms": 3.53,
+        "retrieval_ms": 75.12,
+        "arbitration_ms": 0.1,
+        "total_ms": 78.76
+      }
+    },
+    {
+      "id": "conflict_01",
+      "group": "conflicting_evidence",
+      "expected_status": "CONFLICTING_EVIDENCE",
+      "actual_status": "CONFLICTING_EVIDENCE",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Widaplik (Telmisartan, Amlodipine And Indapamide)",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 3.97,
+        "retrieval_ms": 15.79,
+        "arbitration_ms": 0.01,
+        "total_ms": 19.77
+      }
+    },
+    {
+      "id": "conflict_02",
+      "group": "conflicting_evidence",
+      "expected_status": "CONFLICTING_EVIDENCE",
+      "actual_status": "CONFLICTING_EVIDENCE",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": "Metformin Hydrochloride (Metformin Hydrochloride)",
+      "top_score": 0.99,
+      "latency": {
+        "ocr_parsing_ms": 2.38,
+        "retrieval_ms": 13.58,
+        "arbitration_ms": 0.01,
+        "total_ms": 15.97
+      }
+    },
+    {
+      "id": "unknown_01",
+      "group": "unknown_rejection",
+      "expected_status": "UNKNOWN",
+      "actual_status": "PARTIAL_MATCH",
+      "status_correct": false,
+      "top_1_match": false,
+      "top_3_match": false,
+      "is_false_identification": false,
+      "top_candidate": "insulin, regular, human 500 UNT/ML Injectable Solution",
+      "top_score": 0.6,
+      "latency": {
+        "ocr_parsing_ms": 3.33,
+        "retrieval_ms": 2.45,
+        "arbitration_ms": 0.0,
+        "total_ms": 5.78
+      }
+    },
+    {
+      "id": "unknown_02",
+      "group": "unknown_rejection",
+      "expected_status": "UNKNOWN",
+      "actual_status": "UNKNOWN",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": null,
+      "top_score": 0.0,
+      "latency": {
+        "ocr_parsing_ms": 3.78,
+        "retrieval_ms": 1.29,
+        "arbitration_ms": 0.01,
+        "total_ms": 5.07
+      }
+    },
+    {
+      "id": "unknown_03",
+      "group": "unknown_rejection",
+      "expected_status": "UNKNOWN",
+      "actual_status": "UNKNOWN",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": null,
+      "top_score": 0.0,
+      "latency": {
+        "ocr_parsing_ms": 3.34,
+        "retrieval_ms": 1.35,
+        "arbitration_ms": 0.01,
+        "total_ms": 4.69
+      }
+    },
+    {
+      "id": "unknown_04",
+      "group": "unknown_rejection",
+      "expected_status": "UNKNOWN",
+      "actual_status": "UNKNOWN",
+      "status_correct": true,
+      "top_1_match": true,
+      "top_3_match": true,
+      "is_false_identification": false,
+      "top_candidate": null,
+      "top_score": 0.0,
+      "latency": {
+        "ocr_parsing_ms": 0.01,
+        "retrieval_ms": 0.3,
+        "arbitration_ms": 0.0,
+        "total_ms": 0.31
+      }
+    }
+  ]
+}

@@ -178,7 +178,9 @@ function MedicinesPage() {
               >
                 {items.map((medicine) => {
                   const coldChain = medicine.storage_max_temperature <= 8;
-                  const scannable = recognisableClasses.has(medicine.image_class);
+                  const scannable = Boolean(
+                    medicine.image_class && recognisableClasses.has(medicine.image_class),
+                  );
                   return (
                     <tr
                       key={medicine.medicine_id}
@@ -270,7 +272,9 @@ function MedicinesPage() {
       {selected && (
         <MedicineDialog
           medicine={selected}
-          scannable={recognisableClasses.has(selected.image_class)}
+          scannable={Boolean(
+            selected.image_class && recognisableClasses.has(selected.image_class),
+          )}
           onClose={() => setSelected(null)}
           onAssess={(id) => navigate({ to: "/assessment", search: { medicine: id } })}
         />

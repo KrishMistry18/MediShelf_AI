@@ -327,32 +327,114 @@ def _identity_words(text: str) -> set:
     return {w for w in words if w not in _GENERIC_LABEL_WORDS}
 
 
-def match_medicine_catalog(lines: List[OCRTextLine], db: Session) -> Tuple[Optional[str], Optional[str], Optional[float], float, float, List[CandidateMatch]]:
+# Active ingredients vocabulary for open-world multi-ingredient parsing
+KNOWN_ACTIVE_INGREDIENTS = [
+    "amlodipine", "telmisartan", "amoxicillin", "clavulanate", "clavulanic acid",
+    "metformin", "sitagliptin", "glipizide", "atorvastatin", "simvastatin",
+    "rosuvastatin", "omeprazole", "pantoprazole", "azithromycin", "ciprofloxacin",
+    "doxycycline", "ibuprofen", "acetaminophen", "paracetamol", "cetirizine",
+    "losartan", "hydrochlorothiazide", "levothyroxine", "insulin", "albuterol",
+    "salbutamol", "fluticasone", "salmeterol", "budesonide", "formoterol",
+    "sertraline", "montelukast", "clopidogrel", "gabapentin", "prednisone",
+    "lisinopril", "sulfamethoxazole", "trimethoprim", "apixaban", "rivaroxaban",
+    "furosemide", "spironolactone", "carvedilol", "metoprolol", "tramadol",
+    "aspirin", "dipyridamole", "indapamide", "ezetimibe", "escitalopram", "duloxetine",
+]
+
+
+def extract_active_ingredients(lines: List[OCRTextLine]) -> List[str]:
     """
-    Scans OCR lines and matches candidate tokens against known medicines in the database.
-    Uses exact substring, case-insensitive, and SequenceMatcher token similarity.
+    Extracts active ingredients from OCR lines, handling OCR corruptions
+    such as AM0XICILLIN or TELM1SARTAN.
+    """
+    from app.ocr.retrieval import KnowledgeBaseRetriever
+    detected = set()
+
+    for line in lines:
+        text = line.text.strip()
+        words = re.findall(r"[A-Za-z0-9-]{3,}", text)
+        for w in words:
+            # Generate OCR variants for each word
+            variants = KnowledgeBaseRetriever.generate_ocr_variants(w)
+            for var in variants:
+                var_lower = var.lower()
+                for ing in KNOWN_ACTIVE_INGREDIENTS:
+                    if ing in var_lower or var_lower in ing:
+                        detected.add(ing)
+                    elif len(var_lower) >= 5:
+                        sim = difflib.SequenceMatcher(None, var_lower, ing).ratio()
+                        if sim >= 0.82:
+                            detected.add(ing)
+
+    return sorted(list(detected))
+
+
+def match_medicine_catalog(
+    lines: List[OCRTextLine],
+    db: Session,
+    extracted_strength: Optional[str] = None,
+    extracted_dosage_form: Optional[str] = None,
+    extracted_manufacturer: Optional[str] = None,
+) -> Tuple[Optional[str], Optional[str], Optional[float], float, float, List[CandidateMatch]]:
+    """
+    Scans OCR lines and matches candidate tokens against both the local database
+    and the comprehensive master knowledge base (RxNorm + DailyMed + openFDA).
     Returns: (medicine_name, generic_name, ocr_engine_conf, parser_conf, db_match_conf, candidate_matches)
     """
-    medicines = db.query(Medicine).all()
-    if not medicines:
-        return None, None, None, 0.0, 0.0, []
+    from app.ocr.retrieval import get_retriever
 
     candidates: List[CandidateMatch] = []
     seen_ids = set()
 
     # Pre-clean line texts
     token_candidates = []
+    tokens_for_retrieval = []
     for line in lines:
         clean = line.text.strip()
         if len(clean) >= 3:
             token_candidates.append((clean, line.confidence))
+            if _identity_words(clean):
+                tokens_for_retrieval.append(clean)
 
+    # 1. Extract active ingredients (multi-ingredient aware)
+    extracted_ings = extract_active_ingredients(lines)
+
+    # 2. Query KnowledgeBaseRetriever (FTS5 + Ingredient Index)
+    retriever = get_retriever()
+    kb_candidates = retriever.retrieve_candidates(
+        extracted_tokens=tokens_for_retrieval,
+        extracted_ingredients=extracted_ings,
+        extracted_strength=extracted_strength,
+        extracted_dosage_form=extracted_dosage_form,
+        extracted_manufacturer=extracted_manufacturer,
+        limit=10,
+    )
+
+    for kc in kb_candidates:
+        med_id = kc["medicine_id"]
+        if med_id not in seen_ids:
+            seen_ids.add(med_id)
+            candidates.append(
+                CandidateMatch(
+                    medicine_id=med_id,
+                    medicine_name=kc["medicine_name"],
+                    generic_name=kc["generic_name"],
+                    brand_name=kc.get("brand_name"),
+                    strength=kc.get("strength", "Standard"),
+                    dosage_form=kc.get("dosage_form", "Tablet"),
+                    similarity_score=kc.get("retrieval_score", 0.70),
+                    matched_token=kc.get("matched_token", tokens_for_retrieval[0] if tokens_for_retrieval else ""),
+                    active_ingredients=kc.get("active_ingredients", []),
+                    source_name=kc.get("source_name"),
+                    source_url=kc.get("source_url"),
+                    retrieval_score=kc.get("retrieval_score"),
+                )
+            )
+
+    # 3. Corroborate against local SQL database (Curated medicines)
+    medicines = db.query(Medicine).all()
     for ocr_token, line_conf in token_candidates:
         token_upper = ocr_token.upper()
-
-        # A line made up only of strength and dosage-form text ("500mg Tablets",
-        # "10 x 10 Tablets") says nothing about which medicine this is. Scoring it
-        # would match whichever catalog name happens to share that boilerplate.
         if not _identity_words(ocr_token):
             continue
 
@@ -363,17 +445,12 @@ def match_medicine_catalog(lines: List[OCRTextLine], db: Session) -> Tuple[Optio
             brand_upper = med.brand_name.upper() if med.brand_name else ""
             first_word = med_name_upper.split()[0]
 
-            # Every high-confidence branch below requires the OCR line and the
-            # catalog entry to share at least one identity-bearing word. Without
-            # that, substring containment alone matches on packaging boilerplate:
-            # "500mg Tablets" is a substring of "Paracetamol 500mg Tablets".
             token_identity = _identity_words(ocr_token)
             shares_identity = bool(
                 token_identity
                 & (_identity_words(med.medicine_name) | _identity_words(med.generic_name) | _identity_words(brand_upper))
             )
 
-            # Check exact presence of generic, brand, or catalog medicine name in OCR token
             if shares_identity and (med_name_upper in token_upper or token_upper in med_name_upper):
                 score = max(score, 0.95)
             elif shares_identity and (generic_upper in token_upper or token_upper in generic_upper):
@@ -381,17 +458,21 @@ def match_medicine_catalog(lines: List[OCRTextLine], db: Session) -> Tuple[Optio
             elif brand_upper and any(b.strip() in token_upper for b in brand_upper.split("/")):
                 score = max(score, 0.92)
             elif first_word not in _GENERIC_LABEL_WORDS and first_word in token_upper:
-                # e.g. "PARACETAMOL" in "PARACETAMOL 500MG" — but never for a bare
-                # dosage-form/strength word shared by unrelated medicines.
                 score = max(score, 0.92)
             else:
-                # Token-level similarity
                 ratio_name = difflib.SequenceMatcher(None, token_upper, med_name_upper).ratio()
                 ratio_generic = difflib.SequenceMatcher(None, token_upper, generic_upper).ratio()
                 ratio_brand = difflib.SequenceMatcher(None, token_upper, brand_upper).ratio() if brand_upper else 0.0
                 score = max(score, ratio_name, ratio_generic, ratio_brand)
 
+            # Strength / Dosage adjustment for DB candidate
             if score >= 0.65:
+                if extracted_strength and med.strength:
+                    if extracted_strength.lower().replace(" ", "") == med.strength.lower().replace(" ", ""):
+                        score = min(score + 0.05, 0.98)
+                    else:
+                        score -= 0.10
+
                 if med.medicine_id not in seen_ids:
                     seen_ids.add(med.medicine_id)
                     candidates.append(
@@ -399,19 +480,28 @@ def match_medicine_catalog(lines: List[OCRTextLine], db: Session) -> Tuple[Optio
                             medicine_id=med.medicine_id,
                             medicine_name=med.medicine_name,
                             generic_name=med.generic_name,
+                            brand_name=med.brand_name,
                             strength=med.strength,
                             dosage_form=med.dosage_form,
                             similarity_score=round(score, 4),
                             matched_token=ocr_token,
+                            source_name=med.source,
+                            source_url=med.source_url,
+                            retrieval_score=round(score, 4),
                         )
                     )
+                else:
+                    # Update score if higher
+                    for c in candidates:
+                        if c.medicine_id == med.medicine_id:
+                            c.similarity_score = max(c.similarity_score, round(score, 4))
+                            c.retrieval_score = c.similarity_score
 
     # Sort candidate matches descending by similarity score
     candidates.sort(key=lambda c: c.similarity_score, reverse=True)
 
-    if candidates and candidates[0].similarity_score >= 0.70:
+    if candidates and candidates[0].similarity_score >= 0.68:
         best = candidates[0]
-        # Find matching line confidence
         best_line_conf = next((conf for token, conf in token_candidates if token == best.matched_token), 0.85)
         return best.medicine_name, best.generic_name, best_line_conf, 0.90, best.similarity_score, candidates
 
@@ -517,8 +607,14 @@ def parse_structured_fields(lines: List[OCRTextLine], db: Session) -> Tuple[Stru
         ),
     )
 
-    # 7. Medicine Name & Database Match
-    med_val, gen_val, med_ocr_conf, med_parser_conf, db_score, candidates = match_medicine_catalog(lines, db)
+    # 7. Medicine Name & Knowledge Base Candidate Retrieval
+    med_val, gen_val, med_ocr_conf, med_parser_conf, db_score, candidates = match_medicine_catalog(
+        lines,
+        db,
+        extracted_strength=str_val,
+        extracted_dosage_form=df_val,
+        extracted_manufacturer=man_val,
+    )
     med_name_field = ExtractedField(
         field_name="medicine_name",
         value=med_val,

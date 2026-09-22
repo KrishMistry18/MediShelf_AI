@@ -76,3 +76,21 @@ class ScanResponse(BaseModel):
     )
     inference_time_ms: float = Field(..., description="Total combined inference latency in milliseconds")
     message: str = Field(..., description="Human-readable decision explanation or guidance")
+
+    # Open-World Recognition & Provenance Extensions
+    product_status: str = Field(
+        default="UNKNOWN",
+        description="Open-world identification state: IDENTIFIED | LIKELY_MATCH | PARTIAL_MATCH | CONFLICTING_EVIDENCE | UNKNOWN",
+    )
+    provenance: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Data provenance metadata: source_name, source_identifier, source_url, retrieved_at, source_version",
+    )
+    evidence_checklist: Optional[Dict[str, bool]] = Field(
+        default=None,
+        description="Verification checklist: label_text, active_ingredients, strength, dosage_form, database_match, visual_classifier",
+    )
+    score_breakdown: Optional[Dict[str, float]] = Field(
+        default=None,
+        description="Transparent scoring formula breakdown",
+    )

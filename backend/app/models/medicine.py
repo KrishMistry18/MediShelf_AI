@@ -25,12 +25,22 @@ class Medicine(Base):
     storage_max_humidity = Column(Float, nullable=True)
     expiry_warning_days = Column(Integer, default=60, nullable=False)
     
-    # Machine learning / CV identifier
-    image_class = Column(String(100), unique=True, index=True, nullable=False)
+    # Machine learning / CV identifier (nullable for open-world medicines without trained CV classes)
+    image_class = Column(String(100), index=True, nullable=True)
     
+    # Open-world drug knowledge expansion
+    canonical_name = Column(String(255), nullable=True)
+    active_ingredients = Column(String(1024), nullable=True)
+    route = Column(String(100), nullable=True)
+    rxnorm_cui = Column(String(32), index=True, nullable=True)
+    ndc = Column(String(64), index=True, nullable=True)
+
     # Data Provenance & Traceability
     source = Column(String(255), nullable=False)
+    source_id = Column(String(128), nullable=True)
     source_url = Column(String(1024), nullable=False)
+    source_version = Column(String(64), nullable=True)
+    retrieved_at = Column(DateTime(timezone=True), nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(

@@ -1,17 +1,27 @@
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
+  AlertCircle,
   AlertTriangle,
   Camera,
+  Check,
   CheckCircle2,
+  Database,
   ExternalLink,
   FileText,
+  HelpCircle,
   ImagePlus,
   Info,
+  Layers,
+  Minus,
+  Pill,
   RotateCcw,
   ScanLine,
+  ShieldCheck,
+  Sparkles,
   Thermometer,
   Upload,
+  X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
@@ -22,10 +32,12 @@ import { recordScan } from "@/lib/activity";
 import {
   FUSION_LABELS,
   OCR_STATUS_LABELS,
+  PRODUCT_STATUS_CONFIG,
   formatPercent,
   humanizeClassName,
   scanMedicineImage,
   type IdentificationStatus,
+  type ProductStatus,
   type ScanResponse,
   type StructuredFields,
 } from "@/lib/api";
@@ -135,6 +147,15 @@ function ScanPage() {
     },
     [acceptFile],
   );
+
+  const triggerCapture = useCallback(() => {
+    inputRef.current?.click();
+  }, []);
+
+  const scrollToOcr = useCallback(() => {
+    const el = document.getElementById("ocr-panel");
+    el?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   const reset = () => {
     setFile(null);
@@ -355,7 +376,13 @@ function ScanPage() {
               />
             )}
 
-            {result && !scan.isPending && <EvidencePanel result={result} />}
+            {result && !scan.isPending && (
+              <EvidencePanel
+                result={result}
+                onRetake={triggerCapture}
+                onScrollToOcr={scrollToOcr}
+              />
+            )}
           </section>
         </aside>
 
@@ -372,12 +399,24 @@ function ScanPage() {
 
 /* ----------------------------- result views ----------------------------- */
 
-function EvidencePanel({ result }: { result: ScanResponse }) {
+function EvidencePanel({
+  result,
+  onRetake,
+  onScrollToOcr,
+}: {
+  result: ScanResponse;
+  onRetake: () => void;
+  onScrollToOcr: () => void;
+}) {
   const quality = result.quality;
   const fusion = result.fusion;
+  const status: ProductStatus = result.product_status ?? "UNKNOWN";
+  const statusConfig = PRODUCT_STATUS_CONFIG[status];
+  const checklist = result.evidence_checklist;
 
   return (
     <div className="mt-4 space-y-4">
+      {/* 1. Image Quality Gate Alert (Section 32) */}
       {quality && !quality.is_acceptable && (
         <div className="rounded-[5px] border border-warning/30 bg-warning/10 p-3">
           <p className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] text-warning">
@@ -393,39 +432,180 @@ function EvidencePanel({ result }: { result: ScanResponse }) {
               {quality.recommendations.join(" ")}
             </p>
           )}
+          <div className="mt-2.5">
+            <Button
+              variant="outline"
+              className="h-8 px-2.5 text-xs"
+              onClick={onRetake}
+              icon={<RotateCcw className="size-3" />}
+            >
+              Retake image
+            </Button>
+          </div>
         </div>
       )}
 
-      <EvidenceBlock
-        icon={result.is_confident ? <CheckCircle2 /> : <AlertTriangle />}
-        label="Visual evidence · MobileNetV3"
-        value={result.medicine?.medicine_name ?? humanizeClassName(result.predicted_class)}
-        confidence={formatPercent(result.confidence, 1)}
-        status={
-          result.is_confident
-            ? "Above gate"
-            : `Below gate (${formatPercent(result.confidence_threshold, 0)})`
-        }
-        tone={result.is_confident ? "accent" : "warning"}
-      />
+      {/* 2. Product Status Banner & Primary Identification (Section 15, 33) */}
+      <div className={cn("rounded-[6px] border p-3.5", statusConfig.badgeClass)}>
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-mono text-[9px] uppercase tracking-[0.15em] font-semibold">
+            {statusConfig.label}
+          </span>
+          <span className="font-mono text-[10px]">
+            {formatPercent(result.confidence, 0)} confidence
+          </span>
+        </div>
+        <p className="mt-1 text-[11px] leading-relaxed opacity-90">
+          {statusConfig.description}
+        </p>
+      </div>
 
-      <EvidenceBlock
-        icon={<FileText />}
-        label="Label text · EasyOCR"
-        value={
-          result.ocr_status === "completed"
-            ? (result.ocr?.fields.medicine_name.value ??
-              result.ocr?.candidate_matches[0]?.medicine_name ??
-              "No medicine name matched")
-            : OCR_STATUS_LABELS[result.ocr_status]
-        }
-        confidence={
-          result.ocr_status === "completed" ? `${result.ocr?.raw_text.length ?? 0} chars` : "—"
-        }
-        status={OCR_STATUS_LABELS[result.ocr_status]}
-        tone={result.ocr_status === "completed" ? "accent" : "muted"}
-      />
+      {/* 3. Conflict UI (Section 35) */}
+      {status === "CONFLICTING_EVIDENCE" && (
+        <div className="rounded-[6px] border border-rose-500/30 bg-rose-500/8 p-3.5">
+          <div className="flex items-center gap-2 text-rose-500">
+            <AlertCircle className="size-4 shrink-0" />
+            <strong className="font-head text-sm">Identification Conflict</strong>
+          </div>
+          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
+            Visual classifier and printed label text point to different medicines. Physical packaging must be verified manually.
+          </p>
 
+          <div className="mt-3 grid grid-cols-2 gap-2 text-left">
+            <div className="rounded-[4px] border border-border bg-background p-2">
+              <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground">
+                Visual Model
+              </span>
+              <p className="mt-0.5 truncate text-[11px] font-medium">
+                {humanizeClassName(result.predicted_class)}
+              </p>
+              <span className="font-mono text-[9px] text-warning">
+                {formatPercent(result.confidence, 0)}
+              </span>
+            </div>
+            <div className="rounded-[4px] border border-border bg-background p-2">
+              <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground">
+                Label Evidence
+              </span>
+              <p className="mt-0.5 truncate text-[11px] font-medium">
+                {result.ocr?.candidate_matches[0]?.medicine_name ??
+                  result.ocr?.fields.medicine_name.value ??
+                  "Text candidate"}
+              </p>
+              <span className="font-mono text-[9px] text-accent">
+                {formatPercent(result.ocr?.candidate_matches[0]?.similarity_score ?? 0.85, 0)}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Unknown Medicine Guidance (Section 34) */}
+      {status === "UNKNOWN" && (
+        <div className="rounded-[6px] border border-border bg-secondary/30 p-3.5">
+          <div className="flex items-center gap-2 text-foreground">
+            <HelpCircle className="size-4 shrink-0 text-muted-foreground" />
+            <strong className="font-head text-sm">Not Confidently Identified</strong>
+          </div>
+          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
+            We extracted some packaging information, but there is not enough verifiable evidence to confirm the exact product in the knowledge base.
+          </p>
+          {result.ocr?.raw_text && (
+            <div className="mt-2.5 rounded-[4px] border border-border bg-background/60 p-2 font-mono text-[10px] text-muted-foreground line-clamp-2">
+              Detected text: &ldquo;{result.ocr.raw_text.slice(0, 100)}&hellip;&rdquo;
+            </div>
+          )}
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              className="h-8 px-2.5 text-xs"
+              onClick={onRetake}
+              icon={<RotateCcw className="size-3" />}
+            >
+              Retake image
+            </Button>
+            <Button
+              variant="ghost"
+              className="h-8 px-2.5 text-xs"
+              onClick={onScrollToOcr}
+              icon={<FileText className="size-3" />}
+            >
+              View extracted text
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* 5. Evidence Checklist (Section 33) */}
+      <div className="rounded-[6px] border border-border bg-secondary/20 p-3.5">
+        <div className="mb-2.5 flex items-center justify-between">
+          <h3 className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground font-semibold">
+            Evidence Checklist
+          </h3>
+          <span className="font-mono text-[9px] text-muted-foreground">
+            Multimodal audit
+          </span>
+        </div>
+
+        <div className="space-y-2">
+          <ChecklistRow
+            label="Label text"
+            matched={Boolean(checklist?.label_text ?? (result.ocr_status === "completed"))}
+            detail={
+              result.ocr_status === "completed"
+                ? `${result.ocr?.raw_text.length ?? 0} chars read`
+                : "No text read"
+            }
+          />
+          <ChecklistRow
+            label="Active ingredients"
+            matched={Boolean(checklist?.active_ingredients)}
+            detail={
+              result.medicine?.generic_name ??
+              result.ocr?.fields.generic_name.value ??
+              result.ocr?.candidate_matches[0]?.generic_name ??
+              "Unconfirmed"
+            }
+          />
+          <ChecklistRow
+            label="Strength"
+            matched={Boolean(checklist?.strength)}
+            detail={result.medicine?.strength ?? result.ocr?.fields.strength.value ?? "Unconfirmed"}
+          />
+          <ChecklistRow
+            label="Dosage form"
+            matched={Boolean(checklist?.dosage_form)}
+            detail={result.medicine?.dosage_form ?? result.ocr?.fields.dosage_form.value ?? "Unconfirmed"}
+          />
+          <ChecklistRow
+            label="Medicine database match"
+            matched={Boolean(checklist?.database_match ?? result.medicine)}
+            detail={
+              result.medicine
+                ? (result.provenance?.source_name ?? result.medicine.source)
+                : "No match"
+            }
+          />
+          <ChecklistRow
+            label="Visual classifier"
+            matched={Boolean(checklist?.visual_classifier ?? result.is_confident)}
+            detail={
+              status === "CONFLICTING_EVIDENCE"
+                ? `Disagrees (${formatPercent(result.confidence, 0)})`
+                : `${humanizeClassName(result.predicted_class)} (${formatPercent(result.confidence, 0)})`
+            }
+            tone={
+              status === "CONFLICTING_EVIDENCE"
+                ? "conflict"
+                : result.is_confident
+                  ? "positive"
+                  : "supporting"
+            }
+          />
+        </div>
+      </div>
+
+      {/* 6. Fusion Cross-Check Summary */}
       {fusion && (
         <div
           className={cn(
@@ -472,38 +652,41 @@ function EvidencePanel({ result }: { result: ScanResponse }) {
   );
 }
 
-function EvidenceBlock({
-  icon,
+function ChecklistRow({
   label,
-  value,
-  confidence,
-  status,
+  matched,
+  detail,
   tone,
 }: {
-  icon: React.ReactNode;
   label: string;
-  value: string;
-  confidence: string;
-  status: string;
-  tone: "accent" | "warning" | "muted";
+  matched: boolean;
+  detail?: string;
+  tone?: "positive" | "supporting" | "conflict";
 }) {
-  const toneClass =
-    tone === "accent"
-      ? "text-accent"
-      : tone === "warning"
-        ? "text-warning"
-        : "text-muted-foreground";
+  const isConflict = tone === "conflict";
+  const isSupporting = tone === "supporting";
+
   return (
-    <div className="border-b border-border pb-3 last:border-0 last:pb-0">
-      <div className={cn("flex items-center gap-2 [&_svg]:size-3.5", toneClass)}>
-        {icon}
-        <span className="font-mono text-[9px] uppercase tracking-[0.15em]">{label}</span>
-        <span className="ml-auto font-mono text-[10px]">{confidence}</span>
+    <div className="flex items-center justify-between gap-2 text-[11px]">
+      <div className="flex items-center gap-1.5 min-w-0">
+        {isConflict ? (
+          <X className="size-3.5 text-rose-500 shrink-0" />
+        ) : matched ? (
+          <Check className="size-3.5 text-emerald-500 shrink-0" />
+        ) : isSupporting ? (
+          <AlertTriangle className="size-3.5 text-amber-500 shrink-0" />
+        ) : (
+          <Minus className="size-3.5 text-muted-foreground shrink-0" />
+        )}
+        <span className={cn("truncate", matched ? "text-foreground font-medium" : "text-muted-foreground")}>
+          {label}
+        </span>
       </div>
-      <p className="mt-1 text-[12px] font-medium">{value}</p>
-      <span className={cn("mt-0.5 inline-block font-mono text-[9px] uppercase", toneClass)}>
-        {status}
-      </span>
+      {detail && (
+        <span className="shrink-0 font-mono text-[10px] text-muted-foreground truncate max-w-[140px]">
+          {detail}
+        </span>
+      )}
     </div>
   );
 }
@@ -517,6 +700,9 @@ function ScanDetail({
 }) {
   const medicine = result.medicine;
   const storage = result.storage_requirements;
+  const kbCandidates = result.ocr?.candidate_matches ?? [];
+  const visualPredictions = result.top_predictions ?? [];
+  const provenance = result.provenance;
 
   return (
     <>
@@ -524,53 +710,115 @@ function ScanDetail({
         <div className="mb-3 flex items-center justify-between">
           <h2 className="font-head text-base">Candidate ranking</h2>
           <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground">
-            Top 3 of {result.top_predictions.length > 0 ? "10 classes" : "—"}
+            {kbCandidates.length > 0
+              ? `${kbCandidates.length} knowledge base matches`
+              : `${visualPredictions.length} visual classes`}
           </span>
         </div>
 
-        <ol className="space-y-2.5">
-          {result.top_predictions.map((prediction, index) => {
-            const isTop = index === 0;
-            const meetsGate = prediction.confidence >= result.confidence_threshold;
-            return (
-              <li key={prediction.class_name}>
-                <div className="mb-1 flex items-baseline justify-between gap-3">
-                  <span className="min-w-0 truncate text-[12px]">
-                    <span className="mr-1.5 font-mono text-[10px] text-muted-foreground">
-                      {index + 1}
-                    </span>
-                    <strong className={cn(isTop ? "font-medium" : "font-normal")}>
-                      {prediction.medicine_name ?? humanizeClassName(prediction.class_name)}
-                    </strong>
-                    {prediction.medicine_id && (
-                      <span className="ml-1.5 font-mono text-[9px] text-muted-foreground">
-                        {prediction.medicine_id}
+        {/* Real Knowledge Base Candidates (Section 17, 20) */}
+        {kbCandidates.length > 0 ? (
+          <div className="space-y-3">
+            <ol className="space-y-2.5">
+              {kbCandidates.slice(0, 5).map((cand, index) => {
+                const isTop = index === 0;
+                return (
+                  <li key={cand.medicine_id} className="rounded-[5px] border border-border p-2.5">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="min-w-0 truncate text-[12px]">
+                        <span className="mr-1.5 font-mono text-[10px] text-muted-foreground">
+                          {index + 1}
+                        </span>
+                        <strong className={cn(isTop ? "font-medium text-foreground" : "font-normal text-muted-foreground")}>
+                          {cand.medicine_name}
+                        </strong>
+                        <span className="ml-1.5 font-mono text-[9px] text-muted-foreground">
+                          {cand.medicine_id}
+                        </span>
                       </span>
-                    )}
-                  </span>
-                  <span className="shrink-0 font-mono text-[11px]">
-                    {formatPercent(prediction.confidence, 1)}
-                  </span>
+                      <span className="shrink-0 font-mono text-[11px] text-accent">
+                        {formatPercent(cand.similarity_score, 1)}
+                      </span>
+                    </div>
+
+                    <div className="mt-1 flex flex-wrap items-center gap-2 font-mono text-[9px] text-muted-foreground">
+                      {cand.generic_name && (
+                        <span>{cand.generic_name}</span>
+                      )}
+                      {cand.strength && <span>· {cand.strength}</span>}
+                      {cand.dosage_form && <span>· {cand.dosage_form}</span>}
+                      {cand.source_name && (
+                        <span className="ml-auto rounded-[3px] bg-secondary px-1.5 py-0.5 text-foreground">
+                          {cand.source_name}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+
+            {visualPredictions.length > 0 && (
+              <div className="mt-4 border-t border-border pt-3">
+                <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+                  Supporting Visual Signal (MobileNetV3)
+                </p>
+                <div className="grid gap-1.5 sm:grid-cols-2">
+                  {visualPredictions.slice(0, 2).map((pred) => (
+                    <div key={pred.class_name} className="flex items-center justify-between rounded-[4px] bg-secondary/30 px-2.5 py-1.5 text-[11px]">
+                      <span className="truncate">{pred.medicine_name ?? humanizeClassName(pred.class_name)}</span>
+                      <span className="font-mono text-[10px] text-muted-foreground ml-2">{formatPercent(pred.confidence, 0)}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-[width] duration-500",
-                      meetsGate ? "bg-accent" : "bg-warning",
-                    )}
-                    style={{ width: `${Math.max(prediction.confidence * 100, 1.5)}%` }}
-                  />
-                </div>
-              </li>
-            );
-          })}
-        </ol>
+              </div>
+            )}
+          </div>
+        ) : (
+          <ol className="space-y-2.5">
+            {visualPredictions.map((prediction, index) => {
+              const isTop = index === 0;
+              const meetsGate = prediction.confidence >= result.confidence_threshold;
+              return (
+                <li key={prediction.class_name}>
+                  <div className="mb-1 flex items-baseline justify-between gap-3">
+                    <span className="min-w-0 truncate text-[12px]">
+                      <span className="mr-1.5 font-mono text-[10px] text-muted-foreground">
+                        {index + 1}
+                      </span>
+                      <strong className={cn(isTop ? "font-medium" : "font-normal")}>
+                        {prediction.medicine_name ?? humanizeClassName(prediction.class_name)}
+                      </strong>
+                      {prediction.medicine_id && (
+                        <span className="ml-1.5 font-mono text-[9px] text-muted-foreground">
+                          {prediction.medicine_id}
+                        </span>
+                      )}
+                    </span>
+                    <span className="shrink-0 font-mono text-[11px]">
+                      {formatPercent(prediction.confidence, 1)}
+                    </span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-[width] duration-500",
+                        meetsGate ? "bg-accent" : "bg-warning",
+                      )}
+                      style={{ width: `${Math.max(prediction.confidence * 100, 1.5)}%` }}
+                    />
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        )}
 
         <div className="mt-4 flex gap-2 rounded-[5px] border border-border bg-secondary/40 p-3 text-[10px] leading-relaxed text-muted-foreground">
           <Info className="mt-0.5 size-3 shrink-0" />
           <span>
-            On the held-out split this classifier picks the right medicine first 50% of the time but
-            places it in the top three 80% of the time. Scan the whole list, not just the winner.
+            Candidate retrieval combines OCR label reading, normalized RxNorm / DailyMed drug knowledge,
+            and MobileNetV3 visual evidence to identify medicines beyond the closed classifier training set.
           </span>
         </div>
       </section>
@@ -613,14 +861,29 @@ function ScanDetail({
               Assess storage conditions
             </Button>
 
-            <a
-              href={medicine.source_url}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[11px] font-medium text-accent"
-            >
-              {medicine.source} <ExternalLink className="size-3" />
-            </a>
+            {/* Provenance Metadata Card (Section 26) */}
+            <div className="rounded-[5px] border border-border bg-secondary/30 p-2.5 text-[10px]">
+              <div className="flex items-center justify-between gap-1 text-muted-foreground font-mono uppercase text-[8px] tracking-wider mb-1">
+                <span>Source Provenance</span>
+                <span>{provenance?.source_version ?? medicine.source_version ?? "Current"}</span>
+              </div>
+              <p className="font-medium text-[11px]">
+                {provenance?.source_name ?? medicine.source}
+              </p>
+              {(provenance?.source_identifier || medicine.source_id) && (
+                <p className="font-mono text-[9px] text-muted-foreground mt-0.5">
+                  ID: {provenance?.source_identifier ?? medicine.source_id}
+                </p>
+              )}
+              <a
+                href={provenance?.source_url ?? medicine.source_url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-1.5 inline-flex items-center gap-1 font-medium text-accent hover:underline"
+              >
+                Inspect official record <ExternalLink className="size-2.5" />
+              </a>
+            </div>
           </div>
         ) : (
           <EmptyState
@@ -628,7 +891,7 @@ function ScanDetail({
             title="No monograph attached"
             description={
               result.is_confident
-                ? "The predicted class has no matching catalog record."
+                ? "The predicted candidate has no matching catalog record."
                 : `Confidence stayed below the ${formatPercent(result.confidence_threshold, 0)} gate, so no monograph was retrieved. Retake the photo or look the medicine up in the library.`
             }
           />
@@ -661,7 +924,7 @@ function OcrPanel({ result }: { result: ScanResponse }) {
   );
 
   return (
-    <section className="panel col-span-12 p-5">
+    <section className="panel col-span-12 p-5" id="ocr-panel">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 className="font-head text-base">Label text extraction</h2>
         <span

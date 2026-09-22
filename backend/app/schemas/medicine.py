@@ -16,10 +16,17 @@ class MedicineBase(BaseModel):
     storage_max_temperature: float = Field(..., description="Maximum storage temperature in Celsius")
     storage_min_humidity: Optional[float] = Field(None, description="Minimum relative humidity (% RH) if officially specified")
     storage_max_humidity: Optional[float] = Field(None, description="Maximum relative humidity (% RH) if officially specified")
-    expiry_warning_days: int = Field(default=60, description="Advance warning threshold in days before product expiry")
-    image_class: str = Field(..., description="Machine learning computer-vision classification label")
+    image_class: Optional[str] = Field(None, description="Machine learning computer-vision classification label (nullable for open-world medicines)")
+    canonical_name: Optional[str] = Field(None, description="Normalized standard title")
+    active_ingredients: Optional[str] = Field(None, description="JSON array of normalized active ingredients")
+    route: Optional[str] = Field(None, description="Route of administration")
+    rxnorm_cui: Optional[str] = Field(None, description="RxNorm Concept Unique Identifier")
+    ndc: Optional[str] = Field(None, description="National Drug Code")
     source: str = Field(..., description="Regulatory citation or pharmacopeial source")
+    source_id: Optional[str] = Field(None, description="Source-specific identifier (RxCUI or SPL set ID)")
     source_url: str = Field(..., description="Direct verifiable URL to official drug monograph or package insert")
+    source_version: Optional[str] = Field(None, description="Monograph or dataset version")
+    retrieved_at: Optional[datetime] = Field(None, description="Timestamp of monograph retrieval")
 
 
 class MedicineResponse(MedicineBase):

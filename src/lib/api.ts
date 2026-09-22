@@ -48,9 +48,17 @@ export type Medicine = {
   storage_min_humidity: number | null;
   storage_max_humidity: number | null;
   expiry_warning_days: number;
-  image_class: string;
+  image_class: string | null;
+  canonical_name?: string | null;
+  active_ingredients?: string | null;
+  route?: string | null;
+  rxnorm_cui?: string | null;
+  ndc?: string | null;
   source: string;
+  source_id?: string | null;
   source_url: string;
+  source_version?: string | null;
+  retrieved_at?: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -109,10 +117,15 @@ export type CandidateMatch = {
   medicine_id: string;
   medicine_name: string;
   generic_name: string;
+  brand_name?: string | null;
   strength: string;
   dosage_form: string;
   similarity_score: number;
   matched_token: string;
+  active_ingredients?: string[] | null;
+  source_name?: string | null;
+  source_url?: string | null;
+  retrieval_score?: number | null;
 };
 
 /** How the two evidence streams line up. Never a claim about product genuineness or safety. */
@@ -167,6 +180,23 @@ export type ScanResponse = {
   ocr_status: OcrStatus;
   inference_time_ms: number;
   message: string;
+  product_status?: "IDENTIFIED" | "LIKELY_MATCH" | "PARTIAL_MATCH" | "CONFLICTING_EVIDENCE" | "UNKNOWN";
+  provenance?: {
+    source_name: string;
+    source_identifier?: string | null;
+    source_url: string;
+    retrieved_at?: string | null;
+    source_version?: string | null;
+  } | null;
+  evidence_checklist?: {
+    label_text: boolean;
+    active_ingredients: boolean;
+    strength: boolean;
+    dosage_form: boolean;
+    database_match: boolean;
+    visual_classifier: boolean;
+  } | null;
+  score_breakdown?: Record<string, number> | null;
 };
 
 export type RiskLevel = "LOW" | "MODERATE" | "HIGH";
@@ -449,3 +479,52 @@ export const OCR_STATUS_LABELS: Record<OcrStatus, string> = {
   skipped_low_quality: "Skipped — image quality",
   unavailable: "Engine unavailable",
 };
+
+export type ProductStatus =
+  | "IDENTIFIED"
+  | "LIKELY_MATCH"
+  | "PARTIAL_MATCH"
+  | "CONFLICTING_EVIDENCE"
+  | "UNKNOWN";
+
+export const PRODUCT_STATUS_CONFIG: Record<
+  ProductStatus,
+  {
+    label: string;
+    description: string;
+    tone: "success" | "warning" | "amber" | "danger" | "neutral";
+    badgeClass: string;
+  }
+> = {
+  IDENTIFIED: {
+    label: "Medicine Identified",
+    description: "High-confidence evidence across label text, ingredients, and verified product catalog.",
+    tone: "success",
+    badgeClass: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+  },
+  LIKELY_MATCH: {
+    label: "Likely Medicine Match",
+    description: "Strong evidence extracted. Manual package verification recommended before use.",
+    tone: "warning",
+    badgeClass: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30",
+  },
+  PARTIAL_MATCH: {
+    label: "Partial Evidence",
+    description: "Some medicine information extracted, but exact strength or dosage form could not be confirmed.",
+    tone: "amber",
+    badgeClass: "bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/30",
+  },
+  CONFLICTING_EVIDENCE: {
+    label: "Conflicting Evidence",
+    description: "Visual classifier and printed label text point to different medicines. Inspect packaging manually.",
+    tone: "danger",
+    badgeClass: "bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/30",
+  },
+  UNKNOWN: {
+    label: "Medicine Not Confidently Identified",
+    description: "Insufficient evidence to verify the exact product. Retake photo or inspect label.",
+    tone: "neutral",
+    badgeClass: "bg-secondary text-muted-foreground border-border",
+  },
+};
+

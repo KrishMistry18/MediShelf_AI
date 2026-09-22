@@ -1,0 +1,3466 @@
+{
+  "source": "openFDA Drug Labeling (U.S. FDA)",
+  "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+  "total_records": 119,
+  "records": [
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "f0d9160e-9405-435e-9f36-75c537267221",
+      "set_id": "15b438b4-4874-43f4-a50a-4e6f3e5530ac",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=15b438b4-4874-43f4-a50a-4e6f3e5530ac",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Telmisartan and Amlodipine"
+      ],
+      "generic_names": [
+        "TELMISARTAN AND AMLODIPINE"
+      ],
+      "active_ingredients": [
+        "TELMISARTAN",
+        "AMLODIPINE BESYLATE"
+      ],
+      "manufacturers": [
+        "Alembic Pharmaceuticals Limited"
+      ],
+      "product_ndcs": [
+        "46708-184",
+        "46708-185",
+        "46708-186",
+        "46708-187"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20230130"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "e0af7498-0dc6-4a30-a103-e30ae36c794e",
+      "set_id": "a30ff81d-420b-40ea-83d8-670260a93fff",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a30ff81d-420b-40ea-83d8-670260a93fff",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "WIDAPLIK"
+      ],
+      "generic_names": [
+        "TELMISARTAN, AMLODIPINE AND INDAPAMIDE"
+      ],
+      "active_ingredients": [
+        "TELMISARTAN",
+        "AMLODIPINE BESYLATE",
+        "INDAPAMIDE"
+      ],
+      "manufacturers": [
+        "Azurity Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "24338-001",
+        "24338-002",
+        "24338-003"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260703"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "17a6182b-5050-470e-aa1d-1605fa9e088e",
+      "set_id": "a97fefa6-99e6-4eb7-9393-ab2252a2c7d8",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a97fefa6-99e6-4eb7-9393-ab2252a2c7d8",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Telmisartan and Amlodipine"
+      ],
+      "generic_names": [
+        "TELMISARTAN AND AMLODIPINE"
+      ],
+      "active_ingredients": [
+        "TELMISARTAN",
+        "AMLODIPINE BESYLATE"
+      ],
+      "manufacturers": [
+        "Lupin Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "68180-196",
+        "68180-197",
+        "68180-198",
+        "68180-199"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20231215"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "c4f4323d-671d-478b-b088-008530932cee",
+      "set_id": "ca60a4d5-ace7-4889-94ee-e2265fd63811",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ca60a4d5-ace7-4889-94ee-e2265fd63811",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Telmisartan and Amlodipine"
+      ],
+      "generic_names": [
+        "TELMISARTAN AND AMLODIPINE"
+      ],
+      "active_ingredients": [
+        "TELMISARTAN",
+        "AMLODIPINE BESYLATE"
+      ],
+      "manufacturers": [
+        "Mylan Pharmaceuticals Inc."
+      ],
+      "product_ndcs": [
+        "0378-1075",
+        "0378-1076",
+        "0378-1077",
+        "0378-1078"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20181114"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "57477f96-ff03-67dc-e063-6294a90ad89d",
+      "set_id": "00b86913-50c8-443f-8467-f4f499d358af",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00b86913-50c8-443f-8467-f4f499d358af",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "amoxicillin and clavulanate potassium"
+      ],
+      "generic_names": [
+        "AMOXICILLIN AND CLAVULANATE POTASSIUM"
+      ],
+      "active_ingredients": [
+        "AMOXICILLIN",
+        "CLAVULANATE POTASSIUM"
+      ],
+      "manufacturers": [
+        "Chartwell RX, LLC"
+      ],
+      "product_ndcs": [
+        "62135-095"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260723"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "a2a30785-599c-4436-a3cc-b4db011b7a87",
+      "set_id": "00cf4429-e37c-4490-b22d-3cd796124296",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00cf4429-e37c-4490-b22d-3cd796124296",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "AMOXICILLIN AND CLAVULANATE POTASSIUM"
+      ],
+      "generic_names": [
+        "AMOXICILLIN AND CLAVULANATE POTASSIUM"
+      ],
+      "active_ingredients": [
+        "AMOXICILLIN",
+        "CLAVULANATE POTASSIUM"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-6324"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240430"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "c7442c05-30ea-427d-b832-611e0d1c392f",
+      "set_id": "01b30abb-db63-4257-9fe2-9107bb0bd69c",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=01b30abb-db63-4257-9fe2-9107bb0bd69c",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Amoxicillin and Clavulanate Potassium"
+      ],
+      "generic_names": [
+        "AMOXICILLIN AND CLAVULANATE POTASSIUM"
+      ],
+      "active_ingredients": [
+        "AMOXICILLIN",
+        "CLAVULANATE POTASSIUM"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "63187-803"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20191101"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "63491821-5b94-4a6a-bf52-6a7ba556cabc",
+      "set_id": "029a49f2-2132-4160-a0d6-2d108a456a22",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=029a49f2-2132-4160-a0d6-2d108a456a22",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Amoxicillin and Clavulanate Potassium"
+      ],
+      "generic_names": [
+        "AMOXICILLIN AND CLAVULANATE POTASSIUM"
+      ],
+      "active_ingredients": [
+        "AMOXICILLIN",
+        "CLAVULANATE POTASSIUM"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-6381"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20230302"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "41238c5b-65fc-6526-e063-6394a90ac11c",
+      "set_id": "0425932a-f6e1-49a6-8480-720f179ace14",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0425932a-f6e1-49a6-8480-720f179ace14",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Amoxicillin and Clavulanate Potassium"
+      ],
+      "generic_names": [
+        "AMOXICILLIN AND CLAVULANATE POTASSIUM"
+      ],
+      "active_ingredients": [
+        "AMOXICILLIN",
+        "CLAVULANATE POTASSIUM"
+      ],
+      "manufacturers": [
+        "PD-Rx Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "72789-418"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20251014"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "b44a332e-98a1-4f1b-b06b-3a9b044cb926",
+      "set_id": "079c828c-148f-45b9-966e-d8906043b2a2",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=079c828c-148f-45b9-966e-d8906043b2a2",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sulfamethoxazole and Trimethoprim"
+      ],
+      "generic_names": [
+        "SULFAMETHOXAZOLE AND TRIMETHOPRIM"
+      ],
+      "active_ingredients": [
+        "SULFAMETHOXAZOLE",
+        "TRIMETHOPRIM"
+      ],
+      "manufacturers": [
+        "Quality Care Products LLC"
+      ],
+      "product_ndcs": [
+        "55700-611"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20241217"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "c06c073c-f5f8-41ad-b8e4-7697e3f97fbe",
+      "set_id": "07a49665-fe2a-4a92-a57e-49db224b012e",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=07a49665-fe2a-4a92-a57e-49db224b012e",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sulfamethoxazole and Trimethoprim"
+      ],
+      "generic_names": [
+        "SULFAMETHOXAZOLE AND TRIMETHOPRIM"
+      ],
+      "active_ingredients": [
+        "SULFAMETHOXAZOLE",
+        "TRIMETHOPRIM"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-4847"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240108"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "1ce9fb0c-6acd-4205-8747-528c5339ba19",
+      "set_id": "07da67b1-b50c-4471-8cde-8a119eb8c935",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=07da67b1-b50c-4471-8cde-8a119eb8c935",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sulfamethoxazole and Trimethoprim"
+      ],
+      "generic_names": [
+        "SULFAMETHOXAZOLE AND TRIMETHOPRIM"
+      ],
+      "active_ingredients": [
+        "SULFAMETHOXAZOLE",
+        "TRIMETHOPRIM"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-6901"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20231215"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "433e4e6e-b0ff-41bc-a929-7d3e88894133",
+      "set_id": "08500fcb-dbec-4ac2-91c3-189d27907ec0",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=08500fcb-dbec-4ac2-91c3-189d27907ec0",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sulfamethoxazole and Trimethoprim"
+      ],
+      "generic_names": [
+        "SULFAMETHOXAZOLE AND TRIMETHOPRIM"
+      ],
+      "active_ingredients": [
+        "SULFAMETHOXAZOLE",
+        "TRIMETHOPRIM"
+      ],
+      "manufacturers": [
+        "Cardinal Health 107, LLC"
+      ],
+      "product_ndcs": [
+        "55154-2580"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260717"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "bc65fc80-a80b-4f4b-aff0-63f15d1b5e78",
+      "set_id": "0aaf1dbe-b69d-43bd-a4ab-69cb27ab417d",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0aaf1dbe-b69d-43bd-a4ab-69cb27ab417d",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sulfamethoxazole and Trimethoprim"
+      ],
+      "generic_names": [
+        "SULFAMETHOXAZOLE AND TRIMETHOPRIM"
+      ],
+      "active_ingredients": [
+        "SULFAMETHOXAZOLE",
+        "TRIMETHOPRIM"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-6904"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250515"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "4f06534c-c0d5-3f1f-e063-6394a90a8063",
+      "set_id": "03c0ec8d-9daf-43e8-8a4e-a2ddc3573ca7",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=03c0ec8d-9daf-43e8-8a4e-a2ddc3573ca7",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Losartan Potassium and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "LOSARTAN POTASSIUM AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "LOSARTAN POTASSIUM",
+        "HYDROCHLOROTHIAZIDE"
+      ],
+      "manufacturers": [
+        "REMEDYREPACK INC."
+      ],
+      "product_ndcs": [
+        "70518-3404"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260409"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "0edcf4d1-11f0-421a-b63d-7e0e724a4fb9",
+      "set_id": "0a34f28c-20e6-4f34-9c4a-70fb258aa300",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0a34f28c-20e6-4f34-9c4a-70fb258aa300",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Losartan Potassium and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "LOSARTAN POTASSIUM AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "HYDROCHLOROTHIAZIDE",
+        "LOSARTAN POTASSIUM"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-7664"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20251002"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "1d051125-c8f8-4b57-94b2-b4b199fffe9c",
+      "set_id": "0e015b9a-0ac1-4ec3-bbe7-7a672d30e1f4",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0e015b9a-0ac1-4ec3-bbe7-7a672d30e1f4",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Losartan Potassium and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "LOSARTAN POTASSIUM AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "LOSARTAN POTASSIUM",
+        "HYDROCHLOROTHIAZIDE"
+      ],
+      "manufacturers": [
+        "Bryant Ranch Prepack"
+      ],
+      "product_ndcs": [
+        "63629-2431"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250904"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "c925be88-1cf9-4631-9d10-d6cca5e94765",
+      "set_id": "198d5151-7982-4639-9fe1-6573a4529348",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=198d5151-7982-4639-9fe1-6573a4529348",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Losartan Potassium and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "LOSARTAN POTASSIUM AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "LOSARTAN POTASSIUM",
+        "HYDROCHLOROTHIAZIDE"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "63187-599",
+        "63187-602"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20210101"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "784b0cab-fd4d-40cb-ab78-bdff1c24563f",
+      "set_id": "1bb08103-04ee-47a6-a9ad-290e169feb51",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1bb08103-04ee-47a6-a9ad-290e169feb51",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Losartan Potassium and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "LOSARTAN POTASSIUM AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "LOSARTAN POTASSIUM",
+        "HYDROCHLOROTHIAZIDE"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-5960"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240506"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "54d8eecf-c6b1-58b4-e063-6394a90a49ed",
+      "set_id": "00b266d9-ac4a-e931-e063-6294a90a6a0b",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00b266d9-ac4a-e931-e063-6294a90a6a0b",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Lisinopril and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "LISINOPRIL AND HYDROCHLOROTHIAZIDE TABLETS"
+      ],
+      "active_ingredients": [
+        "LISINOPRIL",
+        "HYDROCHLOROTHIAZIDE"
+      ],
+      "manufacturers": [
+        "St. Mary's Medical Park Pharmacy"
+      ],
+      "product_ndcs": [
+        "60760-586"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260602"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "47d238b7-b5d5-0e63-e063-6294a90a8027",
+      "set_id": "00f67e1a-6999-4295-9c9f-fcb1ce9711b8",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00f67e1a-6999-4295-9c9f-fcb1ce9711b8",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Lisinopril and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "LISINOPRIL AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "HYDROCHLOROTHIAZIDE",
+        "LISINOPRIL"
+      ],
+      "manufacturers": [
+        "PD-Rx Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "43063-468"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260107"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "6ae03122-17fd-405e-9951-bac76256e28a",
+      "set_id": "019ac336-0dc3-ec89-3e0a-09110e0fc30b",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=019ac336-0dc3-ec89-3e0a-09110e0fc30b",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Lisinopril and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "LISINOPRIL AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "HYDROCHLOROTHIAZIDE",
+        "LISINOPRIL"
+      ],
+      "manufacturers": [
+        "Bryant Ranch Prepack"
+      ],
+      "product_ndcs": [
+        "63629-4470"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260402"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "e2941ec0-2ebb-47e5-b816-8370d2d4eb55",
+      "set_id": "02eb8f54-789e-4148-912b-601d23a7df4a",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=02eb8f54-789e-4148-912b-601d23a7df4a",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Lisinopril and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "LISINOPRIL AND HYDROCHLOROTHIAZIDE TABLETS"
+      ],
+      "active_ingredients": [
+        "LISINOPRIL",
+        "HYDROCHLOROTHIAZIDE"
+      ],
+      "manufacturers": [
+        "Bryant Ranch Prepack"
+      ],
+      "product_ndcs": [
+        "71335-1992"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240523"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "b8a81227-c1af-6093-4d92-647ad3fee155",
+      "set_id": "0d3a966f-f937-05a8-a90f-5aa52ebbd613",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0d3a966f-f937-05a8-a90f-5aa52ebbd613",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Zestoretic"
+      ],
+      "generic_names": [
+        "LISINOPRIL AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "LISINOPRIL",
+        "HYDROCHLOROTHIAZIDE"
+      ],
+      "manufacturers": [
+        "Almatica Pharma Inc."
+      ],
+      "product_ndcs": [
+        "52427-435",
+        "52427-436",
+        "52427-437"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250331"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "8c26dc1a-fba3-4266-bfaf-624b0941ef8b",
+      "set_id": "0098dec4-f0e5-45d5-8aa4-5d0faf9ab142",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0098dec4-f0e5-45d5-8aa4-5d0faf9ab142",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "ZITUVIMET"
+      ],
+      "generic_names": [
+        "SITAGLIPTIN AND METFORMIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "SITAGLIPTIN",
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Zydus Lifesciences Limited"
+      ],
+      "product_ndcs": [
+        "70771-1859",
+        "70771-1860"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260812"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "506adfe0-80b4-4a62-9b2c-39bb23b04254",
+      "set_id": "2f635b36-e86a-4e53-8eaf-589917b5f342",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2f635b36-e86a-4e53-8eaf-589917b5f342",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "ZITUVIMET XR"
+      ],
+      "generic_names": [
+        "SITAGLIPTIN AND METFORMIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "SITAGLIPTIN",
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Zydus Pharmaceuticals USA Inc."
+      ],
+      "product_ndcs": [
+        "70710-1804",
+        "70710-1805",
+        "70710-1806"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250716"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "6fd84734-1ea9-46b3-8ca9-0a61340f1390",
+      "set_id": "43e3b1c9-3cbd-8dc3-e063-6394a90a10a2",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=43e3b1c9-3cbd-8dc3-e063-6394a90a10a2",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sitagliptin and Metformin hydrochloride"
+      ],
+      "generic_names": [
+        "SITAGLIPTIN AND METFORMIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "SITAGLIPTIN PHOSPHATE",
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Par Health USA, LLC"
+      ],
+      "product_ndcs": [
+        "10370-317",
+        "10370-318",
+        "10370-351"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20251130"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "853cf721-7c0c-42ed-9243-eb7cddd3574d",
+      "set_id": "4bade493-499e-434a-97a0-26ca68917623",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4bade493-499e-434a-97a0-26ca68917623",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "ZITUVIMET XR"
+      ],
+      "generic_names": [
+        "SITAGLIPTIN AND METFORMIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "SITAGLIPTIN",
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Zydus Lifesciences Limited"
+      ],
+      "product_ndcs": [
+        "70771-1879",
+        "70771-1880",
+        "70771-1881"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260105"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "6c6865d9-b997-4c50-bb00-0b188ae0d2c0",
+      "set_id": "4d812277-21a8-4de3-b728-e3fdd01305b5",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4d812277-21a8-4de3-b728-e3fdd01305b5",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sitagliptin and metformin hydrochloride"
+      ],
+      "generic_names": [
+        "SITAGLIPTIN AND METFORMIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "SITAGLIPTIN",
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Zydus Pharmaceuticals (USA) Inc."
+      ],
+      "product_ndcs": [
+        "70710-1986",
+        "70710-1987"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260812"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "cc27c9a5-dd2e-4a79-af00-28f51408362a",
+      "set_id": "003dd1ec-16f8-4f96-b6a8-c4689d35892a",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=003dd1ec-16f8-4f96-b6a8-c4689d35892a",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Amlodipine Besylate"
+      ],
+      "generic_names": [
+        "AMLODIPINE BESYLATE"
+      ],
+      "active_ingredients": [
+        "AMLODIPINE BESYLATE"
+      ],
+      "manufacturers": [
+        "Lupin Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "68180-233",
+        "68180-750",
+        "68180-751",
+        "68180-752",
+        "68180-719",
+        "68180-720",
+        "68180-721",
+        "68180-455"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260420"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "a133e010-5957-430e-b449-aae85224caab",
+      "set_id": "00a037f6-b17f-4d21-9a9a-0e682f68d483",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00a037f6-b17f-4d21-9a9a-0e682f68d483",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Amlodipine Besylate"
+      ],
+      "generic_names": [
+        "AMLODIPINE BESYLATE"
+      ],
+      "active_ingredients": [
+        "AMLODIPINE BESYLATE"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-6853"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250402"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "454ff602-1110-4ac5-bc30-152146166629",
+      "set_id": "01139e81-a4fa-4e13-acdf-c75c79a1aa9c",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=01139e81-a4fa-4e13-acdf-c75c79a1aa9c",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Amlodipine Besylate"
+      ],
+      "generic_names": [
+        "AMLODIPINE BESYLATE"
+      ],
+      "active_ingredients": [
+        "AMLODIPINE BESYLATE"
+      ],
+      "manufacturers": [
+        "Preferred Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "68788-9345"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260223"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "41230e10-2e74-dd97-e063-6294a90a4b85",
+      "set_id": "02e233c4-48d1-456d-8fc8-f99a06ef854a",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=02e233c4-48d1-456d-8fc8-f99a06ef854a",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Amlodipine and Benazepril Hydrochloride"
+      ],
+      "generic_names": [
+        "AMLODIPINE AND BENAZEPRIL HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "AMLODIPINE BESYLATE",
+        "BENAZEPRIL HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "PD-Rx Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "72789-412"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20251014"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "31d0d1f2-a0c7-4cd3-80d2-d9f231687adc",
+      "set_id": "02f9b562-6f7f-4783-bb0d-67c318073e1c",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=02f9b562-6f7f-4783-bb0d-67c318073e1c",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Amlodipine and Olmesartan Medoxomil"
+      ],
+      "generic_names": [
+        "AMLODIPINE AND OLMESARTAN MEDOXOMIL"
+      ],
+      "active_ingredients": [
+        "AMLODIPINE BESYLATE",
+        "OLMESARTAN MEDOXOMIL"
+      ],
+      "manufacturers": [
+        "Amneal Pharmaceuticals NY LLC"
+      ],
+      "product_ndcs": [
+        "69238-2673",
+        "69238-2675",
+        "69238-2676",
+        "69238-2674"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240326"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "53869808-0c5e-754f-e063-6294a90ab5f6",
+      "set_id": "09d31eee-cd22-4918-a889-3eb4d2969525",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=09d31eee-cd22-4918-a889-3eb4d2969525",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "telmisartan"
+      ],
+      "generic_names": [
+        "TELMISARTAN"
+      ],
+      "active_ingredients": [
+        "TELMISARTAN"
+      ],
+      "manufacturers": [
+        "REMEDYREPACK INC."
+      ],
+      "product_ndcs": [
+        "70518-3798"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260605"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "70efda7e-0c71-4faf-be4e-ef281d7cc297",
+      "set_id": "0c1bd0f4-034e-486c-ae46-2855c8c9ebda",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0c1bd0f4-034e-486c-ae46-2855c8c9ebda",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "telmisartan and hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "TELMISARTAN AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "TELMISARTAN",
+        "HYDROCHLOROTHIAZIDE"
+      ],
+      "manufacturers": [
+        "Lifestar Pharma LLC"
+      ],
+      "product_ndcs": [
+        "70756-315",
+        "70756-316",
+        "70756-317"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250820"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "5afb1a80-6024-d7fa-e063-6394a90a7ca2",
+      "set_id": "1b303136-dccd-178b-e063-6394a90a35f8",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1b303136-dccd-178b-e063-6394a90a35f8",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Telmisartan and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "TELMISARTAN AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "TELMISARTAN",
+        "HYDROCHLOROTHIAZIDE"
+      ],
+      "manufacturers": [
+        "AvKARE"
+      ],
+      "product_ndcs": [
+        "42291-462",
+        "42291-463",
+        "42291-464"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260908"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "697f1231-2483-4e0b-9e23-aeb576fa6171",
+      "set_id": "1e55800d-f77c-4950-a6d7-2055f4c7ea17",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1e55800d-f77c-4950-a6d7-2055f4c7ea17",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Telmisartan and Hydrochlorothiazide"
+      ],
+      "generic_names": [
+        "TELMISARTAN AND HYDROCHLOROTHIAZIDE"
+      ],
+      "active_ingredients": [
+        "TELMISARTAN",
+        "HYDROCHLOROTHIAZIDE"
+      ],
+      "manufacturers": [
+        "Glenmark Pharmaceuticals Inc., USA"
+      ],
+      "product_ndcs": [
+        "68462-840",
+        "68462-841",
+        "68462-842"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260107"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "ee8e3aa2-8550-41c7-9911-0723b3fb2f87",
+      "set_id": "0005aafa-08f8-4990-a54d-cc097195708f",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0005aafa-08f8-4990-a54d-cc097195708f",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Pain Reliever Extra Strength"
+      ],
+      "generic_names": [
+        "ACETAMINOPHEN"
+      ],
+      "active_ingredients": [
+        "ACETAMINOPHEN"
+      ],
+      "manufacturers": [
+        "Valu Merchandisers Company"
+      ],
+      "product_ndcs": [
+        "63941-519"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information store at 25\u00b0C (77\u00b0F); excursions permitted between 15\u00b0-30\u00b0C (59\u00b0-86\u00b0F) avoid high humidity see end flap for expiration date and lot number",
+      "effective_time": "20260102"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "9bd24daa-3c59-4608-b967-d4fe2640358b",
+      "set_id": "00146b91-008d-4b16-95b0-6077f98821be",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00146b91-008d-4b16-95b0-6077f98821be",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "basic care acetaminophen"
+      ],
+      "generic_names": [
+        "ACETAMINOPHEN"
+      ],
+      "active_ingredients": [
+        "ACETAMINOPHEN"
+      ],
+      "manufacturers": [
+        "Amazon.com Services LLC"
+      ],
+      "product_ndcs": [
+        "72288-300"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information \u2022 store at 20-25 \u00b0 C (68-77 \u00b0 F)",
+      "effective_time": "20241024"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "a3731272-35ef-4fb8-aeb2-3421f68f715a",
+      "set_id": "0035a4fd-8dd5-4534-a1b5-f510d637f721",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0035a4fd-8dd5-4534-a1b5-f510d637f721",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Acetaminophen"
+      ],
+      "generic_names": [
+        "ACETAMINOPHEN"
+      ],
+      "active_ingredients": [
+        "ACETAMINOPHEN"
+      ],
+      "manufacturers": [
+        "WALMART INC."
+      ],
+      "product_ndcs": [
+        "79903-132"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information store at 20 o to 25 o C (68 o to 77 o F). Avoid excessive heat 40 o C (104 o F). USP Dissolution test is pending",
+      "effective_time": "20240124"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "3aa48604-afd3-49a2-b0a8-ab15171c7913",
+      "set_id": "0044c53c-11dd-41a9-a5d9-622dd8b1c144",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0044c53c-11dd-41a9-a5d9-622dd8b1c144",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Daytime Cold and Flu"
+      ],
+      "generic_names": [
+        "ACETAMINOPHEN, DEXTROMETHORPHAN HBR, PHENYLEPHRINE HCL"
+      ],
+      "active_ingredients": [
+        "ACETAMINOPHEN",
+        "DEXTROMETHORPHAN HYDROBROMIDE",
+        "PHENYLEPHRINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Family Dollar (FAMILY WELLNESS)"
+      ],
+      "product_ndcs": [
+        "55319-960"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240327"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "404529fa-4eba-d862-e063-6394a90a08b9",
+      "set_id": "004c39cd-b4f4-1cae-e063-6394a90a0697",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=004c39cd-b4f4-1cae-e063-6394a90a0697",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Acetaminophen"
+      ],
+      "generic_names": [
+        "ACETAMINOPHEN"
+      ],
+      "active_ingredients": [
+        "ACETAMINOPHEN"
+      ],
+      "manufacturers": [
+        "NuCare Pharmaceuticals,Inc."
+      ],
+      "product_ndcs": [
+        "68071-3454"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information store between 20-25\u00b0C (68-77\u00b0F)",
+      "effective_time": "20251003"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "156fa79e-91a6-460c-8f93-af5115b9588a",
+      "set_id": "00fbd46e-05fd-4f8a-9f59-a7a4d01c8e54",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00fbd46e-05fd-4f8a-9f59-a7a4d01c8e54",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Amoxicillin"
+      ],
+      "generic_names": [
+        "AMOXICILLIN"
+      ],
+      "active_ingredients": [
+        "AMOXICILLIN"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-0714"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20231218"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "0e877b33-af19-d857-e063-6394a90a08ea",
+      "set_id": "0173e9de-a995-4386-bb65-8fc2bbf347f9",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0173e9de-a995-4386-bb65-8fc2bbf347f9",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "AMOXICILLIN"
+      ],
+      "generic_names": [
+        "AMOXICILLIN"
+      ],
+      "active_ingredients": [
+        "AMOXICILLIN"
+      ],
+      "manufacturers": [
+        "DIRECT RX"
+      ],
+      "product_ndcs": [
+        "61919-401",
+        "61919-019"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240109"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "19e4bfb8-2ed1-4a6b-adf5-853ad2953362",
+      "set_id": "011de1a5-1ac0-4831-9e8d-26ec79ba2205",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=011de1a5-1ac0-4831-9e8d-26ec79ba2205",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Metformin Hydrochloride"
+      ],
+      "generic_names": [
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-7011"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240821"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "511138d4-8c1a-2198-e063-6394a90afc43",
+      "set_id": "014f2a32-8440-4d0c-8f5d-c4b3a49e0dec",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=014f2a32-8440-4d0c-8f5d-c4b3a49e0dec",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Metformin hydrochloride"
+      ],
+      "generic_names": [
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "REMEDYREPACK INC."
+      ],
+      "product_ndcs": [
+        "70518-4652"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260505"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "4b81b8de-7de7-2dc4-e063-6294a90a7a10",
+      "set_id": "0178b9dd-bafa-9e81-e063-6294a90a88b0",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0178b9dd-bafa-9e81-e063-6294a90a88b0",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Metformin Hydrochloride"
+      ],
+      "generic_names": [
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Northwind Health Company, LLC"
+      ],
+      "product_ndcs": [
+        "51655-644"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260101"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "4138efd9-8582-c8db-e063-6294a90adcd7",
+      "set_id": "0230a3c3-34cf-478b-88c3-4d96e5300018",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0230a3c3-34cf-478b-88c3-4d96e5300018",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Metformin Hydrochloride"
+      ],
+      "generic_names": [
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "METFORMIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "PD-Rx Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "43063-527"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20251015"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "05b0f170-ac97-4a83-b03a-659a4b493ee2",
+      "set_id": "00afce9b-48c9-487a-a738-e359c005c707",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00afce9b-48c9-487a-a738-e359c005c707",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Atorvastatin calcium"
+      ],
+      "generic_names": [
+        "ATORVASTATIN CALCIUM"
+      ],
+      "active_ingredients": [
+        "ATORVASTATIN CALCIUM TRIHYDRATE"
+      ],
+      "manufacturers": [
+        "Bryant Ranch Prepack"
+      ],
+      "product_ndcs": [
+        "71335-1336"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250828"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "6a5806cd-a79c-44aa-9ed5-2c8831606df0",
+      "set_id": "01eadde8-37f3-4474-995f-22c1a65adf12",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=01eadde8-37f3-4474-995f-22c1a65adf12",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Atorvastatin calcium"
+      ],
+      "generic_names": [
+        "ATORVASTATIN CALCIUM"
+      ],
+      "active_ingredients": [
+        "ATORVASTATIN CALCIUM TRIHYDRATE"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-6054"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20230407"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "1e0577ab-3a32-4752-b948-ccc25c7c5356",
+      "set_id": "043c4742-081d-4bc4-bf27-dad92bb2dfbc",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=043c4742-081d-4bc4-bf27-dad92bb2dfbc",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Amlodipine and Atorvastatin"
+      ],
+      "generic_names": [
+        "AMLODIPINE AND ATORVASTATIN"
+      ],
+      "active_ingredients": [
+        "AMLODIPINE BESYLATE",
+        "ATORVASTATIN CALCIUM TRIHYDRATE"
+      ],
+      "manufacturers": [
+        "Bryant Ranch Prepack"
+      ],
+      "product_ndcs": [
+        "71335-3076"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260212"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "81d15801-dbb6-486a-9257-d80f6c3bc867",
+      "set_id": "06028adf-fcb5-452c-ba67-ee53bc65c519",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=06028adf-fcb5-452c-ba67-ee53bc65c519",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "atorvastatin calcium"
+      ],
+      "generic_names": [
+        "ATORVASTATIN CALCIUM"
+      ],
+      "active_ingredients": [
+        "ATORVASTATIN CALCIUM TRIHYDRATE"
+      ],
+      "manufacturers": [
+        "Zydus Lifesciences Limited"
+      ],
+      "product_ndcs": [
+        "70771-1875",
+        "70771-1876",
+        "70771-1877",
+        "70771-1878"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250530"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "16400a94-a140-4df0-bd7f-52a6e117dec3",
+      "set_id": "06abf2dc-5ebd-4d42-b43c-7deeb93925dd",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=06abf2dc-5ebd-4d42-b43c-7deeb93925dd",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "ATORVASTATIN CALCIUM"
+      ],
+      "generic_names": [
+        "ATORVASTATIN CALCIUM"
+      ],
+      "active_ingredients": [
+        "ATORVASTATIN CALCIUM TRIHYDRATE"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-7807"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20251204"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "ca200f16-7b7e-4b33-964b-e2ccfc62f0f4",
+      "set_id": "015b1c8f-9d5b-4afc-a55c-1a731b5fc72a",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=015b1c8f-9d5b-4afc-a55c-1a731b5fc72a",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "omeprazole"
+      ],
+      "generic_names": [
+        "OMEPRAZOLE"
+      ],
+      "active_ingredients": [
+        "OMEPRAZOLE"
+      ],
+      "manufacturers": [
+        "Kroger Company"
+      ],
+      "product_ndcs": [
+        "30142-557"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information \u2022 read the directions and warnings before use \u2022 keep the carton. It contains important information. \u2022 store at 20-25\u00b0C (68-77\u00b0F) and protect from moisture",
+      "effective_time": "20251208"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "21aa099b-aabb-40ee-bbea-9db44c62e1e8",
+      "set_id": "01bde9ca-0114-426d-8188-c55aefaa0961",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=01bde9ca-0114-426d-8188-c55aefaa0961",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Omeprazole"
+      ],
+      "generic_names": [
+        "OMEPRAZOLE"
+      ],
+      "active_ingredients": [
+        "OMEPRAZOLE"
+      ],
+      "manufacturers": [
+        "CVS Pharmacy"
+      ],
+      "product_ndcs": [
+        "69842-791"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information \u2022 read the directions and warnings before use \u2022 keep the carton. It contains important information. \u2022 store at 20-25\u00b0C (68-77\u00b0F); keep product out of high heat and moisture \u2022 take the tablet immediately after opening individual blister. Do not store the tablet outside the blister pack for future use.",
+      "effective_time": "20250305"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "edbe9a75-73ef-4b53-8f08-10e775091e23",
+      "set_id": "0340ef94-d2b4-47af-a045-d0d031293984",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0340ef94-d2b4-47af-a045-d0d031293984",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "omeprazole"
+      ],
+      "generic_names": [
+        "OMEPRAZOLE MAGNESIUM"
+      ],
+      "active_ingredients": [
+        "OMEPRAZOLE MAGNESIUM"
+      ],
+      "manufacturers": [
+        "Meijer, Inc."
+      ],
+      "product_ndcs": [
+        "79481-0281"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240329"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "56d11df3-a35b-e577-e063-6394a90a9464",
+      "set_id": "0344268f-d8e6-48d5-b1e1-f750ed1d8a52",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0344268f-d8e6-48d5-b1e1-f750ed1d8a52",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Omeprazole"
+      ],
+      "generic_names": [
+        "OMEPRAZOLE"
+      ],
+      "active_ingredients": [
+        "OMEPRAZOLE"
+      ],
+      "manufacturers": [
+        "PD-Rx Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "72789-257"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260717"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "0cc267bf-8650-40e3-a05d-e102e275c4c2",
+      "set_id": "03ac077f-3873-4087-96d0-89049161dea9",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=03ac077f-3873-4087-96d0-89049161dea9",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Omeprazole"
+      ],
+      "generic_names": [
+        "OMEPRAZOLE"
+      ],
+      "active_ingredients": [
+        "OMEPRAZOLE"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "63187-061",
+        "63187-070"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20241001"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "6efa1622-de6a-4eee-b5bb-6a8149bbe1c1",
+      "set_id": "003307c5-3f73-4a5d-a704-bfdea3c656e8",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=003307c5-3f73-4a5d-a704-bfdea3c656e8",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Azithromycin"
+      ],
+      "generic_names": [
+        "AZITHROMYCIN"
+      ],
+      "active_ingredients": [
+        "AZITHROMYCIN DIHYDRATE"
+      ],
+      "manufacturers": [
+        "Preferred Pharmaceuticals Inc."
+      ],
+      "product_ndcs": [
+        "68788-7598"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260316"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "ca28af23-6ff4-43a9-9f5f-3a2af0a9c005",
+      "set_id": "01649d79-4677-4577-a3e4-e054f3f9fc3b",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=01649d79-4677-4577-a3e4-e054f3f9fc3b",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "azithromycin"
+      ],
+      "generic_names": [
+        "AZITHROMYCIN"
+      ],
+      "active_ingredients": [
+        "AZITHROMYCIN DIHYDRATE"
+      ],
+      "manufacturers": [
+        "Lupin Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "68180-861",
+        "68180-862"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260820"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "654b77ea-07ad-4747-ac35-5a2eb41f4588",
+      "set_id": "0b63649d-558c-4250-90ee-af6e1e5c6d2c",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0b63649d-558c-4250-90ee-af6e1e5c6d2c",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Azithromycin"
+      ],
+      "generic_names": [
+        "AZITHROMYCIN"
+      ],
+      "active_ingredients": [
+        "AZITHROMYCIN DIHYDRATE"
+      ],
+      "manufacturers": [
+        "Zydus Lifesciences Limited"
+      ],
+      "product_ndcs": [
+        "70771-1422",
+        "70771-1423",
+        "70771-1424",
+        "70771-1425"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250109"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "1e292167-581f-b1db-e063-6394a90ae8a1",
+      "set_id": "0c5d6f5e-18ea-436f-8c62-bbaf66effe3d",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0c5d6f5e-18ea-436f-8c62-bbaf66effe3d",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "AZASITE"
+      ],
+      "generic_names": [
+        "AZITHROMYCIN MONOHYDRATE"
+      ],
+      "active_ingredients": [
+        "AZITHROMYCIN MONOHYDRATE"
+      ],
+      "manufacturers": [
+        "Thea Pharma Inc."
+      ],
+      "product_ndcs": [
+        "82584-307"
+      ],
+      "routes": [
+        "OPHTHALMIC"
+      ],
+      "storage_statement": "Storage and Handling Store unopened bottle under refrigeration at 2\u00b0 to 8\u00b0C (36\u00b0 to 46\u00b0F). Once the bottle is opened, store at 2\u00b0 to 25\u00b0C (36\u00b0 to 77\u00b0F) for up to 14 days. Discard after the 14 days. The white tamper evident over-cap can be thrown away. Retain the tan cap and keep the bottle tightly closed when not in use.",
+      "effective_time": "20240725"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "57c6fcfb-0de3-4007-e063-6394a90aeac5",
+      "set_id": "0c926669-62b2-4ad3-8289-173c5818a9c1",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0c926669-62b2-4ad3-8289-173c5818a9c1",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Azithromycin Dihydrate"
+      ],
+      "generic_names": [
+        "AZITHROMYCIN DIHYDRATE"
+      ],
+      "active_ingredients": [
+        "AZITHROMYCIN DIHYDRATE"
+      ],
+      "manufacturers": [
+        "PD-Rx Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "72789-445"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Store at 20\u00b0 to 25\u00b0C (68\u00b0 to 77\u00b0F); excursions permitted from 15\u00b0 to 30\u00b0C (59\u00b0 to 86\u00b0F) [see USP Controlled Room Temperature]. Dispense in tight containers (USP).",
+      "effective_time": "20260729"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "a797de06-c8be-4417-9bac-137dc4931c8b",
+      "set_id": "05b2836d-cd3d-4d7f-970c-66ec2d788667",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=05b2836d-cd3d-4d7f-970c-66ec2d788667",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "ciprofloxacin"
+      ],
+      "generic_names": [
+        "CIPROFLOXACIN"
+      ],
+      "active_ingredients": [
+        "CIPROFLOXACIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "71205-300"
+      ],
+      "routes": [
+        "OPHTHALMIC"
+      ],
+      "storage_statement": "",
+      "effective_time": "20220502"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "930a2e4b-dcac-4a27-a073-fd21622c1666",
+      "set_id": "09ca5374-2a16-4a95-91b3-70591d78254e",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=09ca5374-2a16-4a95-91b3-70591d78254e",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "CILOXAN"
+      ],
+      "generic_names": [
+        "CIPROFLOXACIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "CIPROFLOXACIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Sandoz Inc"
+      ],
+      "product_ndcs": [
+        "66758-071"
+      ],
+      "routes": [
+        "OPHTHALMIC"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240730"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "2fc39084-df93-4b13-e063-6394a90a38a8",
+      "set_id": "0c355077-7361-41d0-9e82-eb31beaf5daa",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0c355077-7361-41d0-9e82-eb31beaf5daa",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "ciprofloxacin"
+      ],
+      "generic_names": [
+        "CIPROFLOXACIN"
+      ],
+      "active_ingredients": [
+        "CIPROFLOXACIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Umasuto, LLC"
+      ],
+      "product_ndcs": [
+        "85293-002",
+        "85293-003",
+        "85293-004"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250306"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "4ee184ee-4a54-cd3f-e063-6394a90af736",
+      "set_id": "0fac4466-fbe5-49d2-96e3-e3ac2739bd5b",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0fac4466-fbe5-49d2-96e3-e3ac2739bd5b",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Ciprofloxacin"
+      ],
+      "generic_names": [
+        "CIPROFLOXACIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "CIPROFLOXACIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "American Health Packaging"
+      ],
+      "product_ndcs": [
+        "60687-860"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260407"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "56776b15-35d3-3952-e063-6294a90a91e6",
+      "set_id": "0fe3becb-f90e-4187-a8e8-bd0de5a79ad2",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0fe3becb-f90e-4187-a8e8-bd0de5a79ad2",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Ciprofloxacin"
+      ],
+      "generic_names": [
+        "CIPROFLOXACIN HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "CIPROFLOXACIN HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "HAWAII REPACK, INC."
+      ],
+      "product_ndcs": [
+        "85534-0047",
+        "85534-0069",
+        "85534-0081"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260713"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "4bd1345d-d116-426e-825f-bbf29381746a",
+      "set_id": "00653b7c-7099-487e-9a01-e89781c21323",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00653b7c-7099-487e-9a01-e89781c21323",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Ibuprofen Dye Free"
+      ],
+      "generic_names": [
+        "IBUPROFEN"
+      ],
+      "active_ingredients": [
+        "IBUPROFEN"
+      ],
+      "manufacturers": [
+        "CVS Pharmacy"
+      ],
+      "product_ndcs": [
+        "59779-438"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information store between 20\u00b0-25\u00b0C (68\u00b0-77\u00b0F) avoid excessive heat 40\u00b0C (104\u00b0F) see end flap for expiration date and lot number",
+      "effective_time": "20260429"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "ec4746b3-2707-40c5-bb70-58a42f46c249",
+      "set_id": "006adf23-21ab-4a4e-aae9-c4e587777165",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=006adf23-21ab-4a4e-aae9-c4e587777165",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "care one ibuprofen"
+      ],
+      "generic_names": [
+        "IBUPROFEN"
+      ],
+      "active_ingredients": [
+        "IBUPROFEN"
+      ],
+      "manufacturers": [
+        "American Sales Company"
+      ],
+      "product_ndcs": [
+        "41520-604"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information \u2022 read all warnings and directions before use \u2022 store between 20-25\u00b0C (68-77\u00b0F) \u2022 avoid high humidity and excessive heat above 40\u00b0C (104\u00b0F) \u2022 see end panel for lot number and expiration date",
+      "effective_time": "20250603"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "5e595111-8477-4ec7-8d32-a0aeabc04e1a",
+      "set_id": "00872852-680a-41b3-901b-b991b12a176d",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00872852-680a-41b3-901b-b991b12a176d",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Ibuprofen"
+      ],
+      "generic_names": [
+        "IBUPROFEN"
+      ],
+      "active_ingredients": [
+        "IBUPROFEN"
+      ],
+      "manufacturers": [
+        "Aurobindo Pharma Limited"
+      ],
+      "product_ndcs": [
+        "59651-360",
+        "59651-361",
+        "59651-362"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250214"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "b245c1c7-1add-4087-8ae8-ff5b3f46183d",
+      "set_id": "009dde4c-d944-4206-8c9f-35bc8fd92715",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=009dde4c-d944-4206-8c9f-35bc8fd92715",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "leader Ibuprofen"
+      ],
+      "generic_names": [
+        "IBUPROFEN"
+      ],
+      "active_ingredients": [
+        "IBUPROFEN"
+      ],
+      "manufacturers": [
+        "Cardinal Health 110, LLC. dba Leader"
+      ],
+      "product_ndcs": [
+        "70000-0264"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information \u2022 each 5 mL contains: sodium 2 mg \u2022 do not use if printed neckband is broken or missing \u2022 store at 20-25 \u00b0 C (68-77 \u00b0 F) \u2022 do not freeze",
+      "effective_time": "20250626"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "ad449225-ed60-4c66-9fd6-34bef9a4b42e",
+      "set_id": "00b7fc71-8cf0-4c12-a479-146408f7f91b",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00b7fc71-8cf0-4c12-a479-146408f7f91b",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Concentrated ibuprofen infants"
+      ],
+      "generic_names": [
+        "IBUPROFEN"
+      ],
+      "active_ingredients": [
+        "IBUPROFEN"
+      ],
+      "manufacturers": [
+        "Wal-Mart Stores, Inc."
+      ],
+      "product_ndcs": [
+        "49035-635"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "OTHER INFORMATION store between 20-25 o C (68-77 o F) do not use if carton is opened or if printed neckband is imprinted with \"SEALED FOR YOUR PROTECTION\" and \"USE WITH ENCLOSED DOSING DEVICE ONLY\" is broken or missing.",
+      "effective_time": "20220111"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "322eb217-089d-e92d-e063-6394a90a6566",
+      "set_id": "013ce40e-37c9-4b84-b530-ed895f60ce0e",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=013ce40e-37c9-4b84-b530-ed895f60ce0e",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Childrens Zyrtec"
+      ],
+      "generic_names": [
+        "CETIRIZINE HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "CETIRIZINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Kenvue Brands LLC"
+      ],
+      "product_ndcs": [
+        "50580-790"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information store between 20\u00b0 to 25\u00b0C (68\u00b0 to 77\u00b0F) do not use if blister unit is torn or broken",
+      "effective_time": "20250407"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "608495a7-c01c-4f67-8243-b4a3df6e1c0a",
+      "set_id": "016b66fd-dde9-4f13-afaf-a8aafbdeed1a",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=016b66fd-dde9-4f13-afaf-a8aafbdeed1a",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Childrens Cetirizine Hydrochloride Sugar Free Grape"
+      ],
+      "generic_names": [
+        "CETIRIZINE HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "CETIRIZINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-1103"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information do not use if carton is opened, or if imprinted safety seal is broken or missing see bottom panel for expiration date store between 20\u00b0 to 25\u00b0C (68\u00b0 to 77\u00b0F)",
+      "effective_time": "20240123"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "67a5a75a-7a28-4d07-99b4-8325d1776f3a",
+      "set_id": "01d0729f-11ef-4ec5-8d8e-2863407c3f95",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=01d0729f-11ef-4ec5-8d8e-2863407c3f95",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "All Day Allergy"
+      ],
+      "generic_names": [
+        "CETIRIZINE HCL"
+      ],
+      "active_ingredients": [
+        "CETIRIZINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Care One (American Sales Company)"
+      ],
+      "product_ndcs": [
+        "41520-212"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other Information store at 20\u00ba -25\u00baC (68\u00ba - 77\u00baF) avoid high humidity and excessive heat above 40\u00baC (104\u00baF) protect from light",
+      "effective_time": "20250407"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "da309921-1d8c-4e60-989b-4dbe1c314c94",
+      "set_id": "0210f9e5-c35b-4cfa-92d1-48555e99f1f3",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0210f9e5-c35b-4cfa-92d1-48555e99f1f3",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Childrens Allergy Relief"
+      ],
+      "generic_names": [
+        "CETIRIZINE HCL"
+      ],
+      "active_ingredients": [
+        "CETIRIZINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "CVS Pharmacy"
+      ],
+      "product_ndcs": [
+        "59779-509"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information \u2022 store between 20\u00b0 to 25\u00b0C (68\u00b0 to 77\u00b0F) \u2022 do not use if carton is opened, or if printed neckband is broken or missing \u2022 see bottom panel for lot number and expiration date",
+      "effective_time": "20260813"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "44086625-2cfd-7204-e063-6294a90a5b52",
+      "set_id": "03c0a599-072a-10ef-e063-6394a90a9698",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=03c0a599-072a-10ef-e063-6394a90a9698",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "cetirizine hydrochloride"
+      ],
+      "generic_names": [
+        "CETIRIZINE HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "CETIRIZINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "PD-Rx Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "72789-458"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Other information store between 20 - 25\u00b0C (68 - 77\u00b0F) TAMPER EVIDENT: DO NOT USE IF SAFETY SEAL IS BROKEN OR MISSING FROM BOTTLE.",
+      "effective_time": "20251120"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "f059a576-bb4b-441d-917e-4338bc3df403",
+      "set_id": "008de8fd-150f-4022-8ccb-c8bfa94875c7",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=008de8fd-150f-4022-8ccb-c8bfa94875c7",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Levothyroxine sodium"
+      ],
+      "generic_names": [
+        "LEVOTHYROXINE SODIUM"
+      ],
+      "active_ingredients": [
+        "LEVOTHYROXINE SODIUM"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-6115"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260324"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "f62f1fc7-cc68-45c6-bfdd-bce15cb526f5",
+      "set_id": "00a4fc0b-7162-455e-8ed3-56efdbbe182e",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00a4fc0b-7162-455e-8ed3-56efdbbe182e",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "levothyroxine sodium"
+      ],
+      "generic_names": [
+        "LEVOTHYROXINE SODIUM"
+      ],
+      "active_ingredients": [
+        "LEVOTHYROXINE SODIUM"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "71205-353",
+        "71205-354"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Storage Conditions Store at 25\u00b0C (77\u00b0F); excursions permitted to 15\u00b0 C to 30\u00b0 C (59\u00b0 F to 86\u00b0 F) [see USP Controlled Room Temperature]. Levothyroxine Sodium Tablets should be protected from light and moisture.",
+      "effective_time": "20251001"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "699247e5-3bc2-4ef3-aed5-48b44c6c7722",
+      "set_id": "0210a600-747e-433a-8ba9-11692ecfb54a",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0210a600-747e-433a-8ba9-11692ecfb54a",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Levothyroxine Sodium"
+      ],
+      "generic_names": [
+        "LEVOTHYROXINE SODIUM"
+      ],
+      "active_ingredients": [
+        "LEVOTHYROXINE SODIUM"
+      ],
+      "manufacturers": [
+        "Bryant Ranch Prepack"
+      ],
+      "product_ndcs": [
+        "72162-1090"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260407"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "0235176b-ec39-44c4-a9e1-e0729a7989fa",
+      "set_id": "0235176b-ec39-44c4-a9e1-e0729a7989fa",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0235176b-ec39-44c4-a9e1-e0729a7989fa",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Levothyroxine Sodium"
+      ],
+      "generic_names": [
+        "LEVOTHYROXINE SODIUM"
+      ],
+      "active_ingredients": [
+        "LEVOTHYROXINE SODIUM"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "82804-281"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260401"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "7d9af689-848b-3aea-e053-2a91aa0a70d2",
+      "set_id": "03dc86d3-575f-4c65-b06d-2613efbcd943",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=03dc86d3-575f-4c65-b06d-2613efbcd943",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "GUNA-GERIATRICS"
+      ],
+      "generic_names": [
+        "1,4-BENZOQUINONE - ARNICA MONTANA - OXYTOCIN - BARIUM CARBONATE - BARIUM OXALOSUCCINATE - CORTICOTROPIN - LEAD - LEVOTHYROXINE - LUTRELIN - MALIC ACID - MELATONIN - NEUROTROPHIN-3 - NEUROTROPHIN-4 - PHENYLALANINE - PORK LIVER - PYRUVIC ACID - RINFABATE - SUS SCROFA ADRENAL GLAND - SUS SCROFA FRONTAL LOBE - SUS SCROFA HYPOTHALAMUS - THYROTROPIN ALFA - BRAIN-DERIVED NEUROTROPHIC FACTOR HUMAN -"
+      ],
+      "active_ingredients": [
+        "QUINONE",
+        "BARIUM OXALOSUCCINATE",
+        "CORTICOTROPIN",
+        "ARNICA MONTANA",
+        "BARIUM CARBONATE",
+        "BRAIN-DERIVED NEUROTROPHIC FACTOR HUMAN",
+        "MALIC ACID",
+        "SUS SCROFA FRONTAL LOBE",
+        "SUS SCROFA ADRENAL GLAND",
+        "PORK LIVER",
+        "SUS SCROFA HYPOTHALAMUS",
+        "RINFABATE",
+        "LUTRELIN",
+        "MELATONIN",
+        "NEUROTROPHIN-3",
+        "NEUROTROPHIN-4",
+        "OXYTOCIN",
+        "PHENYLALANINE",
+        "LEAD",
+        "PYRUVIC ACID",
+        "THYROTROPIN ALFA",
+        "LEVOTHYROXINE"
+      ],
+      "manufacturers": [
+        "Guna spa"
+      ],
+      "product_ndcs": [
+        "17089-349"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20181222"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "9631cc90-ea8d-42bb-ba01-ed8f09b8a6c5",
+      "set_id": "0691def8-4a7b-4de3-866f-a280989f47f1",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0691def8-4a7b-4de3-866f-a280989f47f1",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "ADMELOG"
+      ],
+      "generic_names": [
+        "INSULIN LISPRO"
+      ],
+      "active_ingredients": [
+        "INSULIN LISPRO"
+      ],
+      "manufacturers": [
+        "Sanofi-Aventis U.S. LLC"
+      ],
+      "product_ndcs": [
+        "0024-5924",
+        "0024-5925",
+        "0024-5926"
+      ],
+      "routes": [
+        "INTRAVENOUS",
+        "SUBCUTANEOUS"
+      ],
+      "storage_statement": "16.2 Storage and Handling Dispense in the original sealed carton with the enclosed Instructions for Use. Store ADMELOG according to the table below. Do not freeze and do not use ADMELOG if it has been frozen. Protect from direct heat and light. In-use (opened) ADMELOG vials and ADMELOG SoloStar pens must be used within 28 days or be discarded, even if they still contain ADMELOG. ADMELOG Not In-Use (Unopened) Room Temperature (Up to 86\u00b0F [30\u00b0C]) Not In-Use (Unopened) Refrigerated (36\u00b0F\u201346\u00b0F [2\u00b0C\u20138\u00b0C]) In-Use (Opened) Room Temperature (Up to 86\u00b0F [30\u00b0C]) 10 mL multiple-dose vial 28 days Until expiration date 28 days refrigerated/room temperature 3 mL multiple-dose vial 28 days Until expiration date 28 days refrigerated/room temperature 3 mL single-patient-use SoloStar prefilled pen 28 days Until expiration date 28 days Do not refrigerate. Use in an External Insulin Pump Change the ADMELOG in the pump reservoir at least every 7 days or according to the pump user manual, whichever is shorter, or after exposure to temperatures that exceed 98.6\u00b0F (37\u00b0C). Diluted ADMELOG for Subcutaneous Injection Diluted ADMELOG may remain in patient use for up to 24 hours when stored in a refrigerator (36\u00b0F\u201346\u00b0F [2\u00b0C\u20138\u00b0C]) or for up to 4 hours when stored at room temperature (86\u00b0F [30\u00b0C]). Do not dilute ADMELOG used in an external insulin pump. Admixture for Intravenous Administration Infusion bags prepared with ADMELOG are stable when stored in a refrigerator (36\u00b0F\u201346\u00b0F [2\u00b0C\u20138\u00b0C]) for 24 hours or may be used at room temperature for up to 4 hours [see Dosage and Administration (2.2) ] .",
+      "effective_time": "20250604"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "ed813de7-e0d4-74b9-e053-2995a90a6a73",
+      "set_id": "06e9b066-8118-478f-be6b-611c9b19e725",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=06e9b066-8118-478f-be6b-611c9b19e725",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "GUNA-IGF"
+      ],
+      "generic_names": [
+        "INSULIN-LIKE GROWTH FACTOR-1"
+      ],
+      "active_ingredients": [
+        "MECASERMIN"
+      ],
+      "manufacturers": [
+        "Guna spa"
+      ],
+      "product_ndcs": [
+        "17089-376"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20221115"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "32977bea-c837-4acc-b469-03a2fc765787",
+      "set_id": "0ad21db3-2b1c-4ed9-a687-bdd6a74d0aae",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0ad21db3-2b1c-4ed9-a687-bdd6a74d0aae",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "BASAGLAR KwikPen"
+      ],
+      "generic_names": [
+        "INSULIN GLARGINE"
+      ],
+      "active_ingredients": [
+        "INSULIN GLARGINE"
+      ],
+      "manufacturers": [
+        "Eli Lilly and Company"
+      ],
+      "product_ndcs": [
+        "0002-7715",
+        "0002-8214"
+      ],
+      "routes": [
+        "SUBCUTANEOUS"
+      ],
+      "storage_statement": "16.2 Storage and Handling Dispense in the original sealed carton with the enclosed Instructions for Use. Protect BASAGLAR from heat and light. Do not freeze BASAGLAR. In-use BASAGLAR prefilled pens must be used within 28 days or be discarded, even if they still contain BASAGLAR. Storage conditions are summarized in the following table: Not In-Use (Unopened) Room Temperature (up to 86\u00b0F [30\u00b0C]) Not In-Use (Unopened) Refrigerated (36\u00b0F to 46\u00b0F [2\u00b0C to 8\u00b0C]) In-Use (Opened) Room Temperature, (up to 86\u00b0F [30\u00b0C]) 3 mL single-patient-use BASAGLAR KwikPen 28 days Until expiration date 28 days, Do not refrigerate. 3 mL single-patient-use BASAGAR Tempo Pen 28 days Until expiration date 28 days, Do not refrigerate.",
+      "effective_time": "20260616"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "5a947dc5-7059-82ab-e063-6394a90af352",
+      "set_id": "12ec9e3f-e2ac-43a1-b334-8b6538cf2bb0",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=12ec9e3f-e2ac-43a1-b334-8b6538cf2bb0",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "ADMELOG"
+      ],
+      "generic_names": [
+        "INSULIN LISPRO"
+      ],
+      "active_ingredients": [
+        "INSULIN LISPRO"
+      ],
+      "manufacturers": [
+        "REMEDYREPACK INC."
+      ],
+      "product_ndcs": [
+        "70518-4275"
+      ],
+      "routes": [
+        "SUBCUTANEOUS"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260903"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "5907ee0c-c7d5-4e1c-9c12-8390ccb34c42",
+      "set_id": "13891e5a-e57a-46e8-911c-2f680352b52b",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=13891e5a-e57a-46e8-911c-2f680352b52b",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "NOVOLOG"
+      ],
+      "generic_names": [
+        "INSULIN ASPART"
+      ],
+      "active_ingredients": [
+        "INSULIN ASPART"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-4500"
+      ],
+      "routes": [
+        "INTRAVENOUS",
+        "SUBCUTANEOUS"
+      ],
+      "storage_statement": "",
+      "effective_time": "20231215"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "2a996b2b-b5da-65e7-e063-6394a90adeed",
+      "set_id": "04c8a345-0a0d-5a01-e063-6294a90a40d2",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=04c8a345-0a0d-5a01-e063-6294a90a40d2",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Albuterol Sulfate HFA"
+      ],
+      "generic_names": [
+        "ALBUTEROL SULFATE"
+      ],
+      "active_ingredients": [
+        "ALBUTEROL SULFATE"
+      ],
+      "manufacturers": [
+        "Advanced Rx of Tennessee, LLC"
+      ],
+      "product_ndcs": [
+        "80425-0359"
+      ],
+      "routes": [
+        "RESPIRATORY (INHALATION)"
+      ],
+      "storage_statement": "",
+      "effective_time": "20241231"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "42f01933-6ed0-b7b0-e063-6394a90ab9e9",
+      "set_id": "056e145b-87aa-4009-a7ab-2ac0bd086eb0",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=056e145b-87aa-4009-a7ab-2ac0bd086eb0",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Albuterol Sulfate"
+      ],
+      "generic_names": [
+        "ALBUTEROL SULFATE"
+      ],
+      "active_ingredients": [
+        "ALBUTEROL SULFATE"
+      ],
+      "manufacturers": [
+        "Asclemed USA, Inc."
+      ],
+      "product_ndcs": [
+        "76420-087"
+      ],
+      "routes": [
+        "RESPIRATORY (INHALATION)"
+      ],
+      "storage_statement": "Storage and Handling PROTECT FROM LIGHT. Store vials in pouch until time of use. Store between 20\u00b0C to 25\u00b0 C (68\u00b0F to 77\u00b0 F), excursions permitted to 15\u00b0C to 30\u00b0C (59\u00b0F to 86\u00b0F) [see USP Controlled Room Temperature]. Rx Only Relabeled by: Enovachem PHARMACEUTICALS Torrance, CA 90501",
+      "effective_time": "20251106"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "07b1ee8b-d920-49dd-9fad-cb0fe8a35e0d",
+      "set_id": "07b1ee8b-d920-49dd-9fad-cb0fe8a35e0d",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=07b1ee8b-d920-49dd-9fad-cb0fe8a35e0d",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Albuterol Sulfate"
+      ],
+      "generic_names": [
+        "ALBUTEROL SULFATE"
+      ],
+      "active_ingredients": [
+        "ALBUTEROL SULFATE"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "82804-036"
+      ],
+      "routes": [
+        "RESPIRATORY (INHALATION)"
+      ],
+      "storage_statement": "",
+      "effective_time": "20231001"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "081b7bbb-6692-4512-b135-863b73bf30a5",
+      "set_id": "081b7bbb-6692-4512-b135-863b73bf30a5",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=081b7bbb-6692-4512-b135-863b73bf30a5",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Albuterol Sulfate"
+      ],
+      "generic_names": [
+        "ALBUTEROL SULFATE"
+      ],
+      "active_ingredients": [
+        "ALBUTEROL SULFATE"
+      ],
+      "manufacturers": [
+        "Preferred Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "68788-4041"
+      ],
+      "routes": [
+        "RESPIRATORY (INHALATION)"
+      ],
+      "storage_statement": "",
+      "effective_time": "20251013"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "0b0587df-b4bd-4fae-9d79-c71362c0314b",
+      "set_id": "0b0587df-b4bd-4fae-9d79-c71362c0314b",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0b0587df-b4bd-4fae-9d79-c71362c0314b",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Ipratropium Bromide and Albuterol Sulfate"
+      ],
+      "generic_names": [
+        "IPRATROPIUM BROMIDE AND ALBUTEROL SULFATE"
+      ],
+      "active_ingredients": [
+        "IPRATROPIUM BROMIDE",
+        "ALBUTEROL SULFATE"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "71205-726"
+      ],
+      "routes": [
+        "RESPIRATORY (INHALATION)"
+      ],
+      "storage_statement": "",
+      "effective_time": "20221201"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "48bbc577-3242-4da3-bca3-7a5f89105415",
+      "set_id": "014f9762-6948-46b7-8659-5c89f35ad8bf",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=014f9762-6948-46b7-8659-5c89f35ad8bf",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Pantoprazole Sodium"
+      ],
+      "generic_names": [
+        "PANTOPRAZOLE SODIUM"
+      ],
+      "active_ingredients": [
+        "PANTOPRAZOLE SODIUM"
+      ],
+      "manufacturers": [
+        "Meitheal Pharmaceuticals Inc."
+      ],
+      "product_ndcs": [
+        "71288-600"
+      ],
+      "routes": [
+        "INTRAVENOUS"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250627"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "02ee7ed6-217f-4128-bbbb-b9390475a65b",
+      "set_id": "02ee7ed6-217f-4128-bbbb-b9390475a65b",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=02ee7ed6-217f-4128-bbbb-b9390475a65b",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "PANTOPRAZOLE SODIUM"
+      ],
+      "generic_names": [
+        "PANTOPRAZOLE SODIUM INJECTION"
+      ],
+      "active_ingredients": [
+        "PANTOPRAZOLE SODIUM"
+      ],
+      "manufacturers": [
+        "Alembic Pharmaceuticals Limited"
+      ],
+      "product_ndcs": [
+        "46708-071"
+      ],
+      "routes": [
+        "INTRAVENOUS"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250407"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "a2efd39f-6373-482a-9af8-54f78d2a2b46",
+      "set_id": "03dea010-4bae-43ab-893e-9bbddb58062d",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=03dea010-4bae-43ab-893e-9bbddb58062d",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Pantoprazole Sodium"
+      ],
+      "generic_names": [
+        "PANTOPRAZOLE SODIUM"
+      ],
+      "active_ingredients": [
+        "PANTOPRAZOLE SODIUM"
+      ],
+      "manufacturers": [
+        "Bryant Ranch Prepack"
+      ],
+      "product_ndcs": [
+        "71335-1165"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260605"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "2c507c43-c033-4b6e-b954-f0f2fb617289",
+      "set_id": "0502f935-af7a-4f1e-8c3e-29e20647c885",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0502f935-af7a-4f1e-8c3e-29e20647c885",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Pantoprazole sodium delayed-release"
+      ],
+      "generic_names": [
+        "PANTOPRAZOLE SODIUM DELAYED-RELEASE"
+      ],
+      "active_ingredients": [
+        "PANTOPRAZOLE SODIUM"
+      ],
+      "manufacturers": [
+        "Lifestar Pharma LLC"
+      ],
+      "product_ndcs": [
+        "70756-018",
+        "70756-019"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250908"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "4c4adb93-e6cf-6f33-e063-6294a90a063b",
+      "set_id": "0515ceaa-7d17-c92f-e063-6294a90a044e",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0515ceaa-7d17-c92f-e063-6294a90a044e",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Pantoprazole Sodium DR"
+      ],
+      "generic_names": [
+        "PANTOPRAZOLE SODIUM DR"
+      ],
+      "active_ingredients": [
+        "PANTOPRAZOLE SODIUM"
+      ],
+      "manufacturers": [
+        "Direct_Rx"
+      ],
+      "product_ndcs": [
+        "72189-514"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Storage Store pantoprazole sodium delayed-release tablets, USP at 20\u00b0 to 25\u00b0C (68\u00b0 to 77\u00b0F) [see USP Controlled Room Temperature].",
+      "effective_time": "20260305"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "7731d02d-7220-4f43-b230-9d38875f4192",
+      "set_id": "00179766-980b-44b0-99d3-1fee2bb27e37",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=00179766-980b-44b0-99d3-1fee2bb27e37",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sertraline Hydrochloride"
+      ],
+      "generic_names": [
+        "SERTRALINE HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "SERTRALINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "63187-859"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20191101"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "9bab5466-564e-4ce9-a139-0eb1ae02b6d1",
+      "set_id": "01800452-c353-4235-a66a-214048752e74",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=01800452-c353-4235-a66a-214048752e74",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sertraline Hydrochloride"
+      ],
+      "generic_names": [
+        "SERTRALINE HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "SERTRALINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Aurobindo Pharma Limited"
+      ],
+      "product_ndcs": [
+        "65862-224"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240321"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "d5a00c50-f44a-4234-a60d-35178ee025dc",
+      "set_id": "03e1f274-fa9a-4461-b7c9-31ba6428c107",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=03e1f274-fa9a-4461-b7c9-31ba6428c107",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sertraline"
+      ],
+      "generic_names": [
+        "SERTRALINE"
+      ],
+      "active_ingredients": [
+        "SERTRALINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Bryant Ranch Prepack"
+      ],
+      "product_ndcs": [
+        "71335-3115"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260330"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "91447af3-b3d6-4ffe-8c89-1869a22373ba",
+      "set_id": "056191ca-999a-4c9b-93b9-64db44b8e628",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=056191ca-999a-4c9b-93b9-64db44b8e628",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "SERTRALINE HYDROCHLORIDE"
+      ],
+      "generic_names": [
+        "SERTRALINE HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "SERTRALINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Ascent Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "43602-979",
+        "43602-980",
+        "43602-981"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20210510"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "a3ae1e33-5ce3-495a-b423-ce96874544f3",
+      "set_id": "0621fe8d-fdee-4d4c-a8e3-97f729472a58",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0621fe8d-fdee-4d4c-a8e3-97f729472a58",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Sertraline Hydrochloride"
+      ],
+      "generic_names": [
+        "SERTRALINE HYDROCHLORIDE"
+      ],
+      "active_ingredients": [
+        "SERTRALINE HYDROCHLORIDE"
+      ],
+      "manufacturers": [
+        "Dr. Reddy's Laboratories Inc."
+      ],
+      "product_ndcs": [
+        "75907-310",
+        "75907-311"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260120"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "c678afd8-0ddd-40a3-936e-594c126a275d",
+      "set_id": "04b3faff-1ea1-4d2a-aa31-9d6e742e1759",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=04b3faff-1ea1-4d2a-aa31-9d6e742e1759",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "montelukast sodium"
+      ],
+      "generic_names": [
+        "MONTELUKAST SODIUM"
+      ],
+      "active_ingredients": [
+        "MONTELUKAST"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-7920"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260305"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "37777419-2952-40eb-a2a1-c5f50b20b1dd",
+      "set_id": "07d5fbea-b183-41c9-a20f-30da1f44ab1b",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=07d5fbea-b183-41c9-a20f-30da1f44ab1b",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Montelukast Sodium"
+      ],
+      "generic_names": [
+        "MONTELUKAST SODIUM"
+      ],
+      "active_ingredients": [
+        "MONTELUKAST SODIUM"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "63187-550"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20231001"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "f9ab7e9f-ce5e-4c52-919e-66602d0c719e",
+      "set_id": "09b0bc9e-3035-45b4-b61b-4aca70848360",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=09b0bc9e-3035-45b4-b61b-4aca70848360",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "montelukast sodium"
+      ],
+      "generic_names": [
+        "MONTELUKAST SODIUM"
+      ],
+      "active_ingredients": [
+        "MONTELUKAST"
+      ],
+      "manufacturers": [
+        "Preferred Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "68788-7669"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260113"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "c1e8f3ed-105b-4abd-a99e-6a8ebfd6edaf",
+      "set_id": "0f2dbf17-bce0-4e09-8c22-898d93be80da",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0f2dbf17-bce0-4e09-8c22-898d93be80da",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Montelukast Sodium"
+      ],
+      "generic_names": [
+        "MONTELUKAST SODIUM"
+      ],
+      "active_ingredients": [
+        "MONTELUKAST SODIUM"
+      ],
+      "manufacturers": [
+        "Proficient Rx LP"
+      ],
+      "product_ndcs": [
+        "63187-896"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Storage Store montelukast 4-mg chewable tablets, 5-mg chewable tablets and 10-mg film-coated tablets at 25\u00b0C (77\u00b0F), excursions permitted to 15-30\u00b0C (59-86\u00b0F) [see USP Controlled Room Temperature]. Protect from moisture and light. Store in original package. Storage for Bulk Bottles Store bottles of 1000 montelukast 4-mg chewable tablets, 5-mg chewable tablets and 10-mg film-coated tablets at 25\u00b0C (77\u00b0F), excursions permitted to 15-30\u00b0C (59-86\u00b0F) [see USP Controlled Room Temperature]. Protect from moisture and light. Store in original container. When product container is subdivided, repackage into a well-closed, light-resistant container.",
+      "effective_time": "20191101"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "c7c3820a-d9b0-49ff-9bde-483937646621",
+      "set_id": "1a312a28-8472-4cab-a7dd-d01cd8b2765a",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1a312a28-8472-4cab-a7dd-d01cd8b2765a",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "montelukast sodium"
+      ],
+      "generic_names": [
+        "MONTELUKAST SODIUM"
+      ],
+      "active_ingredients": [
+        "MONTELUKAST"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-7925"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260307"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "ff58c1f3-4875-4d10-aca7-c622af163cef",
+      "set_id": "0078fb3d-3595-4ae1-a059-1d5e81c879cf",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0078fb3d-3595-4ae1-a059-1d5e81c879cf",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Clopidogrel"
+      ],
+      "generic_names": [
+        "CLOPIDOGREL BISULFATE"
+      ],
+      "active_ingredients": [
+        "CLOPIDOGREL BISULFATE"
+      ],
+      "manufacturers": [
+        "Aurobindo Pharma Limited"
+      ],
+      "product_ndcs": [
+        "65862-357"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240517"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "4a4c0017-ff4f-4475-8257-c0994ad0e332",
+      "set_id": "02f0eaf8-0fc2-425d-8259-cef00156e25d",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=02f0eaf8-0fc2-425d-8259-cef00156e25d",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Clopidogrel"
+      ],
+      "generic_names": [
+        "CLOPIDOGREL"
+      ],
+      "active_ingredients": [
+        "CLOPIDOGREL BISULFATE"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-5781"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20241031"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "2f2711fd-44b7-517f-e063-6294a90a0982",
+      "set_id": "03bec9ad-cd22-44d3-9b82-2796157de1d1",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=03bec9ad-cd22-44d3-9b82-2796157de1d1",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Clopidogrel Bisulfate"
+      ],
+      "generic_names": [
+        "CLOPIDOGREL BISULFATE"
+      ],
+      "active_ingredients": [
+        "CLOPIDOGREL BISULFATE"
+      ],
+      "manufacturers": [
+        "PD-Rx Pharmaceuticals, Inc."
+      ],
+      "product_ndcs": [
+        "43063-371"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250227"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "05355b6d-3802-4542-bda2-cd6a17e57266",
+      "set_id": "063cd1eb-98fd-422e-8145-bba04c497efe",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=063cd1eb-98fd-422e-8145-bba04c497efe",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Clopidogrel"
+      ],
+      "generic_names": [
+        "CLOPIDOGREL"
+      ],
+      "active_ingredients": [
+        "CLOPIDOGREL BISULFATE"
+      ],
+      "manufacturers": [
+        "Macleods Pharmaceuticals Limited"
+      ],
+      "product_ndcs": [
+        "33342-060"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240320"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "360ed8dd-4f92-46fc-b31b-abe0d75e9bb3",
+      "set_id": "0d010775-1160-4b2e-a928-563a02edd191",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0d010775-1160-4b2e-a928-563a02edd191",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Clopidogrel"
+      ],
+      "generic_names": [
+        "CLOPIDOGREL"
+      ],
+      "active_ingredients": [
+        "CLOPIDOGREL BISULFATE"
+      ],
+      "manufacturers": [
+        "Amneal Pharmaceuticals LLC"
+      ],
+      "product_ndcs": [
+        "65162-414"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20250723"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "6a6e1a33-d95c-4ab1-a9f9-1dada8330ca9",
+      "set_id": "01b810b7-f4c8-4412-bbc5-b9220d8770d8",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=01b810b7-f4c8-4412-bbc5-b9220d8770d8",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Gabapentin"
+      ],
+      "generic_names": [
+        "GABAPENTIN"
+      ],
+      "active_ingredients": [
+        "GABAPENTIN"
+      ],
+      "manufacturers": [
+        "Bryant Ranch Prepack"
+      ],
+      "product_ndcs": [
+        "71335-1093"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20240402"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "9c1384ca-7455-42ac-9f53-dddc6e995595",
+      "set_id": "021329d0-7d32-4fd8-81bf-a8b0d8b49e43",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=021329d0-7d32-4fd8-81bf-a8b0d8b49e43",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Gabapentin"
+      ],
+      "generic_names": [
+        "GABAPENTIN"
+      ],
+      "active_ingredients": [
+        "GABAPENTIN"
+      ],
+      "manufacturers": [
+        "Precision Dose, Inc."
+      ],
+      "product_ndcs": [
+        "68094-069"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "Storage Store at 25\u00b0C (77\u00b0F); excursions permitted between 15\u00b0C to 30\u00b0C (59\u00b0F to 86\u00b0F) [see USP Controlled Room Temperature].",
+      "effective_time": "20251204"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "1e85899c-edf0-49d0-a007-06f8e6655a43",
+      "set_id": "02304deb-7b4a-452f-9b1a-64ca0aedbcc2",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=02304deb-7b4a-452f-9b1a-64ca0aedbcc2",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Gabapentin"
+      ],
+      "generic_names": [
+        "GABAPENTIN"
+      ],
+      "active_ingredients": [
+        "GABAPENTIN"
+      ],
+      "manufacturers": [
+        "Ajenat Pharmaceuticals LLC"
+      ],
+      "product_ndcs": [
+        "82983-423"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20251229"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "994b09e4-1dac-4fb6-a9c7-b361a2e11c6b",
+      "set_id": "03031adf-d36b-45ec-944e-dfce5a5de91a",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=03031adf-d36b-45ec-944e-dfce5a5de91a",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Gabapentin"
+      ],
+      "generic_names": [
+        "GABAPENTIN"
+      ],
+      "active_ingredients": [
+        "GABAPENTIN"
+      ],
+      "manufacturers": [
+        "A-S Medication Solutions"
+      ],
+      "product_ndcs": [
+        "50090-0896",
+        "50090-2107",
+        "50090-3200"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20260528"
+    },
+    {
+      "source_name": "openFDA / DailyMed",
+      "source_identifier": "20f2898a-4fc1-450c-a7e8-36e3d8219ee0",
+      "set_id": "030e656a-e384-49ac-830f-32140c18112d",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=030e656a-e384-49ac-830f-32140c18112d",
+      "source_version": "2026-09-18",
+      "retrieved_at": "2026-09-22T05:22:53.392565+00:00",
+      "brand_names": [
+        "Gabapentin"
+      ],
+      "generic_names": [
+        "GABAPENTIN"
+      ],
+      "active_ingredients": [
+        "GABAPENTIN"
+      ],
+      "manufacturers": [
+        "Epic Pharma, LLC"
+      ],
+      "product_ndcs": [
+        "42806-509",
+        "42806-510",
+        "42806-511"
+      ],
+      "routes": [
+        "ORAL"
+      ],
+      "storage_statement": "",
+      "effective_time": "20190107"
+    }
+  ]
+}
