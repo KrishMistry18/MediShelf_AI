@@ -242,3 +242,64 @@ def test_api_get_foundation_medicine_by_id():
     assert data["medicine_name"] == "Paracetamol 500mg Tablets"
     assert data["storage_min_temperature"] == 20.0
     assert data["storage_max_temperature"] == 25.0
+
+
+def test_api_get_nonexistent_medicine_by_id():
+    """Verify non-existent medicine returns 404 with structured error message."""
+    response = client.get("/api/v1/medicines/NONEXISTENT-99999")
+    assert response.status_code == 404
+    detail = response.json()["detail"]
+    assert "not found" in detail.lower()
+
+
+def test_azithromycin_recognition_with_cv_mismatch():
+    """
+    Scenario: Physical package is Azithromycin 250mg Tablets.
+    Closed-set CV model predicts Metformin 500mg Tablet (77%).
+    High-confidence OCR/retrieval identifies Azithromycin 250mg Tablets.
+    Fusion layer must identify Azithromycin and not be overridden by the closed-set CV classifier.
+    """
+    cand = CandidateMatch(
+        medicine_id="MED-007",
+        medicine_name="Azithromycin 250mg Tablets",
+        generic_name="Azithromycin",
+        strength="250 mg",
+        dosage_form="Tablet",
+        similarity_score=0.96,
+        matched_token="Azithromycin 250 mg Tablets",
+    )
+    fields = StructuredFields(
+        medicine_name=ExtractedField(value="Azithromycin 250mg Tablets"),
+        generic_name=ExtractedField(value="Azithromycin"),
+        strength=ExtractedField(value="250 mg"),
+        dosage_form=ExtractedField(value="Tablet"),
+    )
+
+    from app.models.medicine import Medicine
+    fake_cv_med = Medicine(
+        medicine_id="MED-004",
+        medicine_name="Metformin 500mg Tablets",
+        generic_name="Metformin Hydrochloride",
+        strength="500 mg",
+        dosage_form="Tablet",
+        category="Antidiabetic",
+        image_class="metformin_500mg_tablet",
+        storage_min_temperature=20.0,
+        storage_max_temperature=25.0,
+        source="USP Monograph",
+        source_url="https://dailymed.nlm.nih.gov/",
+    )
+
+    assessment = compute_cv_ocr_fusion(
+        cv_class="metformin_500mg_tablet",
+        cv_confidence=0.77,
+        cv_threshold=0.60,
+        ocr_fields=fields,
+        candidate_matches=[cand],
+        matched_medicine=fake_cv_med,
+    )
+
+    # When OCR strongly matches an open-world/known medicine with 0.96 similarity,
+    # and CV predicts a different class, the fusion assessment identifies the divergence
+    assert assessment.identification_status == "DIVERGENT"
+    assert assessment.ocr_match == "Azithromycin 250mg Tablets"

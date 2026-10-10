@@ -203,8 +203,9 @@ function AlertsPage() {
 }
 
 function AssessmentAlert({ record }: { record: AssessmentRecord }) {
-  const severity = !record.isCompliant && record.riskLevel === "HIGH" ? "high" : "watch";
-  const belowMinimum = record.temperature < Number(record.permittedRange.split("–")[0]);
+  const severity = record.isCompliant === false && record.riskLevel === "HIGH" ? "high" : "watch";
+  const permittedMin = Number(record.permittedRange.split("–")[0]);
+  const belowMinimum = !isNaN(permittedMin) && record.temperature < permittedMin;
 
   return (
     <article className="flex gap-4 p-4">
@@ -238,12 +239,25 @@ function AssessmentAlert({ record }: { record: AssessmentRecord }) {
         <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
           {record.temperature}°C held for {record.durationHours} h against a permitted{" "}
           {record.permittedRange}
-          {record.tempCompliant ? "" : ` — ${record.tempDeviation}°C outside the range`}.
+          {record.tempCompliant === false && record.tempDeviation !== null ? ` — ${record.tempDeviation}°C outside the range` : ""}.
         </p>
 
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[9px] uppercase tracking-[0.12em]">
-          <span className={record.isCompliant ? "text-accent" : "text-warning"}>
-            compliance {record.isCompliant ? "pass" : "fail"}
+          <span
+            className={
+              record.isCompliant === true
+                ? "text-accent"
+                : record.isCompliant === false
+                  ? "text-warning"
+                  : "text-muted-foreground"
+            }
+          >
+            compliance{" "}
+            {record.isCompliant === true
+              ? "pass"
+              : record.isCompliant === false
+                ? "fail"
+                : "unspecified"}
           </span>
           <span
             className={
@@ -251,10 +265,14 @@ function AssessmentAlert({ record }: { record: AssessmentRecord }) {
                 ? "text-accent"
                 : record.riskLevel === "HIGH"
                   ? "text-destructive"
-                  : "text-warning"
+                  : record.riskLevel === "MODERATE"
+                    ? "text-warning"
+                    : "text-muted-foreground"
             }
           >
-            ml risk {record.riskLevel} ({formatPercent(record.riskConfidence, 0)})
+            {record.riskLevel
+              ? `ml risk ${record.riskLevel} (${formatPercent(record.riskConfidence ?? 0, 0)})`
+              : "ml risk unavailable"}
           </span>
           <span className="text-muted-foreground">{relativeTime(record.at)}</span>
         </div>

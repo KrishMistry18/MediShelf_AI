@@ -112,29 +112,38 @@ class StorageRiskService:
     ) -> StorageRiskResponse:
         self._ensure_loaded()
 
-        # 1. Retrieve Medicine Record
-        medicine = (
-            db.query(Medicine)
-            .filter(Medicine.medicine_id == request.medicine_id.strip().upper())
-            .first()
-        )
+        # 1. Retrieve Medicine Record across local catalog and master open-world knowledge base
+        from app.services.medicine_service import medicine_resolution_service
+
+        medicine = medicine_resolution_service.resolve_medicine(request.medicine_id, db=db)
         if not medicine:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Medicine SKU '{request.medicine_id}' not found in verified database.",
             )
 
-        min_temp = float(medicine.storage_min_temperature)
-        max_temp = float(medicine.storage_max_temperature)
+        min_temp = float(medicine.storage_min_temperature) if medicine.storage_min_temperature is not None else None
+        max_temp = float(medicine.storage_max_temperature) if medicine.storage_max_temperature is not None else None
         min_hum = float(medicine.storage_min_humidity) if medicine.storage_min_humidity is not None else None
         max_hum = float(medicine.storage_max_humidity) if medicine.storage_max_humidity is not None else None
+        has_quant_temp = (min_temp is not None and max_temp is not None)
         has_quant_hum = (min_hum is not None or max_hum is not None)
 
-        hum_notice = (
-            f"Allowed humidity: {min_hum or 0}% - {max_hum}% RH"
-            if has_quant_hum
-            else "Humidity requirement not quantified in the available official FDA/USP source monograph."
-        )
+        if has_quant_temp:
+            temp_notice = f"Permitted temperature window: {min_temp}°C – {max_temp}°C"
+        else:
+            temp_notice = (
+                "Quantitative storage temperature unavailable. The source provides qualitative storage instructions, "
+                "so deterministic environmental compliance cannot be calculated for this parameter."
+            )
+
+        if has_quant_hum:
+            hum_notice = f"Allowed humidity: {min_hum or 0}% - {max_hum}% RH"
+        else:
+            hum_notice = (
+                "Quantitative storage limit unavailable. The source provides qualitative storage instructions, "
+                "so deterministic environmental compliance cannot be calculated for this parameter."
+            )
 
         storage_reqs = StorageRequirementsInfo(
             min_temperature=min_temp,
@@ -143,17 +152,33 @@ class StorageRiskService:
             max_humidity=max_hum,
             temperature_unit="C",
             regulatory_source=medicine.source,
+            source_id=medicine.source_id,
             source_url=medicine.source_url,
+            has_quantified_temperature=has_quant_temp,
+            temperature_monograph_notice=temp_notice,
             has_quantified_humidity=has_quant_hum,
             humidity_monograph_notice=hum_notice,
         )
 
         # 2. Deterministic Compliance Check (Rule-based)
         temp = float(request.current_temperature)
-        temp_compliant = (min_temp <= temp <= max_temp)
-        temp_deviation_below = max(0.0, round(min_temp - temp, 2))
-        temp_deviation_above = max(0.0, round(temp - max_temp, 2))
-        temp_deviation_mag = max(temp_deviation_below, temp_deviation_above)
+
+        if has_quant_temp:
+            temp_compliant = (min_temp <= temp <= max_temp)
+            temp_deviation_below = max(0.0, round(min_temp - temp, 2))
+            temp_deviation_above = max(0.0, round(temp - max_temp, 2))
+            temp_deviation_mag = max(temp_deviation_below, temp_deviation_above)
+            temp_status = (
+                f"Ambient temperature ({temp:.1f}°C) is within permissible monograph limits ({min_temp}°C – {max_temp}°C)."
+                if temp_compliant
+                else f"Temperature excursion detected: {temp_deviation_mag:.1f}°C outside permissible range ({min_temp}°C – {max_temp}°C)."
+            )
+        else:
+            temp_compliant = None
+            temp_deviation_below = 0.0
+            temp_deviation_above = 0.0
+            temp_deviation_mag = None
+            temp_status = temp_notice
 
         if has_quant_hum and request.current_humidity is not None:
             hum = float(request.current_humidity)
@@ -167,129 +192,172 @@ class StorageRiskService:
             )
         else:
             humidity_compliant = None
-            humidity_status = "Humidity requirement not quantified in monograph; compliance not evaluated."
+            humidity_status = (
+                "Humidity requirement not quantified in monograph; compliance not evaluated."
+                if not has_quant_hum
+                else "Humidity within unspecified window."
+            )
 
-        is_overall_compliant = temp_compliant and (humidity_compliant is not False)
-        summary_text = (
-            f"Ambient temperature ({temp:.1f}°C) is within permissible monograph limits ({min_temp}°C – {max_temp}°C)."
-            if temp_compliant
-            else f"Temperature excursion detected: {temp_deviation_mag:.1f}°C outside permissible range ({min_temp}°C – {max_temp}°C)."
-        )
+        if not has_quant_temp:
+            status_code_str = "INSUFFICIENT_DATA"
+            is_overall_compliant = None
+            summary_text = (
+                "Quantitative storage limit unavailable. The source provides qualitative storage instructions, "
+                "so deterministic environmental compliance cannot be calculated for this parameter."
+            )
+        elif not temp_compliant or humidity_compliant is False:
+            status_code_str = "OUTSIDE_DOCUMENTED_RANGE"
+            is_overall_compliant = False
+            summary_text = (
+                f"Temperature excursion detected: {temp_deviation_mag:.1f}°C outside permissible range ({min_temp}°C – {max_temp}°C)."
+                if not temp_compliant
+                else f"Humidity breach detected: {humidity_status}"
+            )
+        else:
+            status_code_str = "COMPLIANT"
+            is_overall_compliant = True
+            summary_text = (
+                f"Ambient temperature ({temp:.1f}°C) is within permissible monograph limits ({min_temp}°C – {max_temp}°C)."
+            )
 
         deterministic = DeterministicCompliance(
-            is_compliant=is_overall_compliant,
+            is_compliant=is_overall_compliant if is_overall_compliant is not None else False,
             temp_compliant=temp_compliant,
-            temp_deviation=temp_deviation_mag,
+            temp_deviation=temp_deviation_mag if temp_deviation_mag is not None else 0.0,
+            temp_status_text=temp_status,
             humidity_compliant=humidity_compliant,
             humidity_status_text=humidity_status,
+            status=status_code_str,
             summary=summary_text,
         )
 
-        # 3. Feature Preparation for ML Inference
-        days_to_exp = self._calculate_days_to_expiry(request.days_to_expiry, request.expiry_date)
-        duration_hrs = max(0.0, float(request.excursion_duration_hours))
-        severity_index = round(temp_deviation_mag * duration_hrs, 2)
-        requires_cold_chain = 1 if max_temp <= 8.0 else 0
-        is_liquid = 1 if medicine.dosage_form in [
-            "Subcutaneous Injection", "Inhalation Aerosol", "Nasal Spray Suspension"
-        ] else 0
-        has_hum_req = 1 if has_quant_hum else 0
-        hum_val = float(request.current_humidity) if request.current_humidity is not None else 50.0
-
-        # Actual deviation outside the documented humidity window. The trained model
-        # assigns this feature zero importance (see feature_metadata.json), so it does
-        # not move the prediction — but reporting a hard-coded 0.0 would misrepresent a
-        # real breach in the explainability panel.
-        hum_dev = 0.0
-        if has_quant_hum and request.current_humidity is not None:
-            if max_hum is not None and hum_val > max_hum:
-                hum_dev = round(hum_val - max_hum, 2)
-            elif min_hum is not None and hum_val < min_hum:
-                hum_dev = round(min_hum - hum_val, 2)
-
-        near_expiry = 1 if days_to_exp <= medicine.expiry_warning_days else 0
-
-        feature_dict = {
-            "temperature": temp,
-            "humidity": hum_val,
-            "storage_min_temp": min_temp,
-            "storage_max_temp": max_temp,
-            "temp_deviation_below": temp_deviation_below,
-            "temp_deviation_above": temp_deviation_above,
-            "temp_deviation_magnitude": temp_deviation_mag,
-            "excursion_duration_hours": duration_hrs,
-            "excursion_severity_index": severity_index,
-            "requires_cold_chain": requires_cold_chain,
-            "is_liquid_or_injection": is_liquid,
-            "has_humidity_requirement": has_hum_req,
-            "humidity_deviation": hum_dev,
-            "days_to_expiry": days_to_exp,
-            "near_expiry": near_expiry,
-        }
-
-        # Align with model's expected features
-        feature_order = self._feature_meta["features"]
-        df_features = pd.DataFrame([[feature_dict[col] for col in feature_order]], columns=feature_order)
-
-        # 4. Execute ML Prediction
-        probs = self._model.predict_proba(df_features)[0]
-        pred_idx = int(np.argmax(probs))
-        classes = self._feature_meta["classes"]
-        pred_label = classes[pred_idx]
-        confidence = round(float(probs[pred_idx]), 4)
-
-        prob_dict = {
-            cls_name: round(float(probs[idx]), 4)
-            for idx, cls_name in enumerate(classes)
-        }
-
-        # 5. Explainability (Feature Contribution Analysis)
-        importances = self._feature_meta.get("feature_importances", {})
-        top_factors: List[MLFactorImportance] = []
-        for feat_name, weight in list(importances.items())[:5]:
-            obs_val = feature_dict.get(feat_name, None)
-            label = FEATURE_LABELS.get(feat_name, feat_name)
-            
-            # Contextual interpretation
-            if feat_name == "excursion_severity_index":
-                interp = (
-                    f"Cumulative severity score: {obs_val} (hours × °C excursion)"
-                    if obs_val > 0
-                    else "Zero thermal excursion accumulated"
-                )
-            elif feat_name == "temperature":
-                interp = f"Observed temperature {obs_val}°C relative to range [{min_temp}°C – {max_temp}°C]"
-            elif feat_name == "temp_deviation_magnitude":
-                interp = f"{obs_val}°C outside monograph threshold" if obs_val > 0 else "Within monograph threshold"
-            elif feat_name in ["days_to_expiry", "near_expiry"]:
-                interp = f"{obs_val} days remaining until packaging expiry date"
-            elif feat_name == "requires_cold_chain":
-                interp = "Cold-chain product (2°C – 8°C strict limit)" if obs_val == 1 else "Standard room temperature product"
-            else:
-                interp = f"Observed value: {obs_val}"
-
-            top_factors.append(
-                MLFactorImportance(
-                    feature=feat_name,
-                    feature_label=label,
-                    importance_weight=float(weight),
-                    observed_value=obs_val,
-                    interpretation=interp,
-                )
-            )
-
-        ml_risk = MLRiskPrediction(
-            level=pred_label,
-            confidence=confidence,
-            probabilities=prob_dict,
-            top_factors=top_factors,
-            model_name="GradientBoostingClassifier",
-            model_version="storage-risk-v1.0",
-            training_dataset_type="simulation-derived",
+        # 3. Feature Preparation for ML Inference & Compatibility Validation
+        # Check whether the medicine has sufficient structured metadata for the 15-feature model
+        can_run_ml = (
+            has_quant_temp
+            and medicine.dosage_form is not None
+            and medicine.expiry_warning_days is not None
+            and temp_deviation_mag is not None
         )
 
+        if not can_run_ml:
+            ml_risk = MLRiskPrediction(
+                is_available=False,
+                unavailable_reason=(
+                    "AI storage-risk estimate unavailable: The selected medicine does not have enough "
+                    "structured storage metadata for the current model feature set."
+                ),
+                level=None,
+                confidence=None,
+                probabilities=None,
+                top_factors=[],
+                model_name="GradientBoostingClassifier",
+                model_version="storage-risk-v1.0",
+                training_dataset_type="simulation-derived",
+            )
+        else:
+            days_to_exp = self._calculate_days_to_expiry(request.days_to_expiry, request.expiry_date)
+            duration_hrs = max(0.0, float(request.excursion_duration_hours))
+            severity_index = round(temp_deviation_mag * duration_hrs, 2)
+            requires_cold_chain = 1 if max_temp <= 8.0 else 0
+            is_liquid = 1 if medicine.dosage_form in [
+                "Subcutaneous Injection", "Inhalation Aerosol", "Nasal Spray Suspension"
+            ] else 0
+            has_hum_req = 1 if has_quant_hum else 0
+            hum_val = float(request.current_humidity) if request.current_humidity is not None else 50.0
+
+            hum_dev = 0.0
+            if has_quant_hum and request.current_humidity is not None:
+                if max_hum is not None and hum_val > max_hum:
+                    hum_dev = round(hum_val - max_hum, 2)
+                elif min_hum is not None and hum_val < min_hum:
+                    hum_dev = round(min_hum - hum_val, 2)
+
+            near_expiry = 1 if days_to_exp <= medicine.expiry_warning_days else 0
+
+            feature_dict = {
+                "temperature": temp,
+                "humidity": hum_val,
+                "storage_min_temp": min_temp,
+                "storage_max_temp": max_temp,
+                "temp_deviation_below": temp_deviation_below,
+                "temp_deviation_above": temp_deviation_above,
+                "temp_deviation_magnitude": temp_deviation_mag,
+                "excursion_duration_hours": duration_hrs,
+                "excursion_severity_index": severity_index,
+                "requires_cold_chain": requires_cold_chain,
+                "is_liquid_or_injection": is_liquid,
+                "has_humidity_requirement": has_hum_req,
+                "humidity_deviation": hum_dev,
+                "days_to_expiry": days_to_exp,
+                "near_expiry": near_expiry,
+            }
+
+            # Align with model's expected features
+            feature_order = self._feature_meta["features"]
+            df_features = pd.DataFrame([[feature_dict[col] for col in feature_order]], columns=feature_order)
+
+            # 4. Execute ML Prediction
+            probs = self._model.predict_proba(df_features)[0]
+            pred_idx = int(np.argmax(probs))
+            classes = self._feature_meta["classes"]
+            pred_label = classes[pred_idx]
+            confidence = round(float(probs[pred_idx]), 4)
+
+            prob_dict = {
+                cls_name: round(float(probs[idx]), 4)
+                for idx, cls_name in enumerate(classes)
+            }
+
+            # 5. Explainability (Feature Contribution Analysis)
+            importances = self._feature_meta.get("feature_importances", {})
+            top_factors: List[MLFactorImportance] = []
+            for feat_name, weight in list(importances.items())[:5]:
+                obs_val = feature_dict.get(feat_name, None)
+                label = FEATURE_LABELS.get(feat_name, feat_name)
+
+                # Contextual interpretation
+                if feat_name == "excursion_severity_index":
+                    interp = (
+                        f"Cumulative severity score: {obs_val} (hours × °C excursion)"
+                        if obs_val > 0
+                        else "Zero thermal excursion accumulated"
+                    )
+                elif feat_name == "temperature":
+                    interp = f"Observed temperature {obs_val}°C relative to range [{min_temp}°C – {max_temp}°C]"
+                elif feat_name == "temp_deviation_magnitude":
+                    interp = f"{obs_val}°C outside monograph threshold" if obs_val > 0 else "Within monograph threshold"
+                elif feat_name in ["days_to_expiry", "near_expiry"]:
+                    interp = f"{obs_val} days remaining until packaging expiry date"
+                elif feat_name == "requires_cold_chain":
+                    interp = "Cold-chain product (2°C – 8°C strict limit)" if obs_val == 1 else "Standard room temperature product"
+                else:
+                    interp = f"Observed value: {obs_val}"
+
+                top_factors.append(
+                    MLFactorImportance(
+                        feature=feat_name,
+                        feature_label=label,
+                        importance_weight=float(weight),
+                        observed_value=obs_val,
+                        interpretation=interp,
+                    )
+                )
+
+            ml_risk = MLRiskPrediction(
+                is_available=True,
+                unavailable_reason=None,
+                level=pred_label,
+                confidence=confidence,
+                probabilities=prob_dict,
+                top_factors=top_factors,
+                model_name="GradientBoostingClassifier",
+                model_version="storage-risk-v1.0",
+                training_dataset_type="simulation-derived",
+            )
+
         return StorageRiskResponse(
-            medicine=MedicineResponse.model_validate(medicine),
+            medicine=medicine,
             storage_requirements=storage_reqs,
             deterministic_compliance=deterministic,
             ml_risk=ml_risk,

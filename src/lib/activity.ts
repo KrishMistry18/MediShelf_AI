@@ -52,11 +52,11 @@ export type AssessmentRecord = {
   durationHours: number;
   daysToExpiry: number | null;
   permittedRange: string;
-  isCompliant: boolean;
-  tempCompliant: boolean;
-  tempDeviation: number;
-  riskLevel: RiskLevel;
-  riskConfidence: number;
+  isCompliant: boolean | null;
+  tempCompliant: boolean | null;
+  tempDeviation: number | null;
+  riskLevel: RiskLevel | null;
+  riskConfidence: number | null;
 };
 
 type Listener = () => void;
@@ -146,7 +146,11 @@ export function recordAssessment(
     humidity: request.humidity,
     durationHours: request.durationHours,
     daysToExpiry: request.daysToExpiry,
-    permittedRange: `${result.storage_requirements.min_temperature}–${result.storage_requirements.max_temperature}°C`,
+    permittedRange:
+      result.storage_requirements.min_temperature !== null &&
+      result.storage_requirements.max_temperature !== null
+        ? `${result.storage_requirements.min_temperature}–${result.storage_requirements.max_temperature}°C`
+        : (result.storage_requirements.qualitative_instructions || "Monograph advisory"),
     isCompliant: result.deterministic_compliance.is_compliant,
     tempCompliant: result.deterministic_compliance.temp_compliant,
     tempDeviation: result.deterministic_compliance.temp_deviation,
@@ -166,7 +170,7 @@ export const getAssessments = (): AssessmentRecord[] => read<AssessmentRecord>(A
  * a brief excursion is non-compliant yet still scores LOW risk.
  */
 export const isFlagged = (record: AssessmentRecord): boolean =>
-  !record.isCompliant || record.riskLevel !== "LOW";
+  record.isCompliant === false || (record.riskLevel !== null && record.riskLevel !== "LOW");
 
 export const getFlaggedAssessments = (): AssessmentRecord[] => getAssessments().filter(isFlagged);
 

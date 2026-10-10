@@ -12,9 +12,11 @@ import { useQuery } from "@tanstack/react-query";
 import {
   fetchCategories,
   fetchHealth,
+  fetchMedicine,
   fetchMedicines,
   fetchModelsOverview,
   fetchStorageRiskMetadata,
+  searchMedicines,
   type MedicineQuery,
 } from "./api";
 
@@ -86,5 +88,25 @@ export function useStorageRiskMetadata() {
     queryFn: fetchStorageRiskMetadata,
     retry: false,
     staleTime: FIVE_MINUTES,
+  });
+}
+
+export function useMedicine(medicineId: string | undefined) {
+  return useQuery({
+    queryKey: ["medicine", medicineId],
+    queryFn: () => fetchMedicine(medicineId!),
+    enabled: Boolean(medicineId && medicineId.trim().length > 0),
+    retry: false,
+    staleTime: FIVE_MINUTES,
+  });
+}
+
+export function useMedicineSearch(query: string) {
+  return useQuery({
+    queryKey: ["medicines", "search", query],
+    queryFn: () => searchMedicines(query),
+    enabled: Boolean(query && query.trim().length >= 2),
+    retry: false,
+    staleTime: 60_000,
   });
 }

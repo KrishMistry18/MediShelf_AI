@@ -171,51 +171,11 @@ async def scan_medicine(
     final_is_confident = False
     message = ""
 
-    # Helper function to construct MedicineResponse and StorageRequirementsSummary
+    # Unified resolution via medicine_resolution_service
+    from app.services.medicine_service import medicine_resolution_service
+
     def _resolve_medicine(med_id: str) -> Optional[MedicineResponse]:
-        row = db.query(Medicine).filter(Medicine.medicine_id == med_id).first()
-        if row:
-            return MedicineResponse.model_validate(row)
-        # Fallback to the 2,116 records in the open-world knowledge base
-        kb_rec = get_retriever().get_medicine_by_id(med_id)
-        if kb_rec:
-            retrieved_dt = None
-            if kb_rec.get("retrieved_at"):
-                try:
-                    retrieved_dt = datetime.fromisoformat(str(kb_rec["retrieved_at"]).replace("Z", "+00:00"))
-                except Exception:
-                    retrieved_dt = datetime.now(timezone.utc)
-            else:
-                retrieved_dt = datetime.now(timezone.utc)
-            return MedicineResponse(
-                id=kb_rec.get("id", 99999),
-                medicine_id=kb_rec["medicine_id"],
-                medicine_name=kb_rec["medicine_name"],
-                generic_name=kb_rec["generic_name"],
-                brand_name=kb_rec.get("brand_name"),
-                strength=kb_rec.get("strength") or "N/A",
-                dosage_form=kb_rec.get("dosage_form") or "Tablet",
-                category=kb_rec.get("category") or "General Medicine",
-                manufacturer=kb_rec.get("manufacturer"),
-                storage_min_temperature=float(kb_rec.get("storage_min_temperature", 15.0)),
-                storage_max_temperature=float(kb_rec.get("storage_max_temperature", 25.0)),
-                storage_min_humidity=float(kb_rec["storage_min_humidity"]) if kb_rec.get("storage_min_humidity") is not None else None,
-                storage_max_humidity=float(kb_rec["storage_max_humidity"]) if kb_rec.get("storage_max_humidity") is not None else None,
-                image_class=None,
-                canonical_name=kb_rec.get("canonical_name"),
-                active_ingredients=kb_rec.get("active_ingredients") if isinstance(kb_rec.get("active_ingredients"), str) else json.dumps(kb_rec.get("active_ingredients", [])),
-                route=kb_rec.get("route"),
-                rxnorm_cui=kb_rec.get("rxnorm_cui"),
-                ndc=kb_rec.get("ndc"),
-                source=kb_rec.get("source") or "NLM RxNorm",
-                source_id=kb_rec.get("source_id"),
-                source_url=kb_rec.get("source_url") or "https://rxnav.nlm.nih.gov/",
-                source_version=kb_rec.get("source_version") or "2026-03",
-                retrieved_at=retrieved_dt,
-                created_at=retrieved_dt,
-                updated_at=retrieved_dt,
-            )
-        return None
+        return medicine_resolution_service.resolve_medicine(identifier=med_id, db=db)
 
     # Case A: Quality Gate Failed
     if not quality.is_acceptable:
@@ -225,34 +185,17 @@ async def scan_medicine(
         detail = " ".join(quality.recommendations) or "Move closer, improve lighting, or hold the package steady."
         message = f"Image quality is insufficient for reliable text extraction. {detail}"
 
-    # Case B: Conflicting Evidence (Divergent)
-    # Visual classifier is confident in Class A, but OCR decisively matches a different medicine Class B
-    elif (
-        is_confident
-        and matched_cv_row
-        and top_cand
-        and cand_score >= 0.75
-        and matched_cv_row.medicine_id != top_cand.medicine_id
-        and fusion_assessment.identification_status == "DIVERGENT"
-    ):
-        product_status = "CONFLICTING_EVIDENCE"
-        final_recognized = False
-        final_is_confident = False
-        message = (
-            f"Identification conflict: Visual model suggested '{matched_cv_row.medicine_name}' ({top_conf * 100:.1f}%), "
-            f"but packaging text indicates '{top_cand.medicine_name}' ({cand_score * 100:.1f}%). Please verify packaging manually."
-        )
-
-    # Case C: High-Confidence Open-World Text/Knowledge Match (cand_score >= 0.80)
+    # Case B: High-Confidence Open-World Text & Knowledge Base Match
     # OCR extracted active ingredients/brand from packaging matching real NLM RxNorm or DailyMed monograph.
-    # Works even if the medicine was never one of the closed CV training classes (e.g. Amlodipine + Telmisartan).
+    # A verified medicine match MUST NOT be overridden by a closed-set CV softmax prediction!
+    # Caller-specified threshold must be strictly respected: candidate_threshold = max(0.80, applied_threshold)
     elif top_cand and cand_score >= max(0.80, applied_threshold):
         resolved = _resolve_medicine(top_cand.medicine_id)
         if resolved:
             matched_medicine = resolved
             storage_summary = StorageRequirementsSummary(
-                min_temperature=resolved.storage_min_temperature,
-                max_temperature=resolved.storage_max_temperature,
+                min_temperature=resolved.storage_min_temperature or 20.0,
+                max_temperature=resolved.storage_max_temperature or 25.0,
                 min_humidity=resolved.storage_min_humidity,
                 max_humidity=resolved.storage_max_humidity,
                 temperature_unit="C",
@@ -261,16 +204,42 @@ async def scan_medicine(
             product_status = "IDENTIFIED"
             final_recognized = True
             final_is_confident = True
+
+            # Corroborating CV signal
             if is_confident and matched_cv_row and matched_cv_row.medicine_id == resolved.medicine_id:
                 message = (
-                    f"Successfully identified '{resolved.medicine_name}' with {top_conf * 100:.1f}% visual confidence "
-                    f"and matching OCR packaging text ({cand_score * 100:.1f}%). Official storage parameters retrieved from {resolved.source}."
+                    f"Successfully identified '{resolved.medicine_name}' with matching visual model score "
+                    f"({top_conf * 100:.1f}%) and OCR packaging text ({cand_score * 100:.1f}%). Official storage parameters retrieved from {resolved.source}."
+                )
+            # Closed-set visual model disagreement / outside scope
+            elif is_confident and matched_cv_row:
+                message = (
+                    f"Medicine identified: '{resolved.medicine_name}' based on packaging text and verified database monograph "
+                    f"({cand_score * 100:.1f}% match). Visual classifier suggested '{matched_cv_row.medicine_name}' ({top_conf * 100:.1f}%), "
+                    f"but the 10-class closed-set visual model cannot reliably classify medicines outside its trained scope. "
+                    f"Official storage parameters retrieved from {resolved.source}."
                 )
             else:
                 message = (
                     f"Successfully identified '{resolved.medicine_name}' based on packaging text and verified database monograph "
                     f"({cand_score * 100:.1f}% match). Official storage parameters retrieved from {resolved.source}."
                 )
+
+    # Case C: Genuine Conflicting Evidence Between Classes with Indecisive Text (< 0.80)
+    elif (
+        is_confident
+        and matched_cv_row
+        and top_cand
+        and cand_score >= 0.60
+        and matched_cv_row.medicine_id != top_cand.medicine_id
+    ):
+        product_status = "CONFLICTING_EVIDENCE"
+        final_recognized = False
+        final_is_confident = False
+        message = (
+            f"Identification conflict: Visual model suggested '{matched_cv_row.medicine_name}' ({top_conf * 100:.1f}%), "
+            f"while packaging text suggests '{top_cand.medicine_name}' ({cand_score * 100:.1f}%). Neither is decisive. Please verify packaging manually."
+        )
 
     # Case D: High-Confidence CV Match Corroborated or Visual Only (Known Catalog)
     elif is_confident and matched_cv_row:
@@ -288,14 +257,14 @@ async def scan_medicine(
         if fusion_assessment.identification_status == "CONFIRMED":
             product_status = "IDENTIFIED"
             message = (
-                f"Successfully identified '{matched_medicine.medicine_name}' with {top_conf * 100:.1f}% CV confidence "
+                f"Successfully identified '{matched_medicine.medicine_name}' with {top_conf * 100:.1f}% visual model score "
                 f"and matching OCR packaging text. Official storage parameters retrieved from {matched_medicine.source}."
             )
         else:
-            product_status = "LIKELY_MATCH"
+            product_status = "PARTIAL_MATCH"
             message = (
-                f"Recognized '{matched_medicine.medicine_name}' with {top_conf * 100:.1f}% visual confidence. "
-                f"Storage parameters retrieved from {matched_medicine.source}."
+                f"Partial identification: Recognized '{matched_medicine.medicine_name}' with {top_conf * 100:.1f}% visual model score. "
+                f"Packaging text could not independently corroborate identity. Storage parameters retrieved from {matched_medicine.source}."
             )
 
     # Case E: Moderate / Likely Match (cand_score >= 0.65)
@@ -372,10 +341,23 @@ async def scan_medicine(
 
     total_latency_ms = round(cv_result["inference_time_ms"] + ocr_latency_ms, 2)
 
+    # Determine general identification confidence:
+    # If identified via open-world OCR retrieval, use the text similarity score;
+    # If corroborated with CV, or identified solely via CV, use the relevant visual score.
+    if product_status == "IDENTIFIED":
+        if top_cand and cand_score >= max(0.80, applied_threshold):
+            final_confidence = cand_score
+        else:
+            final_confidence = top_conf
+    elif product_status == "LIKELY_MATCH":
+        final_confidence = cand_score
+    else:
+        final_confidence = top_conf
+
     return ScanResponse(
         recognized=final_recognized,
         is_confident=final_is_confident,
-        confidence=top_conf,
+        confidence=final_confidence,
         confidence_threshold=applied_threshold,
         predicted_class=top_class,
         top_predictions=predictions,
@@ -405,4 +387,7 @@ async def scan_medicine(
         provenance=provenance,
         evidence_checklist=evidence_checklist,
         score_breakdown=score_breakdown,
+        visual_model_score=top_conf,
+        retrieval_match_score=round(cand_score, 4) if top_cand else 0.0,
+        identification_status=product_status,
     )

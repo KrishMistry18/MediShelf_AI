@@ -88,24 +88,31 @@ export function ErrorState({
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-[13px] font-medium">
-            {offline ? "Inference API not reachable" : "Request failed"}
+            {offline ? "MediShelf AI service is unavailable" : "Request failed"}
           </p>
           <p className="mt-1 break-words text-[11px] leading-relaxed text-muted-foreground">
-            {message}
+            {offline ? "The application cannot connect to the local inference service." : message}
           </p>
 
           {offline && (
-            <div className="mt-3 space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground">
-                Start the backend
+            <div className="mt-2 space-y-2">
+              <p className="text-[11px] text-muted-foreground">
+                Start the backend and try again.
               </p>
-              <pre className="overflow-x-auto rounded-[4px] border border-border bg-background p-2.5 font-mono text-[10px] leading-relaxed">
-                {`pip install -r backend/requirements.txt\npython tools/serve_api.py`}
-              </pre>
-              <p className="text-[10px] text-muted-foreground">
-                Expecting the API at <code className="font-mono">{API_BASE_URL}</code>. Override it
-                with <code className="font-mono">VITE_API_BASE_URL</code>.
-              </p>
+              <details className="cursor-pointer pt-1 text-[11px] text-muted-foreground">
+                <summary className="font-mono text-[10px] tracking-wide text-muted-foreground hover:text-foreground">
+                  Developer details & startup command
+                </summary>
+                <div className="mt-2 space-y-2">
+                  <pre className="overflow-x-auto rounded-[4px] border border-border bg-background p-2.5 font-mono text-[10px] leading-relaxed">
+                    {`pip install -r backend/requirements.txt\npython tools/serve_api.py`}
+                  </pre>
+                  <p className="text-[10px] text-muted-foreground">
+                    Expecting the API at <code className="font-mono">{API_BASE_URL}</code>. Override it
+                    with <code className="font-mono">VITE_API_BASE_URL</code>.
+                  </p>
+                </div>
+              </details>
             </div>
           )}
 
@@ -116,7 +123,7 @@ export function ErrorState({
               icon={<RotateCcw className="size-3.5" />}
               onClick={onRetry}
             >
-              Try again
+              Retry
             </Button>
           )}
         </div>

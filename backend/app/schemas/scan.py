@@ -41,8 +41,8 @@ class OCRSummary(BaseModel):
 
 
 class StorageRequirementsSummary(BaseModel):
-    min_temperature: float = Field(..., description="Minimum storage temp in Celsius")
-    max_temperature: float = Field(..., description="Maximum storage temp in Celsius")
+    min_temperature: Optional[float] = Field(None, description="Minimum storage temp in Celsius")
+    max_temperature: Optional[float] = Field(None, description="Maximum storage temp in Celsius")
     min_humidity: Optional[float] = Field(None, description="Minimum humidity in % RH")
     max_humidity: Optional[float] = Field(None, description="Maximum humidity in % RH")
     temperature_unit: str = Field(default="C", description="Temperature unit (Celsius)")
@@ -93,4 +93,16 @@ class ScanResponse(BaseModel):
     score_breakdown: Optional[Dict[str, float]] = Field(
         default=None,
         description="Transparent scoring formula breakdown",
+    )
+    visual_model_score: Optional[float] = Field(
+        default=None,
+        description="Closed-set CV model softmax score",
+    )
+    retrieval_match_score: Optional[float] = Field(
+        default=None,
+        description="Heuristic medicine knowledge retrieval similarity score",
+    )
+    identification_status: Optional[str] = Field(
+        default=None,
+        description="Final evidence-based identification outcome",
     )

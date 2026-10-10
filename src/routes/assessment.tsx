@@ -23,7 +23,7 @@ import {
   type StorageRiskRequest,
   type StorageRiskResponse,
 } from "@/lib/api";
-import { useAllMedicines, useStorageRiskMetadata } from "@/lib/queries";
+import { useAllMedicines, useMedicine, useStorageRiskMetadata } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 
 type AssessmentSearch = { medicine: string | undefined };
@@ -100,10 +100,20 @@ function AssessmentPage() {
     if (search.medicine) setMedicineId(search.medicine);
   }, [search.medicine]);
 
-  const selected: Medicine | undefined = useMemo(
-    () => medicines.data?.find((item) => item.medicine_id === medicineId),
-    [medicines.data, medicineId],
+  // If the medicineId is outside the 25 curated catalog items, resolve it individually
+  const isCatalogMedicine = Boolean(
+    medicines.data?.some((item) => item.medicine_id.toLowerCase() === medicineId.toLowerCase()),
   );
+  const customMedicine = useMedicine(!isCatalogMedicine ? medicineId : undefined);
+
+  const selected: Medicine | undefined = useMemo(() => {
+    const fromList = medicines.data?.find(
+      (item) => item.medicine_id.toLowerCase() === medicineId.toLowerCase(),
+    );
+    if (fromList) return fromList;
+    if (customMedicine.data) return customMedicine.data;
+    return undefined;
+  }, [medicines.data, medicineId, customMedicine.data]);
 
   const assess = useMutation({
     mutationFn: (payload: StorageRiskRequest) => predictStorageRisk(payload),
@@ -152,25 +162,58 @@ function AssessmentPage() {
       <section className="panel p-5">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Field label="Medicine">
-            {medicines.isLoading ? (
+            {medicines.isLoading || (customMedicine.isLoading && !selected) ? (
               <Skeleton className="h-9 w-full" />
+            ) : customMedicine.isError && !selected ? (
+              <div className="rounded-[4px] border border-destructive/30 bg-destructive/10 p-2 text-[11px] text-destructive">
+                Medicine &apos;{medicineId}&apos; not found in verified catalog or knowledge base.
+                <button
+                  type="button"
+                  onClick={() => setMedicineId("MED-001")}
+                  className="ml-2 font-medium underline hover:text-foreground"
+                >
+                  Reset to catalog
+                </button>
+              </div>
             ) : (
-              <select
-                value={medicineId}
-                onChange={(event) => {
-                  setMedicineId(event.target.value);
-                  assess.reset();
-                }}
-                className="field"
-                disabled={!medicines.isSuccess}
-              >
-                {medicines.data?.map((item) => (
-                  <option key={item.medicine_id} value={item.medicine_id}>
-                    {item.medicine_name} · {item.storage_min_temperature}–
-                    {item.storage_max_temperature}°C
-                  </option>
-                ))}
-              </select>
+              <div>
+                <select
+                  value={selected?.medicine_id ?? medicineId}
+                  onChange={(event) => {
+                    setMedicineId(event.target.value);
+                    assess.reset();
+                  }}
+                  className="field"
+                  disabled={!medicines.isSuccess && !customMedicine.isSuccess}
+                >
+                  {/* If medicine is externally resolved, render it as the selected option */}
+                  {selected &&
+                    !medicines.data?.some((item) => item.medicine_id === selected.medicine_id) && (
+                      <option key={selected.medicine_id} value={selected.medicine_id}>
+                        {selected.medicine_name}
+                        {selected.storage_min_temperature !== null &&
+                        selected.storage_max_temperature !== null
+                          ? ` · ${selected.storage_min_temperature}–${selected.storage_max_temperature}°C`
+                          : " · (Monograph advisory)"}
+                        {` [${selected.source}]`}
+                      </option>
+                    )}
+                  {medicines.data?.map((item) => (
+                    <option key={item.medicine_id} value={item.medicine_id}>
+                      {item.medicine_name}
+                      {item.storage_min_temperature !== null &&
+                      item.storage_max_temperature !== null
+                        ? ` · ${item.storage_min_temperature}–${item.storage_max_temperature}°C`
+                        : " · (Monograph advisory)"}
+                    </option>
+                  ))}
+                </select>
+                {selected && !isCatalogMedicine && (
+                  <p className="mt-1 font-mono text-[9px] text-accent">
+                    Monograph source: {selected.source} · {selected.medicine_id}
+                  </p>
+                )}
+              </div>
             )}
           </Field>
 
@@ -178,7 +221,10 @@ function AssessmentPage() {
             label="Temperature °C"
             hint={
               selected
-                ? `Permitted ${selected.storage_min_temperature}–${selected.storage_max_temperature}`
+                ? selected.storage_min_temperature !== null &&
+                  selected.storage_max_temperature !== null
+                  ? `Permitted ${selected.storage_min_temperature}–${selected.storage_max_temperature}°C`
+                  : "Monograph advisory"
                 : undefined
             }
           >
@@ -325,13 +371,24 @@ function AssessmentResult({
   const compliance = result.deterministic_compliance;
   const risk = result.ml_risk;
   const storage = result.storage_requirements;
-  const tone = RISK_TONE[risk.level];
+  const tone = risk.level
+    ? RISK_TONE[risk.level]
+    : {
+        badge: "status",
+        border: "border-border",
+        text: "text-muted-foreground",
+        bg: "bg-secondary/40",
+        bar: "bg-muted",
+      };
 
   // The two verdicts answer different questions and routinely disagree: a brief excursion
   // breaches the documented limit while accumulating too little thermal stress to matter.
   // Saying so explicitly is the difference between a usable result and a confusing one.
-  const divergent = !compliance.is_compliant && risk.level === "LOW";
-  const belowMinimum = submitted.current_temperature < storage.min_temperature;
+  const divergent = compliance.is_compliant === false && risk.level === "LOW";
+  const belowMinimum =
+    storage.min_temperature !== null
+      ? submitted.current_temperature < storage.min_temperature
+      : false;
 
   return (
     <>
@@ -345,7 +402,7 @@ function AssessmentResult({
             <p className="mt-1 text-muted-foreground">
               Conditions fell outside the documented range, so compliance fails — that is a hard
               rule and not negotiable. The model still estimates LOW degradation risk because it
-              weighs deviation multiplied by duration, and {compliance.temp_deviation}°C held for{" "}
+              weighs deviation multiplied by duration, and {compliance.temp_deviation ?? 0}°C held for{" "}
               {submitted.excursion_duration_hours} h accumulates little thermal stress. Treat the
               compliance result as the binding one.
             </p>
@@ -362,7 +419,11 @@ function AssessmentResult({
         >
           <Row
             label="Permitted range"
-            value={`${storage.min_temperature}–${storage.max_temperature}°C`}
+            value={
+              storage.min_temperature !== null && storage.max_temperature !== null
+                ? `${storage.min_temperature}–${storage.max_temperature}°C`
+                : (storage.qualitative_instructions || "Monograph advisory")
+            }
           />
           <Row label="Observed" value={`${submitted.current_temperature}°C`} />
           <Row label="Held for" value={`${submitted.excursion_duration_hours} h`} />
@@ -447,40 +508,48 @@ function AssessmentResult({
           className={cn(tone.border, tone.bg)}
         >
           <div className="flex items-end justify-between gap-2">
-            <span className={cn("font-head text-3xl leading-none", tone.text)}>{risk.level}</span>
+            <span className={cn("font-head text-3xl leading-none", tone.text)}>
+              {risk.level ?? "UNAVAILABLE"}
+            </span>
             <span className="font-mono text-[10px] text-muted-foreground">
-              {formatPercent(risk.confidence, 1)} confidence
+              {risk.confidence !== null ? `${formatPercent(risk.confidence, 1)} confidence` : "No estimate"}
             </span>
           </div>
 
-          <div className="mt-4 space-y-2">
-            {(["LOW", "MODERATE", "HIGH"] as const).map((level) => {
-              const probability = risk.probabilities[level] ?? 0;
-              return (
-                <div key={level}>
-                  <div className="mb-1 flex justify-between font-mono text-[9px] uppercase tracking-[0.14em]">
-                    <span
-                      className={
-                        level === risk.level ? RISK_TONE[level].text : "text-muted-foreground"
-                      }
-                    >
-                      {level}
-                    </span>
-                    <span className="text-muted-foreground">{formatPercent(probability, 1)}</span>
+          {risk.probabilities ? (
+            <div className="mt-4 space-y-2">
+              {(["LOW", "MODERATE", "HIGH"] as const).map((level) => {
+                const probability = risk.probabilities ? (risk.probabilities[level] ?? 0) : 0;
+                return (
+                  <div key={level}>
+                    <div className="mb-1 flex justify-between font-mono text-[9px] uppercase tracking-[0.14em]">
+                      <span
+                        className={
+                          level === risk.level ? RISK_TONE[level].text : "text-muted-foreground"
+                        }
+                      >
+                        {level}
+                      </span>
+                      <span className="text-muted-foreground">{formatPercent(probability, 1)}</span>
+                    </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-background">
+                      <div
+                        className={cn(
+                          "h-full rounded-full transition-[width] duration-500",
+                          RISK_TONE[level].bar,
+                        )}
+                        style={{ width: `${Math.max(probability * 100, 0.5)}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-background">
-                    <div
-                      className={cn(
-                        "h-full rounded-full transition-[width] duration-500",
-                        RISK_TONE[level].bar,
-                      )}
-                      style={{ width: `${Math.max(probability * 100, 0.5)}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+              {risk.unavailable_reason || "AI storage-risk estimation unavailable for this medicine."}
+            </p>
+          )}
 
           <p className="mt-3 font-mono text-[9px] text-muted-foreground">
             {risk.model_name} · {risk.training_dataset_type}
@@ -488,39 +557,47 @@ function AssessmentResult({
         </ResultCard>
       </div>
 
-      <section className="panel mt-4 p-5 lg:mt-5">
-        <h2 className="mb-1 font-head text-[15px]">What drove this estimate</h2>
-        <p className="mb-4 text-[11px] text-muted-foreground">
-          The model&apos;s five highest-weighted inputs, with the value each one took for this
-          scenario. Weights are global to the trained model, not recomputed per prediction.
-        </p>
+      {risk.top_factors && risk.top_factors.length > 0 ? (
+        <section className="panel mt-4 p-5 lg:mt-5">
+          <h2 className="mb-1 font-head text-[15px]">What drove this estimate</h2>
+          <p className="mb-4 text-[11px] text-muted-foreground">
+            The model&apos;s five highest-weighted inputs, with the value each one took for this
+            scenario. Weights are global to the trained model, not recomputed per prediction.
+          </p>
 
-        <div className="grid gap-px overflow-hidden rounded-[5px] bg-border">
-          {risk.top_factors.map((factor) => (
-            <div key={factor.feature} className="bg-background p-3">
-              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                <p className="text-[12px] font-medium">{factor.feature_label}</p>
-                <span className="font-mono text-[10px] text-muted-foreground">
-                  weight {formatPercent(factor.importance_weight, 1)}
-                </span>
+          <div className="grid gap-px overflow-hidden rounded-[5px] bg-border">
+            {risk.top_factors.map((factor) => (
+              <div key={factor.feature} className="bg-background p-3">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                  <p className="text-[12px] font-medium">{factor.feature_label}</p>
+                  <span className="font-mono text-[10px] text-muted-foreground">
+                    weight {formatPercent(factor.importance_weight, 1)}
+                  </span>
+                </div>
+                <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-secondary">
+                  <div
+                    className="h-full rounded-full bg-accent/70"
+                    style={{ width: `${Math.max(factor.importance_weight * 100, 0.5)}%` }}
+                  />
+                </div>
+                <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
+                  {factor.interpretation}
+                </p>
               </div>
-              <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-secondary">
-                <div
-                  className="h-full rounded-full bg-accent/70"
-                  style={{ width: `${Math.max(factor.importance_weight * 100, 0.5)}%` }}
-                />
-              </div>
-              <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
-                {factor.interpretation}
-              </p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <p className="mt-4 border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
-          {result.disclaimer}
-        </p>
-      </section>
+          <p className="mt-4 border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
+            {result.disclaimer}
+          </p>
+        </section>
+      ) : (
+        <section className="panel mt-4 p-5 lg:mt-5">
+          <p className="text-[11px] leading-relaxed text-muted-foreground">
+            {result.disclaimer}
+          </p>
+        </section>
+      )}
     </>
   );
 }

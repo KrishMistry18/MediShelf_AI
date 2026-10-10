@@ -452,7 +452,9 @@ function EvidencePanel({
             {statusConfig.label}
           </span>
           <span className="font-mono text-[10px]">
-            {formatPercent(result.confidence, 0)} confidence
+            {result.product_status === "IDENTIFIED" && (result.retrieval_match_score ?? result.score_breakdown?.["text_identity_score"])
+              ? `${formatPercent(result.retrieval_match_score ?? result.score_breakdown?.["text_identity_score"] ?? 0, 0)} match score`
+              : `${formatPercent(result.confidence, 0)} confidence`}
           </span>
         </div>
         <p className="mt-1 text-[11px] leading-relaxed opacity-90">
@@ -474,18 +476,18 @@ function EvidencePanel({
           <div className="mt-3 grid grid-cols-2 gap-2 text-left">
             <div className="rounded-[4px] border border-border bg-background p-2">
               <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground">
-                Visual Model
+                Visual Model (Closed-Set)
               </span>
               <p className="mt-0.5 truncate text-[11px] font-medium">
                 {humanizeClassName(result.predicted_class)}
               </p>
               <span className="font-mono text-[9px] text-warning">
-                {formatPercent(result.confidence, 0)}
+                {formatPercent(result.visual_model_score ?? result.recognition?.confidence ?? result.confidence, 0)}
               </span>
             </div>
             <div className="rounded-[4px] border border-border bg-background p-2">
               <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground">
-                Label Evidence
+                Label Evidence (Verified KB)
               </span>
               <p className="mt-0.5 truncate text-[11px] font-medium">
                 {result.ocr?.candidate_matches[0]?.medicine_name ??
@@ -493,7 +495,7 @@ function EvidencePanel({
                   "Text candidate"}
               </p>
               <span className="font-mono text-[9px] text-accent">
-                {formatPercent(result.ocr?.candidate_matches[0]?.similarity_score ?? 0.85, 0)}
+                {formatPercent(result.retrieval_match_score ?? result.ocr?.candidate_matches[0]?.similarity_score ?? 0.85, 0)} match score
               </span>
             </div>
           </div>

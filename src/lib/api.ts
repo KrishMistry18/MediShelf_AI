@@ -43,8 +43,8 @@ export type Medicine = {
   dosage_form: string;
   category: string;
   manufacturer: string | null;
-  storage_min_temperature: number;
-  storage_max_temperature: number;
+  storage_min_temperature: number | null;
+  storage_max_temperature: number | null;
   storage_min_humidity: number | null;
   storage_max_humidity: number | null;
   expiry_warning_days: number;
@@ -197,6 +197,9 @@ export type ScanResponse = {
     visual_classifier: boolean;
   } | null;
   score_breakdown?: Record<string, number> | null;
+  visual_model_score?: number | null;
+  retrieval_match_score?: number | null;
+  identification_status?: string | null;
 };
 
 export type RiskLevel = "LOW" | "MODERATE" | "HIGH";
@@ -221,28 +224,36 @@ export type StorageRiskRequest = {
 export type StorageRiskResponse = {
   medicine: Medicine;
   storage_requirements: {
-    min_temperature: number;
-    max_temperature: number;
+    min_temperature: number | null;
+    max_temperature: number | null;
     min_humidity: number | null;
     max_humidity: number | null;
     temperature_unit: string;
     regulatory_source: string;
+    source_id?: string | null;
     source_url: string;
+    has_quantified_temperature?: boolean;
+    temperature_monograph_notice?: string | null;
     has_quantified_humidity: boolean;
     humidity_monograph_notice: string;
+    qualitative_instructions?: string | null;
   };
   deterministic_compliance: {
-    is_compliant: boolean;
-    temp_compliant: boolean;
-    temp_deviation: number;
+    is_compliant: boolean | null;
+    temp_compliant: boolean | null;
+    temp_deviation: number | null;
+    temp_status_text?: string | null;
     humidity_compliant: boolean | null;
     humidity_status_text: string;
+    status: "COMPLIANT" | "OUTSIDE_DOCUMENTED_RANGE" | "INSUFFICIENT_DATA";
     summary: string;
   };
   ml_risk: {
-    level: RiskLevel;
-    confidence: number;
-    probabilities: Record<string, number>;
+    is_available: boolean;
+    unavailable_reason?: string | null;
+    level: RiskLevel | null;
+    confidence: number | null;
+    probabilities: Record<string, number> | null;
     top_factors: MLFactorImportance[];
     model_name: string;
     model_version: string;
@@ -355,9 +366,7 @@ export class ApiError extends Error {
   }
 }
 
-const OFFLINE_HINT =
-  `Cannot reach the MediShelf API at ${API_BASE_URL}. Start it with ` +
-  `\`python tools/serve_api.py\` from the repository root.`;
+const OFFLINE_HINT = "The application cannot connect to the local inference service.";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let response: Response;
@@ -429,6 +438,9 @@ export const fetchCategories = () => request<CategoryCount[]>("/api/medicines/ca
 
 export const fetchMedicine = (medicineId: string) =>
   request<Medicine>(`/api/medicines/${encodeURIComponent(medicineId)}`);
+
+export const searchMedicines = (query: string, limit = 10) =>
+  request<Medicine[]>(`/api/medicines/search?q=${encodeURIComponent(query)}&limit=${limit}`);
 
 export function scanMedicineImage(file: File, threshold?: number): Promise<ScanResponse> {
   const body = new FormData();

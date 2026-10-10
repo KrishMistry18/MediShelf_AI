@@ -306,7 +306,13 @@ _GENERIC_LABEL_WORDS = {
     "INJECTION", "VIAL", "VIALS", "SOLUTION", "SUSPENSION", "SYRUP", "CREAM",
     "OINTMENT", "GEL", "SPRAY", "AEROSOL", "INHALER", "PEN", "DELAYED",
     "RELEASE", "EXTENDED", "COATED", "FILM", "ORAL", "NASAL", "SUBCUTANEOUS",
-    "SR", "ER", "XR", "MG", "MCG", "ML", "IU", "RX", "USP", "EACH", "CONTAINS",
+    "SR", "ER", "XR", "MG", "MCG", "ML", "IU", "RX", "USP", "BP", "EP", "IP",
+    "EACH", "CONTAINS", "FOR", "BY", "NOT", "USE", "ONLY", "KEEP", "OUT",
+    "OF", "REACH", "CHILDREN", "STORE", "BELOW", "DRY", "PLACE", "COOL",
+    "PROTECT", "FROM", "LIGHT", "MOISTURE", "HUMAN", "CONSUMPTION", "WARNING",
+    "CAUTION", "BATCH", "LOT", "DATE", "EXP", "MFG", "MFR", "LIC", "NO",
+    "LITER", "PRODUCT", "PACKAGE", "FORMULA", "MOTOR", "OIL", "FLUID",
+    "INDUSTRIAL", "SOLVENT",
 }
 
 
@@ -359,7 +365,9 @@ def extract_active_ingredients(lines: List[OCRTextLine]) -> List[str]:
             for var in variants:
                 var_lower = var.lower()
                 for ing in KNOWN_ACTIVE_INGREDIENTS:
-                    if ing in var_lower or var_lower in ing:
+                    if ing == var_lower or ing in var_lower:
+                        detected.add(ing)
+                    elif len(var_lower) >= 5 and len(var_lower) >= len(ing) - 2 and var_lower in ing:
                         detected.add(ing)
                     elif len(var_lower) >= 5:
                         sim = difflib.SequenceMatcher(None, var_lower, ing).ratio()
@@ -457,7 +465,7 @@ def match_medicine_catalog(
                 score = max(score, 0.92)
             elif brand_upper and any(b.strip() in token_upper for b in brand_upper.split("/")):
                 score = max(score, 0.92)
-            elif first_word not in _GENERIC_LABEL_WORDS and first_word in token_upper:
+            elif shares_identity and first_word not in _GENERIC_LABEL_WORDS and re.search(r"\b" + re.escape(first_word) + r"\b", token_upper):
                 score = max(score, 0.92)
             else:
                 ratio_name = difflib.SequenceMatcher(None, token_upper, med_name_upper).ratio()

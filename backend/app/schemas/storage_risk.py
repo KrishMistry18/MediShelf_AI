@@ -17,23 +17,29 @@ class StorageRiskRequest(BaseModel):
 
 
 class StorageRequirementsInfo(BaseModel):
-    min_temperature: float = Field(..., description="Minimum permitted storage temperature in °C")
-    max_temperature: float = Field(..., description="Maximum permitted storage temperature in °C")
+    min_temperature: Optional[float] = Field(None, description="Minimum permitted storage temperature in °C")
+    max_temperature: Optional[float] = Field(None, description="Maximum permitted storage temperature in °C")
     min_humidity: Optional[float] = Field(None, description="Minimum permitted humidity in % RH if quantified")
     max_humidity: Optional[float] = Field(None, description="Maximum permitted humidity in % RH if quantified")
     temperature_unit: str = "C"
     regulatory_source: str = Field(..., description="Monograph reference")
+    source_id: Optional[str] = Field(None, description="Source-specific identifier")
     source_url: str = Field(..., description="Regulatory URL")
+    has_quantified_temperature: bool = Field(True, description="Whether temperature is quantified in the official monograph")
+    temperature_monograph_notice: Optional[str] = Field(None, description="Notice regarding temperature documentation")
     has_quantified_humidity: bool = Field(False, description="Whether humidity is quantified in the official monograph")
     humidity_monograph_notice: str = Field(..., description="Explicit statement regarding humidity documentation")
+    qualitative_instructions: Optional[str] = Field(None, description="Qualitative storage instructions from label/monograph")
 
 
 class DeterministicCompliance(BaseModel):
-    is_compliant: bool = Field(..., description="Overall deterministic compliance status")
-    temp_compliant: bool = Field(..., description="True if temperature is within [min_temperature, max_temperature]")
-    temp_deviation: float = Field(..., description="Absolute temperature deviation outside permissible range in °C")
+    is_compliant: Optional[bool] = Field(..., description="Overall deterministic compliance status (None if insufficient data)")
+    temp_compliant: Optional[bool] = Field(None, description="True if temperature is within [min_temperature, max_temperature], None if unquantified")
+    temp_deviation: Optional[float] = Field(None, description="Absolute temperature deviation outside permissible range in °C")
+    temp_status_text: Optional[str] = Field(None, description="Clear statement of temperature compliance evaluation")
     humidity_compliant: Optional[bool] = Field(None, description="True if within range, False if breached, None if unquantified")
     humidity_status_text: str = Field(..., description="Clear explanation of humidity compliance evaluation")
+    status: str = Field("COMPLIANT", description="Deterministic status: COMPLIANT, OUTSIDE_DOCUMENTED_RANGE, or INSUFFICIENT_DATA")
     summary: str = Field(..., description="Concise rule-based assessment summary")
 
 
@@ -46,10 +52,12 @@ class MLFactorImportance(BaseModel):
 
 
 class MLRiskPrediction(BaseModel):
-    level: str = Field(..., description="Estimated storage degradation risk: LOW, MODERATE, or HIGH")
-    confidence: float = Field(..., description="Model confidence score for top predicted class (0.0 - 1.0)")
-    probabilities: Dict[str, float] = Field(..., description="Calibrated probability distribution across all risk classes")
-    top_factors: List[MLFactorImportance] = Field(..., description="Ranked contributing factors explainability")
+    is_available: bool = Field(True, description="Whether ML degradation-risk estimate was generated")
+    unavailable_reason: Optional[str] = Field(None, description="Reason if ML risk estimate is unavailable")
+    level: Optional[str] = Field(None, description="Estimated storage degradation risk: LOW, MODERATE, or HIGH")
+    confidence: Optional[float] = Field(None, description="Model confidence score for top predicted class (0.0 - 1.0)")
+    probabilities: Optional[Dict[str, float]] = Field(None, description="Calibrated probability distribution across all risk classes")
+    top_factors: List[MLFactorImportance] = Field(default_factory=list, description="Ranked contributing factors explainability")
     model_name: str = Field("GradientBoostingClassifier", description="Algorithm name")
     model_version: str = Field("storage-risk-v1.0", description="Model version tag")
     training_dataset_type: str = Field("simulation-derived", description="Provenance of model training data")

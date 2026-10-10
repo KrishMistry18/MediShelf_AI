@@ -177,7 +177,8 @@ function MedicinesPage() {
                 className={cn("divide-y divide-border", list.isPlaceholderData && "opacity-60")}
               >
                 {items.map((medicine) => {
-                  const coldChain = medicine.storage_max_temperature <= 8;
+                  const coldChain =
+                    medicine.storage_max_temperature !== null && medicine.storage_max_temperature <= 8;
                   const scannable = Boolean(
                     medicine.image_class && recognisableClasses.has(medicine.image_class),
                   );
@@ -212,7 +213,10 @@ function MedicinesPage() {
                           )}
                         >
                           {coldChain && <Snowflake className="size-3" />}
-                          {medicine.storage_min_temperature}–{medicine.storage_max_temperature}°C
+                          {medicine.storage_min_temperature !== null &&
+                          medicine.storage_max_temperature !== null
+                            ? `${medicine.storage_min_temperature}–${medicine.storage_max_temperature}°C`
+                            : "Monograph advisory"}
                         </span>
                       </td>
                       <td className="p-3">
@@ -306,7 +310,8 @@ function MedicineDialog({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onClose]);
 
-  const coldChain = medicine.storage_max_temperature <= 8;
+  const coldChain =
+    medicine.storage_max_temperature !== null && medicine.storage_max_temperature <= 8;
 
   return (
     <div
@@ -351,10 +356,17 @@ function MedicineDialog({
           {coldChain ? <Snowflake className="size-4" /> : <Thermometer className="size-4" />}
           <span>
             <strong className="font-medium">
-              {medicine.storage_min_temperature}–{medicine.storage_max_temperature}°C
+              {medicine.storage_min_temperature !== null &&
+              medicine.storage_max_temperature !== null
+                ? `${medicine.storage_min_temperature}–${medicine.storage_max_temperature}°C`
+                : "Monograph advisory"}
             </strong>
             <span className={cn("ml-1.5", coldChain ? "text-accent/80" : "text-muted-foreground")}>
-              {coldChain ? "cold chain — do not freeze" : "controlled room temperature"}
+              {coldChain
+                ? "cold chain — do not freeze"
+                : medicine.storage_max_temperature !== null
+                  ? "controlled room temperature"
+                  : "qualitative packaging advisory"}
             </span>
           </span>
         </div>

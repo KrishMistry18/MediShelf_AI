@@ -56,34 +56,21 @@ def list_medicines(
     )
 
 
+from app.services.medicine_service import medicine_resolution_service
+
+
 @router.get(
     "/search",
     response_model=List[MedicineResponse],
     summary="Quick search autocomplete",
-    description="Prefix and substring lookup matching medicine names, generic composition, brand names, and computer vision class labels.",
+    description="Prefix and substring lookup matching medicine names, generic composition, brand names, and open-world knowledge base.",
 )
 def search_medicines(
     q: str = Query(..., min_length=1, description="Search query string"),
     limit: int = Query(default=10, ge=1, le=50, description="Maximum results to return"),
     db: Session = Depends(get_db),
 ) -> List[MedicineResponse]:
-    term = f"%{q.strip()}%"
-    results = (
-        db.query(Medicine)
-        .filter(
-            or_(
-                Medicine.medicine_name.ilike(term),
-                Medicine.generic_name.ilike(term),
-                Medicine.brand_name.ilike(term),
-                Medicine.medicine_id.ilike(term),
-                Medicine.image_class.ilike(term),
-            )
-        )
-        .order_by(Medicine.medicine_name.asc())
-        .limit(limit)
-        .all()
-    )
-    return results
+    return medicine_resolution_service.search_medicines(query=q, limit=limit, db=db)
 
 
 @router.get(
@@ -102,69 +89,19 @@ def list_categories(db: Session = Depends(get_db)) -> List[CategoryCount]:
     return [CategoryCount(category=row[0], count=row[1]) for row in rows]
 
 
-from datetime import datetime, timezone
-from app.ocr.retrieval import get_retriever
-
 @router.get(
     "/{medicine_id}",
     response_model=MedicineResponse,
     summary="Retrieve single medicine by ID",
-    description="Fetch comprehensive medicine storage specification and provenance metadata by medicine_id (e.g. MED-001 or RXCUI-855324).",
+    description="Fetch comprehensive medicine storage specification and provenance metadata by medicine_id (e.g. MED-001 or FDA-e0af7498-0dc).",
 )
 def get_medicine(
     medicine_id: str,
     db: Session = Depends(get_db),
 ) -> MedicineResponse:
-    clean_id = medicine_id.strip()
-    med = db.query(Medicine).filter(Medicine.medicine_id == clean_id).first()
-    if not med:
-        # Fallback to integer primary key lookup if numeric
-        if clean_id.isdigit():
-            med = db.query(Medicine).filter(Medicine.id == int(clean_id)).first()
-
+    med = medicine_resolution_service.resolve_medicine(identifier=medicine_id, db=db)
     if med:
         return med
-
-    # Fallback to the 2,116 verified records in the Open-World Knowledge Base
-    kb_rec = get_retriever().get_medicine_by_id(clean_id)
-    if kb_rec:
-        retrieved_dt = None
-        if kb_rec.get("retrieved_at"):
-            try:
-                retrieved_dt = datetime.fromisoformat(str(kb_rec["retrieved_at"]).replace("Z", "+00:00"))
-            except Exception:
-                retrieved_dt = datetime.now(timezone.utc)
-        else:
-            retrieved_dt = datetime.now(timezone.utc)
-
-        return MedicineResponse(
-            id=kb_rec.get("id", 99999),
-            medicine_id=kb_rec["medicine_id"],
-            medicine_name=kb_rec["medicine_name"],
-            generic_name=kb_rec["generic_name"],
-            brand_name=kb_rec.get("brand_name"),
-            strength=kb_rec.get("strength") or "N/A",
-            dosage_form=kb_rec.get("dosage_form") or "Tablet",
-            category=kb_rec.get("category") or "General Medicine",
-            manufacturer=kb_rec.get("manufacturer"),
-            storage_min_temperature=float(kb_rec.get("storage_min_temperature", 15.0)),
-            storage_max_temperature=float(kb_rec.get("storage_max_temperature", 25.0)),
-            storage_min_humidity=float(kb_rec["storage_min_humidity"]) if kb_rec.get("storage_min_humidity") is not None else None,
-            storage_max_humidity=float(kb_rec["storage_max_humidity"]) if kb_rec.get("storage_max_humidity") is not None else None,
-            image_class=None,
-            canonical_name=kb_rec.get("canonical_name"),
-            active_ingredients=kb_rec.get("active_ingredients") if isinstance(kb_rec.get("active_ingredients"), str) else json.dumps(kb_rec.get("active_ingredients", [])),
-            route=kb_rec.get("route"),
-            rxnorm_cui=kb_rec.get("rxnorm_cui"),
-            ndc=kb_rec.get("ndc"),
-            source=kb_rec.get("source") or "NLM RxNorm",
-            source_id=kb_rec.get("source_id"),
-            source_url=kb_rec.get("source_url") or "https://rxnav.nlm.nih.gov/",
-            source_version=kb_rec.get("source_version") or "2026-03",
-            retrieved_at=retrieved_dt,
-            created_at=retrieved_dt,
-            updated_at=retrieved_dt,
-        )
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
