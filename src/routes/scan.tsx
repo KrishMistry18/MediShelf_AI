@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   AlertCircle,
   AlertTriangle,
+  ArrowRight,
   Camera,
   Check,
   CheckCircle2,
@@ -750,10 +751,17 @@ function ScanDetail({
                       {cand.strength && <span>· {cand.strength}</span>}
                       {cand.dosage_form && <span>· {cand.dosage_form}</span>}
                       {cand.source_name && (
-                        <span className="ml-auto rounded-[3px] bg-secondary px-1.5 py-0.5 text-foreground">
+                        <span className="rounded-[3px] bg-secondary px-1.5 py-0.5 text-foreground">
                           {cand.source_name}
                         </span>
                       )}
+                      <button
+                        type="button"
+                        onClick={() => onAssess(cand.medicine_id)}
+                        className="ml-auto inline-flex items-center gap-1 rounded-[3px] border border-accent/40 bg-accent/10 px-2 py-0.5 font-medium text-accent hover:bg-accent hover:text-white transition-colors"
+                      >
+                        Assess storage <ArrowRight className="size-2.5" />
+                      </button>
                     </div>
                   </li>
                 );
@@ -919,10 +927,13 @@ const OCR_FIELD_LABELS: Array<[keyof StructuredFields, string]> = [
 function OcrPanel({ result }: { result: ScanResponse }) {
   const ocr = result.ocr;
   const [showRaw, setShowRaw] = useState(false);
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const [userCorrections, setUserCorrections] = useState<Record<string, string>>({});
 
   const populated = useMemo(
-    () => (ocr ? OCR_FIELD_LABELS.filter(([key]) => ocr.fields[key].value) : []),
-    [ocr],
+    () => (ocr ? OCR_FIELD_LABELS.filter(([key]) => ocr.fields[key].value || userCorrections[key]) : []),
+    [ocr, userCorrections],
   );
 
   return (
@@ -969,13 +980,72 @@ function OcrPanel({ result }: { result: ScanResponse }) {
               <dl className="grid gap-px overflow-hidden rounded-[5px] bg-border sm:grid-cols-2">
                 {populated.map(([key, label]) => {
                   const field = ocr.fields[key];
+                  const isEditing = editingKey === key;
+                  const isCorrected = Boolean(userCorrections[key]);
+                  const displayVal = userCorrections[key] ?? field.value;
+
                   return (
-                    <div key={key} className="bg-background p-3">
-                      <dt className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-                        {label}
-                      </dt>
-                      <dd className="mt-0.5 text-[12px] font-medium">{field.value}</dd>
-                      {field.raw_text && field.raw_text !== field.value && (
+                    <div key={key} className="bg-background p-3 relative group">
+                      <div className="flex items-center justify-between">
+                        <dt className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+                          {label}
+                        </dt>
+                        <div className="flex items-center gap-1.5">
+                          {isCorrected && (
+                            <span className="rounded-[3px] bg-accent/15 px-1.5 py-0.5 font-mono text-[8px] text-accent font-semibold">
+                              User Corrected
+                            </span>
+                          )}
+                          {!isEditing && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingKey(key);
+                                setEditValue(displayVal ?? "");
+                              }}
+                              className="font-mono text-[9px] text-muted-foreground hover:text-accent opacity-60 group-hover:opacity-100 transition-opacity"
+                              aria-label={`Correct ${label}`}
+                            >
+                              Edit
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {isEditing ? (
+                        <div className="mt-1 flex items-center gap-1.5">
+                          <input
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            className="field h-7 text-[11px] py-0 px-2 flex-1"
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (editValue.trim()) {
+                                setUserCorrections((prev) => ({ ...prev, [key]: editValue.trim() }));
+                              }
+                              setEditingKey(null);
+                            }}
+                            className="rounded-[3px] bg-accent px-2 py-1 text-[10px] text-white hover:bg-accent/90"
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditingKey(null)}
+                            className="rounded-[3px] bg-secondary px-2 py-1 text-[10px] text-muted-foreground hover:text-foreground"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <dd className="mt-0.5 text-[12px] font-medium">{displayVal}</dd>
+                      )}
+
+                      {field.raw_text && field.raw_text !== displayVal && !isEditing && (
                         <p className="mt-0.5 truncate font-mono text-[9px] text-muted-foreground">
                           read as “{field.raw_text}”
                         </p>

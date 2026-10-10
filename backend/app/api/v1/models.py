@@ -187,3 +187,137 @@ def get_models_overview() -> ModelsOverviewResponse:
         limitations=_build_limitations(vision, storage_risk),
         disclaimer=DISCLAIMER,
     )
+
+
+@router.get(
+    "/status",
+    status_code=status.HTTP_200_OK,
+    summary="Runtime status and artifact availability of inference models",
+)
+def get_models_status() -> Dict[str, Any]:
+    vision_exists = VISION_CHECKPOINT.exists()
+    risk_exists = RISK_MODEL.exists()
+    return {
+        "status": "healthy" if (vision_exists and risk_exists) else "degraded",
+        "vision_model": {
+            "loaded": vision_exists,
+            "architecture": "MobileNetV3-Small",
+            "weights_path": "ml/artifacts/model/medicine_classifier.pt",
+            "file_size_bytes": VISION_CHECKPOINT.stat().st_size if vision_exists else None,
+            "classes": 10,
+        },
+        "storage_risk_model": {
+            "loaded": risk_exists,
+            "algorithm": "GradientBoostingClassifier",
+            "model_path": "ml/artifacts/storage_risk/model.joblib",
+            "file_size_bytes": RISK_MODEL.stat().st_size if risk_exists else None,
+            "features_count": 15,
+        },
+    }
+
+
+@router.get(
+    "/vision/metrics",
+    status_code=status.HTTP_200_OK,
+    summary="Detailed benchmark metrics for visual packaging classifier",
+)
+def get_vision_metrics() -> Dict[str, Any]:
+    test_metrics = _read_json(VISION_TEST_METRICS) or {}
+    metadata = _read_json(VISION_METADATA) or {}
+    confusion_path = ARTIFACTS / "metrics" / "confusion_matrix.json"
+    confusion = _read_json(confusion_path) or {}
+
+    sample_count = test_metrics.get("sample_count", 0)
+    return {
+        "model_name": metadata.get("model_name", "Medicine Packaging Classifier"),
+        "architecture": metadata.get("architecture", "MobileNetV3-Small"),
+        "top1_accuracy": test_metrics.get("top1_accuracy"),
+        "top3_accuracy": test_metrics.get("top3_accuracy"),
+        "macro_f1": test_metrics.get("macro_f1"),
+        "sample_count": sample_count,
+        "class_count": metadata.get("class_count", 10),
+        "per_class": test_metrics.get("per_class", {}),
+        "confusion_matrix": confusion.get("matrix", test_metrics.get("confusion_matrix", [])),
+        "classes": metadata.get("class_names", []),
+        "sample_size_limitation_warning": (
+            f"The evaluation test split contains only {sample_count} samples across {metadata.get('class_count', 10)} classes. "
+            "Metrics are indicative benchmarks on standard packaging and should not be interpreted as open-world packaging coverage."
+        ),
+    }
+
+
+@router.get(
+    "/storage-risk/metrics",
+    status_code=status.HTTP_200_OK,
+    summary="Benchmark evaluation and feature importances for storage risk model",
+)
+def get_storage_risk_metrics() -> Dict[str, Any]:
+    features = _read_json(RISK_FEATURES) or {}
+    evaluation = _read_json(RISK_EVALUATION) or {}
+    training = _read_json(RISK_TRAINING) or {}
+
+    return {
+        "model_name": training.get("model_name", "MediShelf AI Storage Risk Classifier"),
+        "model_version": training.get("model_version", "storage-risk-v1.0"),
+        "algorithm": evaluation.get("selected_model", "GradientBoostingClassifier"),
+        "test_metrics": evaluation.get("test_metrics", {}),
+        "validation_comparison": evaluation.get("validation_comparison", {}),
+        "feature_importances": features.get("feature_importances", {}),
+        "per_class_metrics": evaluation.get("per_class_metrics", {}),
+        "confusion_matrix": evaluation.get("confusion_matrix", {}),
+        "synthetic_data_disclaimer": (
+            "Labels in this benchmark were generated via deterministic USP/FDA rule simulation scenarios (6,000 samples), "
+            "not empirical pharmaceutical chemical stability testing. Metrics measure model alignment with simulated excursion rules."
+        ),
+    }
+
+
+@router.get(
+    "/datasets",
+    status_code=status.HTTP_200_OK,
+    summary="Dataset provenance, sample counts, and split distributions",
+)
+def get_datasets_info() -> Dict[str, Any]:
+    manifest_path = PROJECT_ROOT / "data" / "medicines" / "ingestion_manifest.json"
+    manifest = _read_json(manifest_path) or {}
+    risk_train = _read_json(RISK_TRAINING) or {}
+    vision_meta = _read_json(VISION_METADATA) or {}
+
+    return {
+        "medicine_knowledge_catalogue": {
+            "authority": "NLM RxNorm & FDA DailyMed",
+            "source_version": manifest.get("source_version", "05-Oct-2026"),
+            "total_records": manifest.get("accepted_records_total", 27326),
+            "breakdown": manifest.get("breakdown", {}),
+            "provenance_policy": manifest.get("storage_metadata_policy"),
+        },
+        "storage_risk_dataset": {
+            "dataset_type": "simulation-derived (USP/FDA monograph constraints)",
+            "total_samples": risk_train.get("dataset_samples", 6000),
+            "splits": risk_train.get("splits", {"train": 4800, "test": 1200}),
+            "provenance": "Generated via ml/data_ingestion/generate_storage_risk_dataset.py",
+            "is_synthetic": True,
+        },
+        "computer_vision_dataset": {
+            "model_architecture": vision_meta.get("architecture", "MobileNetV3-Small"),
+            "class_count": vision_meta.get("class_count", 10),
+            "test_sample_count": 15,
+            "classes": vision_meta.get("class_names", []),
+            "is_synthetic": False,
+        },
+    }
+
+
+@router.get(
+    "/health",
+    status_code=status.HTTP_200_OK,
+    summary="Model health status",
+)
+def get_models_health() -> Dict[str, Any]:
+    vision_ok = VISION_CHECKPOINT.exists()
+    risk_ok = RISK_MODEL.exists()
+    return {
+        "status": "healthy" if (vision_ok and risk_ok) else "degraded",
+        "vision_checkpoint": "ready" if vision_ok else "missing",
+        "storage_risk_checkpoint": "ready" if risk_ok else "missing",
+    }

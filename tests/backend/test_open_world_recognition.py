@@ -228,9 +228,9 @@ def test_api_get_open_world_medicine_by_id():
     assert data["medicine_id"] == "RXN-876528"
     assert "amlodipine" in data["medicine_name"].lower() and "telmisartan" in data["medicine_name"].lower()
     assert data["source"] in {"NLM RxNorm", "FDA DailyMed", "openFDA"}
-    assert data["source_url"] is not None
-    assert data["storage_min_temperature"] is not None
-    assert data["storage_max_temperature"] is not None
+    # Pure RxNorm clinical concept without packaging SPL monograph has unquantified storage limits
+    assert data["storage_min_temperature"] is None
+    assert data["storage_max_temperature"] is None
 
 
 def test_api_get_foundation_medicine_by_id():

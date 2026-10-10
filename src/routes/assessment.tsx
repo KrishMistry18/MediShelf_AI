@@ -5,9 +5,11 @@ import {
   CheckCircle2,
   ExternalLink,
   Info,
+  Search,
   ShieldCheck,
   Snowflake,
   Thermometer,
+  X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
@@ -18,6 +20,7 @@ import { recordAssessment } from "@/lib/activity";
 import {
   formatPercent,
   predictStorageRisk,
+  searchMedicines,
   type Medicine,
   type RiskLevel,
   type StorageRiskRequest,
@@ -94,6 +97,30 @@ function AssessmentPage() {
   const [hours, setHours] = useState(3);
   const [humidity, setHumidity] = useState<number | "">(50);
   const [daysToExpiry, setDaysToExpiry] = useState<number | "">("");
+
+  // Search across 27,000+ medicines
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Medicine[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    const timer = window.setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const results = await searchMedicines(searchQuery.trim(), 8);
+        setSearchResults(results);
+      } catch {
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [searchQuery]);
 
   // A medicine handed over from the scan page should replace the default selection.
   useEffect(() => {
@@ -177,6 +204,60 @@ function AssessmentPage() {
               </div>
             ) : (
               <div>
+                <div className="relative mb-2">
+                  <div className="flex items-center gap-2 rounded-[4px] border border-border bg-secondary/30 px-2.5 py-1.5 focus-within:border-accent">
+                    <Search className="size-3.5 text-muted-foreground shrink-0" />
+                    <input
+                      type="text"
+                      placeholder="Search 27,000+ medicines (e.g. Azithromycin, Amlodipine, Metformin)..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-transparent text-[11px] outline-none placeholder:text-muted-foreground"
+                    />
+                    {isSearching && (
+                      <span className="font-mono text-[9px] text-muted-foreground animate-pulse">…</span>
+                    )}
+                    {searchQuery && !isSearching && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSearchQuery("");
+                          setSearchResults([]);
+                        }}
+                        className="text-muted-foreground hover:text-foreground"
+                        aria-label="Clear medicine search"
+                      >
+                        <X className="size-3" />
+                      </button>
+                    )}
+                  </div>
+                  {searchResults.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-56 overflow-y-auto rounded-[5px] border border-border bg-card p-1 shadow-lg ring-1 ring-border">
+                      {searchResults.map((med) => (
+                        <button
+                          key={med.medicine_id}
+                          type="button"
+                          onClick={() => {
+                            setMedicineId(med.medicine_id);
+                            setSearchQuery("");
+                            setSearchResults([]);
+                            assess.reset();
+                          }}
+                          className="flex w-full flex-col items-start rounded-[3px] p-2 text-left text-[11px] hover:bg-secondary/60 transition-colors"
+                        >
+                          <div className="flex w-full items-baseline justify-between gap-2">
+                            <strong className="truncate font-medium text-foreground">{med.medicine_name}</strong>
+                            <span className="font-mono text-[9px] text-accent shrink-0">{med.medicine_id}</span>
+                          </div>
+                          <span className="text-[10px] text-muted-foreground">
+                            {med.generic_name} {med.strength && med.strength !== "Standard" ? `· ${med.strength}` : ""} · {med.dosage_form}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <select
                   value={selected?.medicine_id ?? medicineId}
                   onChange={(event) => {

@@ -190,7 +190,14 @@ async def scan_medicine(
     # A verified medicine match MUST NOT be overridden by a closed-set CV softmax prediction!
     # Caller-specified threshold must be strictly respected: candidate_threshold = max(0.80, applied_threshold)
     elif top_cand and cand_score >= max(0.80, applied_threshold):
-        resolved = _resolve_medicine(top_cand.medicine_id)
+        # Corroborate CV with candidate matches if available
+        corroborated_cv = None
+        if is_confident and matched_cv_row:
+            for c in candidate_matches:
+                if c.medicine_id == matched_cv_row.medicine_id and c.similarity_score >= 0.70:
+                    corroborated_cv = _resolve_medicine(matched_cv_row.medicine_id)
+                    break
+        resolved = corroborated_cv or _resolve_medicine(top_cand.medicine_id)
         if resolved:
             matched_medicine = resolved
             storage_summary = StorageRequirementsSummary(

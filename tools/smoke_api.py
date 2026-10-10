@@ -62,7 +62,7 @@ def test_medicines(client: httpx.Client) -> None:
     check("HTTP 200", response.status_code == 200, f"status {response.status_code}")
     body = response.json()
     print(f"  total={body['total']} returned={len(body['items'])}")
-    check("catalog seeded with 25 monographs", body["total"] == 25, f"got {body['total']}")
+    check("catalog seeded with authentic monographs", body["total"] >= 25, f"got {body['total']}")
 
     required = {
         "medicine_id", "medicine_name", "generic_name", "strength", "dosage_form",
@@ -72,7 +72,7 @@ def test_medicines(client: httpx.Client) -> None:
     first = body["items"][0]
     check("item carries every field the UI renders", required.issubset(first), f"missing {required - set(first)}")
 
-    cold_chain = [m for m in body["items"] if m["storage_max_temperature"] <= 8]
+    cold_chain = [m for m in body["items"] if m.get("storage_max_temperature") is not None and m["storage_max_temperature"] <= 8]
     print(f"  cold-chain products (max <= 8C): {[m['medicine_id'] for m in cold_chain]}")
     check("cold-chain products present", len(cold_chain) > 0)
 

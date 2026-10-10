@@ -12,11 +12,14 @@ from app.schemas.medicine import MedicineResponse, MedicineListResponse, Categor
 router = APIRouter(prefix="/medicines", tags=["Medicines"])
 
 
+from app.services.medicine_service import medicine_resolution_service
+
+
 @router.get(
     "",
     response_model=MedicineListResponse,
     summary="List and filter medicines",
-    description="Retrieve paginated medicine records with optional text search and therapeutic category filter.",
+    description="Retrieve paginated medicine records with optional text search and therapeutic category filter across the entire verified catalogue.",
 )
 def list_medicines(
     page: int = Query(default=1, ge=1, description="Page number (1-indexed)"),
@@ -25,27 +28,13 @@ def list_medicines(
     search: Optional[str] = Query(default=None, description="Fuzzy search across name, generic name, and brand name"),
     db: Session = Depends(get_db),
 ) -> MedicineListResponse:
-    query = db.query(Medicine)
-
-    if category and category.strip():
-        query = query.filter(Medicine.category == category.strip())
-
-    if search and search.strip():
-        term = f"%{search.strip()}%"
-        query = query.filter(
-            or_(
-                Medicine.medicine_name.ilike(term),
-                Medicine.generic_name.ilike(term),
-                Medicine.brand_name.ilike(term),
-                Medicine.medicine_id.ilike(term),
-                Medicine.image_class.ilike(term),
-            )
-        )
-
-    total = query.count()
-    total_pages = max(1, math.ceil(total / page_size)) if total > 0 else 1
-    offset = (page - 1) * page_size
-    items = query.order_by(Medicine.medicine_name.asc()).offset(offset).limit(page_size).all()
+    items, total, total_pages = medicine_resolution_service.list_medicines_paginated(
+        page=page,
+        page_size=page_size,
+        category=category,
+        search=search,
+        db=db,
+    )
 
     return MedicineListResponse(
         items=items,
@@ -54,9 +43,6 @@ def list_medicines(
         page_size=page_size,
         total_pages=total_pages,
     )
-
-
-from app.services.medicine_service import medicine_resolution_service
 
 
 @router.get(
@@ -80,13 +66,7 @@ def search_medicines(
     description="Returns all distinct medicine categories along with the count of medicines in each category.",
 )
 def list_categories(db: Session = Depends(get_db)) -> List[CategoryCount]:
-    rows = (
-        db.query(Medicine.category, func.count(Medicine.id).label("count"))
-        .group_by(Medicine.category)
-        .order_by(Medicine.category.asc())
-        .all()
-    )
-    return [CategoryCount(category=row[0], count=row[1]) for row in rows]
+    return medicine_resolution_service.get_category_counts(db=db)
 
 
 @router.get(

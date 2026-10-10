@@ -133,6 +133,11 @@ class KnowledgeBaseRetriever:
             if len(clean_token) < 3 or clean_token.upper() in PACKAGING_BOILERPLATE:
                 continue
 
+            # Skip if token is purely numbers and packaging boilerplate units (e.g. "500 ML", "500 mg", "100 tabs")
+            letters = re.findall(r"[A-Za-z]{2,}", clean_token)
+            if not letters or all(w.upper() in PACKAGING_BOILERPLATE for w in letters):
+                continue
+
             # Direct FTS5 Query with prefix matching
             self._search_fts(cur, clean_token, candidates_map)
 
@@ -162,11 +167,11 @@ class KnowledgeBaseRetriever:
                 norm_cand_str = normalize_strength_str(cand["strength"]).lower()
                 if norm_ext_str and norm_cand_str:
                     if norm_ext_str == norm_cand_str or norm_ext_str in norm_cand_str:
-                        final_score += 0.08
+                        final_score += 0.15
                         cand["strength_match"] = True
                     elif norm_cand_str != "standard":
                         # Strength mismatch penalty (e.g. 500 mg != 650 mg)
-                        final_score -= 0.12
+                        final_score -= 0.18
                         cand["strength_match"] = False
 
             # Dosage form awareness (Section 10)
@@ -257,7 +262,7 @@ class KnowledgeBaseRetriever:
         is_variant: bool = False,
     ) -> None:
         sanitized = re.sub(r"[^a-zA-Z0-9\s]", "", token).strip()
-        words = re.findall(r"[A-Za-z0-9]+", sanitized)
+        words = [w for w in re.findall(r"[A-Za-z0-9]+", sanitized) if w.upper() not in PACKAGING_BOILERPLATE and not w.isdigit()]
         if not words:
             return
 
@@ -269,22 +274,38 @@ class KnowledgeBaseRetriever:
                 JOIN medicines_master m ON f.medicine_id = m.medicine_id
                 WHERE medicines_fts MATCH ?
                 ORDER BY rank ASC
-                LIMIT 5
+                LIMIT 25
             """, (fts_query,))
             rows = cur.fetchall()
             for row in rows:
                 rec = dict(row)
                 med_id = rec["medicine_id"]
                 # Convert bm25 negative rank to positive [0.65, 0.95]
-                base_score = 0.88 if not is_variant else 0.78
+                base_score = 0.88 if not is_variant else 0.82
 
-                # Verify token similarity with title or ingredients
-                ratio_name = difflib.SequenceMatcher(None, sanitized.upper(), rec["medicine_name"].upper()).ratio()
-                ratio_gen = difflib.SequenceMatcher(None, sanitized.upper(), rec["generic_name"].upper()).ratio()
-                ratio_brand = difflib.SequenceMatcher(None, sanitized.upper(), (rec["brand_name"] or "").upper()).ratio()
-                best_ratio = max(ratio_name, ratio_gen, ratio_brand)
+                # Verify token similarity with title, generic, or brand at word level
+                def _word_sim(target_text: Optional[str]) -> float:
+                    if not target_text:
+                        return 0.0
+                    target_words = re.findall(r"[A-Za-z0-9]+", target_text.upper())
+                    if not target_words:
+                        return 0.0
+                    tok_u = sanitized.upper()
+                    if tok_u in target_words:
+                        return 1.0
+                    if len(tok_u) >= 4 and any(tok_u in tw or tw in tok_u for tw in target_words if len(tw) >= 4):
+                        return 0.95
+                    return max(difflib.SequenceMatcher(None, tok_u, tw).ratio() for tw in target_words)
 
-                score = max(base_score * best_ratio, 0.60)
+                sim_name = _word_sim(rec["medicine_name"])
+                sim_gen = _word_sim(rec["generic_name"])
+                sim_brand = _word_sim(rec["brand_name"])
+                best_sim = max(sim_name, sim_gen, sim_brand)
+
+                if best_sim < 0.45:
+                    continue
+
+                score = base_score * best_sim
 
                 if med_id not in candidates_map or candidates_map[med_id]["retrieval_score"] < score:
                     rec["active_ingredients"] = json.loads(rec["active_ingredients"]) if isinstance(rec["active_ingredients"], str) else rec["active_ingredients"]

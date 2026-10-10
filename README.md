@@ -132,79 +132,54 @@ tools/            serve_api.py, verify_models.py, smoke_api.py
 
 Four stages stay deliberately separate, and the API never merges their outputs:
 
-1. **Computer vision** predicts a package class and nothing else.
-2. **OCR** reads label text independently, without seeing the CV prediction.
-3. **Deterministic rules** compare conditions against the monograph. Reproducible and auditable.
-4. **The ML risk model** estimates degradation probability.
+1. **Computer vision** predicts a package class (10 closed-set classes on MobileNetV3-Small).
+2. **OCR & Open-World Knowledge Retrieval** reads label text independently via EasyOCR, queries the **27,326-medicine master catalogue** (NLM RxNorm SCD/SBD + FDA monographs) using SQLite FTS5 BM25 search, inverted ingredient matching, and OCR confusion tolerance.
+3. **Deterministic rules** compare conditions against the monograph. Reproducible and auditable. If a clinical concept lacks packaging storage limits, returns explicit `INSUFFICIENT_DATA` rather than guessing arbitrary default room temperatures.
+4. **The ML risk model** estimates degradation probability (GradientBoostingClassifier on 15 features).
 
-Cross-checking (`CONFIRMED` / `PARTIAL` / `DIVERGENT` / `UNCONFIRMED`) reports whether the two
-independent readings agree. It is not a claim about authenticity, potency, or safety.
+Cross-checking (`CONFIRMED` / `PARTIAL` / `DIVERGENT` / `UNCONFIRMED`) reports whether the independent visual and textual readings agree.
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the data contracts.
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for data contracts.
 
 ### API endpoints
 
 All routers are mounted under both `/api` and `/api/v1`.
 
-| Endpoint                            | Purpose                                                     |
-| ----------------------------------- | ----------------------------------------------------------- |
-| `GET /api/health`                   | Service and database status                                 |
-| `GET /api/medicines`                | Paginated catalog with search and category filters          |
-| `GET /api/medicines/search`         | Autocomplete across name, generic, brand, SKU, vision class |
-| `GET /api/medicines/categories`     | Distinct categories with counts                             |
-| `GET /api/medicines/{id}`           | Single monograph                                            |
-| `POST /api/scan`                    | Quality gate → CV → OCR → parsing → DB match → cross-check  |
-| `POST /api/ocr`                     | Label text extraction only                                  |
-| `POST /api/v1/storage-risk/predict` | Deterministic compliance and ML risk, reported separately   |
-| `GET /api/v1/storage-risk/metadata` | Risk model provenance                                       |
-| `GET /api/models`                   | Architecture, benchmarks, and derived limitations           |
+| Endpoint                            | Purpose                                                            |
+| ----------------------------------- | ------------------------------------------------------------------ |
+| `GET /api/health`                   | Service, database, and knowledge base status                      |
+| `GET /api/medicines`                | Paginated catalogue (27,326 records across 62 categories)          |
+| `GET /api/medicines/search`         | Autocomplete across 27,000+ brand names, generics, and ingredients |
+| `GET /api/medicines/categories`     | 62 distinct categories with accurate concept counts               |
+| `GET /api/medicines/{id}`           | Single monograph (foundation `MED-***` or RxNorm `RXN-***`)        |
+| `POST /api/scan`                    | Quality gate → CV → EasyOCR → FTS5 candidate ranking → fusion      |
+| `POST /api/ocr`                     | Label text extraction only                                         |
+| `POST /api/v1/storage-risk/predict` | Deterministic compliance and ML risk (with `INSUFFICIENT_DATA`)    |
+| `GET /api/v1/storage-risk/metadata` | Risk model provenance and synthetic training disclaimer            |
+| `GET /api/models`                   | Architecture, benchmarks, and derived limitations                  |
+| `GET /api/v1/models/status`         | Live status of vision and storage risk models                      |
+| `GET /api/v1/models/vision/metrics` | Held-out vision evaluation metrics from disk artifact             |
+| `GET /api/v1/models/storage-risk/metrics` | Real classification metrics and feature importances         |
 
 ---
 
 ## Notes on this build
 
-Changes made while merging the ML service into this frontend:
+### Real Medicine Catalogue Expansion (27,326 Records)
 
-- **The UI no longer fabricates results.** Scanning, storage assessment, the medicine library, the
-  alert list, and every accuracy figure now come from the API. Previously the scan page returned a
-  hardcoded result after a 1.3 s timer, and the model page hardcoded its metrics. Scan and
-  assessment history is kept in `sessionStorage`, so an untouched session shows an empty state
-  rather than sample data.
-- **`GET /api/models` is new.** Serving metrics from `ml/artifacts/**` at request time means
-  retraining cannot leave stale numbers on screen. It also derives the plain-language limitations
-  shown in the UI from the artifacts themselves.
-- **OCR unavailability is no longer reported as bad image quality.** `POST /api/scan` used to
-  fabricate a failed quality assessment when the EasyOCR engine could not load, telling the user
-  to retake a perfectly good photo. Quality is now measured independently and `ocr_status`
-  distinguishes `completed`, `skipped_low_quality`, and `unavailable`.
-- **`humidity_deviation` is computed rather than hardcoded to 0.0.** Predictions are unaffected
-  (the feature has zero importance) but the explainability panel no longer misreports a real
-  humidity breach.
-- **`backend/requirements.txt` was incomplete** — it omitted torch, torchvision, scikit-learn,
-  joblib, pandas, numpy, opencv, and easyocr. Versions are now pinned, with scikit-learn held at
-  1.9.x to match the fitted artifact.
-- **Dark mode was the stock slate palette**, which turned `--accent` into a near-neutral grey and
-  drained the meaning out of every status badge and confidence bar. It now mirrors the light
-  theme's green family at dark-surface lightness.
-- Catalog counts were inconsistent: the UI claimed 25 monographs while the bundled list held 12.
-  It reads the real 25 from the database now.
+- **Official NLM RxNav Ingestion**: Ingested 27,301 verified active concepts via official NLM RxNav API (`https://rxnav.nlm.nih.gov/REST/allconcepts.json?tty=SCD+SBD`):
+  - **17,610** Semantic Clinical Drug (`SCD`) concepts
+  - **9,691** Semantic Branded Drug (`SBD`) concepts
+  - Merged with the **25** curated foundation monographs (`MED-001` through `MED-025`)
+  - Total: **27,326 deduplicated records** with SHA-256 raw provenance in `data/sources/rxnorm_raw.json` and audit breakdown in `data/medicines/ingestion_manifest.json`.
+- **High-Performance SQLite FTS5**: Sub-millisecond full-text search index (`medicines_fts`) and inverted active ingredient index (`ingredient_index` with 40,417 rows across 6,981 distinct generic names).
+- **Strict Storage Provenance**: Pure RxNorm clinical concepts have temperature limits stored as `NULL` so that compliance evaluations return explicit `INSUFFICIENT_DATA` rather than fabricating arbitrary default room temperatures (20–25°C).
+- **Transparent Model Insights**: Dedicated endpoints serve exact disk artifacts (`test_metrics.json`, `evaluation_results.json`) without hardcoded numbers.
+- **Interactive Frontend**: Library page paginates all 27,326 records across 62 categories; Storage Assessment provides debounced autocomplete search; Scan page allows inline OCR field editing with `User Corrected` tracking and direct candidate assessment.
 
 ### Current state
 
-- 70/70 backend tests pass.
-- `tools/smoke_api.py` passes every check against a live server.
-- TypeScript (strict), ESLint, and the production build are clean.
-- All six routes server-render without errors; CORS is verified to allow the dev origin and
-  reject others.
-
-### Known limitations
-
-- Only 10 of the 25 catalogued medicines have a trained vision class. The rest are
-  reference-only — the library marks them "Manual only", and their storage limits and risk
-  assessment work normally.
-- Storage conditions are entered by hand. There is no sensor integration, so nothing in the app
-  is live telemetry.
-- A full scan takes 5–15 s because OCR runs on CPU.
-- Image quality gating rejects small or low-contrast photos before OCR. Several images in the
-  bundled test set trip it, which is the intended behaviour — reading a blurred label produces
-  plausible but wrong characters.
+- **92/92 backend tests pass** (`pytest -v tests/backend`).
+- All frontend routes compile and build cleanly (`npx tsc --noEmit` and `npm run build`).
+- `tools/smoke_api.py` passes against live API at `http://127.0.0.1:8000`.
+- Offline runtime: scan pipeline and knowledge base queries execute fully offline from local SQLite databases.

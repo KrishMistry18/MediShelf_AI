@@ -246,6 +246,128 @@ class MedicineResolutionService:
 
         return results
 
+    def list_medicines_paginated(
+        self,
+        page: int = 1,
+        page_size: int = 10,
+        category: Optional[str] = None,
+        search: Optional[str] = None,
+        db: Optional[Session] = None,
+    ) -> Tuple[List[MedicineResponse], int, int]:
+        """
+        Retrieves paginated medicines across the master knowledge base (27,326+ records).
+        Filters by category and/or text search.
+        Orders foundation monographs first, then alphabetically by canonical name.
+        """
+        import math
+
+        page = max(1, page)
+        page_size = max(1, min(100, page_size))
+        offset = (page - 1) * page_size
+
+        if self.kb_db_path.exists():
+            try:
+                conn = sqlite3.connect(self.kb_db_path)
+                conn.row_factory = sqlite3.Row
+                cur = conn.cursor()
+
+                conditions = []
+                params = []
+
+                if category and category.strip() and category.strip().upper() != "ALL":
+                    conditions.append("category = ?")
+                    params.append(category.strip())
+
+                if search and search.strip():
+                    term = search.strip()
+                    conditions.append(
+                        "(canonical_name LIKE ? OR medicine_name LIKE ? OR generic_name LIKE ? OR brand_name LIKE ? OR medicine_id LIKE ?)"
+                    )
+                    like_term = f"%{term}%"
+                    params.extend([like_term, like_term, like_term, like_term, f"{term}%"])
+
+                where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
+
+                # Total count
+                cur.execute(f"SELECT COUNT(*) FROM medicines_master {where_clause}", params)
+                total = cur.fetchone()[0]
+
+                total_pages = max(1, math.ceil(total / page_size)) if total > 0 else 1
+
+                # Page items
+                items_query = f"""
+                    SELECT * FROM medicines_master
+                    {where_clause}
+                    ORDER BY CASE WHEN medicine_id LIKE 'MED-%' THEN 0 ELSE 1 END, canonical_name ASC
+                    LIMIT ? OFFSET ?
+                """
+                cur.execute(items_query, params + [page_size, offset])
+                rows = cur.fetchall()
+                conn.close()
+
+                items = [self._convert_kb_row_to_response(dict(r)) for r in rows]
+                return items, total, total_pages
+            except Exception as exc:
+                logger.warning(f"Error querying KB for list_medicines: {exc}")
+
+        # Fallback to SQL DB if session provided
+        if db is not None:
+            query = db.query(Medicine)
+            if category and category.strip() and category.strip().upper() != "ALL":
+                query = query.filter(Medicine.category == category.strip())
+            if search and search.strip():
+                term = f"%{search.strip()}%"
+                query = query.filter(
+                    or_(
+                        Medicine.medicine_name.ilike(term),
+                        Medicine.generic_name.ilike(term),
+                        Medicine.brand_name.ilike(term),
+                        Medicine.medicine_id.ilike(term),
+                    )
+                )
+            total = query.count()
+            import math
+            total_pages = max(1, math.ceil(total / page_size)) if total > 0 else 1
+            items = [
+                MedicineResponse.model_validate(r)
+                for r in query.order_by(Medicine.medicine_name.asc()).offset(offset).limit(page_size).all()
+            ]
+            return items, total, total_pages
+
+        return [], 0, 1
+
+    def get_category_counts(self, db: Optional[Session] = None) -> List[Any]:
+        """Returns distinct categories and counts across the master knowledge base."""
+        from app.schemas.medicine import CategoryCount
+
+        if self.kb_db_path.exists():
+            try:
+                conn = sqlite3.connect(self.kb_db_path)
+                cur = conn.cursor()
+                cur.execute("""
+                    SELECT category, COUNT(*) as cnt
+                    FROM medicines_master
+                    WHERE category IS NOT NULL AND category != ''
+                    GROUP BY category
+                    ORDER BY cnt DESC, category ASC
+                """)
+                rows = cur.fetchall()
+                conn.close()
+                return [CategoryCount(category=r[0], count=r[1]) for r in rows if r[0]]
+            except Exception as exc:
+                logger.warning(f"Error querying KB for categories: {exc}")
+
+        if db is not None:
+            rows = (
+                db.query(Medicine.category, func.count(Medicine.id).label("count"))
+                .group_by(Medicine.category)
+                .order_by(func.count(Medicine.id).desc())
+                .all()
+            )
+            return [CategoryCount(category=row[0], count=row[1]) for row in rows]
+
+        return []
+
 
 # Global singleton
 medicine_resolution_service = MedicineResolutionService()

@@ -45,7 +45,11 @@ ENV/
 
 # Generated SQLite database (recreated and reseeded from data/medicines/medicines.csv)
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal
 *.sqlite3
 
 # Environment variables — keep the committed .env.example templates
