@@ -239,7 +239,10 @@ function AssessmentAlert({ record }: { record: AssessmentRecord }) {
         <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
           {record.temperature}°C held for {record.durationHours} h against a permitted{" "}
           {record.permittedRange}
-          {record.tempCompliant === false && record.tempDeviation !== null ? ` — ${record.tempDeviation}°C outside the range` : ""}.
+          {record.tempCompliant === false && record.tempDeviation !== null
+            ? ` — ${record.tempDeviation}°C outside the range`
+            : ""}
+          .
         </p>
 
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[9px] uppercase tracking-[0.12em]">

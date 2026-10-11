@@ -178,7 +178,8 @@ function MedicinesPage() {
               >
                 {items.map((medicine) => {
                   const coldChain =
-                    medicine.storage_max_temperature !== null && medicine.storage_max_temperature <= 8;
+                    medicine.storage_max_temperature !== null &&
+                    medicine.storage_max_temperature <= 8;
                   const scannable = Boolean(
                     medicine.image_class && recognisableClasses.has(medicine.image_class),
                   );
@@ -276,9 +277,7 @@ function MedicinesPage() {
       {selected && (
         <MedicineDialog
           medicine={selected}
-          scannable={Boolean(
-            selected.image_class && recognisableClasses.has(selected.image_class),
-          )}
+          scannable={Boolean(selected.image_class && recognisableClasses.has(selected.image_class))}
           onClose={() => setSelected(null)}
           onAssess={(id) => navigate({ to: "/assessment", search: { medicine: id } })}
         />

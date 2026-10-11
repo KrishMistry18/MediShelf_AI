@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AlertsRouteImport } from './routes/alerts'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as AssessmentRouteImport } from './routes/assessment'
 import { Route as MedicinesRouteImport } from './routes/medicines'
 import { Route as ModelsRouteImport } from './routes/models'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const AlertsRoute = AlertsRouteImport.update({
   id: '/alerts',
   path: '/alerts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssessmentRoute = AssessmentRouteImport.update({
@@ -50,6 +56,7 @@ const ScanRoute = ScanRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/alerts': typeof AlertsRoute
+  '/app': typeof AppRoute
   '/assessment': typeof AssessmentRoute
   '/medicines': typeof MedicinesRoute
   '/models': typeof ModelsRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/alerts': typeof AlertsRoute
+  '/app': typeof AppRoute
   '/assessment': typeof AssessmentRoute
   '/medicines': typeof MedicinesRoute
   '/models': typeof ModelsRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/alerts': typeof AlertsRoute
+  '/app': typeof AppRoute
   '/assessment': typeof AssessmentRoute
   '/medicines': typeof MedicinesRoute
   '/models': typeof ModelsRoute
@@ -75,13 +84,27 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/alerts' | '/assessment' | '/medicines' | '/models' | '/scan'
+    | '/'
+    | '/alerts'
+    | '/app'
+    | '/assessment'
+    | '/medicines'
+    | '/models'
+    | '/scan'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/alerts' | '/assessment' | '/medicines' | '/models' | '/scan'
+  to:
+    | '/'
+    | '/alerts'
+    | '/app'
+    | '/assessment'
+    | '/medicines'
+    | '/models'
+    | '/scan'
   id:
     | '__root__'
     | '/'
     | '/alerts'
+    | '/app'
     | '/assessment'
     | '/medicines'
     | '/models'
@@ -91,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AlertsRoute: typeof AlertsRoute
+  AppRoute: typeof AppRoute
   AssessmentRoute: typeof AssessmentRoute
   MedicinesRoute: typeof MedicinesRoute
   ModelsRoute: typeof ModelsRoute
@@ -111,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/alerts'
       fullPath: '/alerts'
       preLoaderRoute: typeof AlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assessment': {
@@ -147,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlertsRoute: AlertsRoute,
+  AppRoute: AppRoute,
   AssessmentRoute: AssessmentRoute,
   MedicinesRoute: MedicinesRoute,
   ModelsRoute: ModelsRoute,

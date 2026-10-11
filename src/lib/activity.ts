@@ -150,7 +150,7 @@ export function recordAssessment(
       result.storage_requirements.min_temperature !== null &&
       result.storage_requirements.max_temperature !== null
         ? `${result.storage_requirements.min_temperature}–${result.storage_requirements.max_temperature}°C`
-        : (result.storage_requirements.qualitative_instructions || "Monograph advisory"),
+        : result.storage_requirements.qualitative_instructions || "Monograph advisory",
     isCompliant: result.deterministic_compliance.is_compliant,
     tempCompliant: result.deterministic_compliance.temp_compliant,
     tempDeviation: result.deterministic_compliance.temp_deviation,

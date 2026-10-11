@@ -215,7 +215,9 @@ function AssessmentPage() {
                       className="w-full bg-transparent text-[11px] outline-none placeholder:text-muted-foreground"
                     />
                     {isSearching && (
-                      <span className="font-mono text-[9px] text-muted-foreground animate-pulse">…</span>
+                      <span className="font-mono text-[9px] text-muted-foreground animate-pulse">
+                        …
+                      </span>
                     )}
                     {searchQuery && !isSearching && (
                       <button
@@ -246,11 +248,17 @@ function AssessmentPage() {
                           className="flex w-full flex-col items-start rounded-[3px] p-2 text-left text-[11px] hover:bg-secondary/60 transition-colors"
                         >
                           <div className="flex w-full items-baseline justify-between gap-2">
-                            <strong className="truncate font-medium text-foreground">{med.medicine_name}</strong>
-                            <span className="font-mono text-[9px] text-accent shrink-0">{med.medicine_id}</span>
+                            <strong className="truncate font-medium text-foreground">
+                              {med.medicine_name}
+                            </strong>
+                            <span className="font-mono text-[9px] text-accent shrink-0">
+                              {med.medicine_id}
+                            </span>
                           </div>
                           <span className="text-[10px] text-muted-foreground">
-                            {med.generic_name} {med.strength && med.strength !== "Standard" ? `· ${med.strength}` : ""} · {med.dosage_form}
+                            {med.generic_name}{" "}
+                            {med.strength && med.strength !== "Standard" ? `· ${med.strength}` : ""}{" "}
+                            · {med.dosage_form}
                           </span>
                         </button>
                       ))}
@@ -483,9 +491,9 @@ function AssessmentResult({
             <p className="mt-1 text-muted-foreground">
               Conditions fell outside the documented range, so compliance fails — that is a hard
               rule and not negotiable. The model still estimates LOW degradation risk because it
-              weighs deviation multiplied by duration, and {compliance.temp_deviation ?? 0}°C held for{" "}
-              {submitted.excursion_duration_hours} h accumulates little thermal stress. Treat the
-              compliance result as the binding one.
+              weighs deviation multiplied by duration, and {compliance.temp_deviation ?? 0}°C held
+              for {submitted.excursion_duration_hours} h accumulates little thermal stress. Treat
+              the compliance result as the binding one.
             </p>
           </div>
         </div>
@@ -503,7 +511,7 @@ function AssessmentResult({
             value={
               storage.min_temperature !== null && storage.max_temperature !== null
                 ? `${storage.min_temperature}–${storage.max_temperature}°C`
-                : (storage.qualitative_instructions || "Monograph advisory")
+                : storage.qualitative_instructions || "Monograph advisory"
             }
           />
           <Row label="Observed" value={`${submitted.current_temperature}°C`} />
@@ -593,7 +601,9 @@ function AssessmentResult({
               {risk.level ?? "UNAVAILABLE"}
             </span>
             <span className="font-mono text-[10px] text-muted-foreground">
-              {risk.confidence !== null ? `${formatPercent(risk.confidence, 1)} confidence` : "No estimate"}
+              {risk.confidence !== null
+                ? `${formatPercent(risk.confidence, 1)} confidence`
+                : "No estimate"}
             </span>
           </div>
 
@@ -628,7 +638,8 @@ function AssessmentResult({
             </div>
           ) : (
             <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-              {risk.unavailable_reason || "AI storage-risk estimation unavailable for this medicine."}
+              {risk.unavailable_reason ||
+                "AI storage-risk estimation unavailable for this medicine."}
             </p>
           )}
 
@@ -674,9 +685,7 @@ function AssessmentResult({
         </section>
       ) : (
         <section className="panel mt-4 p-5 lg:mt-5">
-          <p className="text-[11px] leading-relaxed text-muted-foreground">
-            {result.disclaimer}
-          </p>
+          <p className="text-[11px] leading-relaxed text-muted-foreground">{result.disclaimer}</p>
         </section>
       )}
     </>

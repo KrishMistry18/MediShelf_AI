@@ -96,9 +96,7 @@ export function ErrorState({
 
           {offline && (
             <div className="mt-2 space-y-2">
-              <p className="text-[11px] text-muted-foreground">
-                Start the backend and try again.
-              </p>
+              <p className="text-[11px] text-muted-foreground">Start the backend and try again.</p>
               <details className="cursor-pointer pt-1 text-[11px] text-muted-foreground">
                 <summary className="font-mono text-[10px] tracking-wide text-muted-foreground hover:text-foreground">
                   Developer details & startup command
@@ -108,8 +106,8 @@ export function ErrorState({
                     {`pip install -r backend/requirements.txt\npython tools/serve_api.py`}
                   </pre>
                   <p className="text-[10px] text-muted-foreground">
-                    Expecting the API at <code className="font-mono">{API_BASE_URL}</code>. Override it
-                    with <code className="font-mono">VITE_API_BASE_URL</code>.
+                    Expecting the API at <code className="font-mono">{API_BASE_URL}</code>. Override
+                    it with <code className="font-mono">VITE_API_BASE_URL</code>.
                   </p>
                 </div>
               </details>

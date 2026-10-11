@@ -453,14 +453,13 @@ function EvidencePanel({
             {statusConfig.label}
           </span>
           <span className="font-mono text-[10px]">
-            {result.product_status === "IDENTIFIED" && (result.retrieval_match_score ?? result.score_breakdown?.["text_identity_score"])
+            {result.product_status === "IDENTIFIED" &&
+            (result.retrieval_match_score ?? result.score_breakdown?.["text_identity_score"])
               ? `${formatPercent(result.retrieval_match_score ?? result.score_breakdown?.["text_identity_score"] ?? 0, 0)} match score`
               : `${formatPercent(result.confidence, 0)} confidence`}
           </span>
         </div>
-        <p className="mt-1 text-[11px] leading-relaxed opacity-90">
-          {statusConfig.description}
-        </p>
+        <p className="mt-1 text-[11px] leading-relaxed opacity-90">{statusConfig.description}</p>
       </div>
 
       {/* 3. Conflict UI (Section 35) */}
@@ -471,7 +470,8 @@ function EvidencePanel({
             <strong className="font-head text-sm">Identification Conflict</strong>
           </div>
           <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-            Visual classifier and printed label text point to different medicines. Physical packaging must be verified manually.
+            Visual classifier and printed label text point to different medicines. Physical
+            packaging must be verified manually.
           </p>
 
           <div className="mt-3 grid grid-cols-2 gap-2 text-left">
@@ -483,7 +483,10 @@ function EvidencePanel({
                 {humanizeClassName(result.predicted_class)}
               </p>
               <span className="font-mono text-[9px] text-warning">
-                {formatPercent(result.visual_model_score ?? result.recognition?.confidence ?? result.confidence, 0)}
+                {formatPercent(
+                  result.visual_model_score ?? result.recognition?.confidence ?? result.confidence,
+                  0,
+                )}
               </span>
             </div>
             <div className="rounded-[4px] border border-border bg-background p-2">
@@ -496,7 +499,13 @@ function EvidencePanel({
                   "Text candidate"}
               </p>
               <span className="font-mono text-[9px] text-accent">
-                {formatPercent(result.retrieval_match_score ?? result.ocr?.candidate_matches[0]?.similarity_score ?? 0.85, 0)} match score
+                {formatPercent(
+                  result.retrieval_match_score ??
+                    result.ocr?.candidate_matches[0]?.similarity_score ??
+                    0.85,
+                  0,
+                )}{" "}
+                match score
               </span>
             </div>
           </div>
@@ -511,7 +520,8 @@ function EvidencePanel({
             <strong className="font-head text-sm">Not Confidently Identified</strong>
           </div>
           <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-            We extracted some packaging information, but there is not enough verifiable evidence to confirm the exact product in the knowledge base.
+            We extracted some packaging information, but there is not enough verifiable evidence to
+            confirm the exact product in the knowledge base.
           </p>
           {result.ocr?.raw_text && (
             <div className="mt-2.5 rounded-[4px] border border-border bg-background/60 p-2 font-mono text-[10px] text-muted-foreground line-clamp-2">
@@ -545,15 +555,13 @@ function EvidencePanel({
           <h3 className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground font-semibold">
             Evidence Checklist
           </h3>
-          <span className="font-mono text-[9px] text-muted-foreground">
-            Multimodal audit
-          </span>
+          <span className="font-mono text-[9px] text-muted-foreground">Multimodal audit</span>
         </div>
 
         <div className="space-y-2">
           <ChecklistRow
             label="Label text"
-            matched={Boolean(checklist?.label_text ?? (result.ocr_status === "completed"))}
+            matched={Boolean(checklist?.label_text ?? result.ocr_status === "completed")}
             detail={
               result.ocr_status === "completed"
                 ? `${result.ocr?.raw_text.length ?? 0} chars read`
@@ -578,7 +586,9 @@ function EvidencePanel({
           <ChecklistRow
             label="Dosage form"
             matched={Boolean(checklist?.dosage_form)}
-            detail={result.medicine?.dosage_form ?? result.ocr?.fields.dosage_form.value ?? "Unconfirmed"}
+            detail={
+              result.medicine?.dosage_form ?? result.ocr?.fields.dosage_form.value ?? "Unconfirmed"
+            }
           />
           <ChecklistRow
             label="Medicine database match"
@@ -681,7 +691,12 @@ function ChecklistRow({
         ) : (
           <Minus className="size-3.5 text-muted-foreground shrink-0" />
         )}
-        <span className={cn("truncate", matched ? "text-foreground font-medium" : "text-muted-foreground")}>
+        <span
+          className={cn(
+            "truncate",
+            matched ? "text-foreground font-medium" : "text-muted-foreground",
+          )}
+        >
           {label}
         </span>
       </div>
@@ -732,7 +747,13 @@ function ScanDetail({
                         <span className="mr-1.5 font-mono text-[10px] text-muted-foreground">
                           {index + 1}
                         </span>
-                        <strong className={cn(isTop ? "font-medium text-foreground" : "font-normal text-muted-foreground")}>
+                        <strong
+                          className={cn(
+                            isTop
+                              ? "font-medium text-foreground"
+                              : "font-normal text-muted-foreground",
+                          )}
+                        >
                           {cand.medicine_name}
                         </strong>
                         <span className="ml-1.5 font-mono text-[9px] text-muted-foreground">
@@ -745,9 +766,7 @@ function ScanDetail({
                     </div>
 
                     <div className="mt-1 flex flex-wrap items-center gap-2 font-mono text-[9px] text-muted-foreground">
-                      {cand.generic_name && (
-                        <span>{cand.generic_name}</span>
-                      )}
+                      {cand.generic_name && <span>{cand.generic_name}</span>}
                       {cand.strength && <span>· {cand.strength}</span>}
                       {cand.dosage_form && <span>· {cand.dosage_form}</span>}
                       {cand.source_name && (
@@ -775,9 +794,16 @@ function ScanDetail({
                 </p>
                 <div className="grid gap-1.5 sm:grid-cols-2">
                   {visualPredictions.slice(0, 2).map((pred) => (
-                    <div key={pred.class_name} className="flex items-center justify-between rounded-[4px] bg-secondary/30 px-2.5 py-1.5 text-[11px]">
-                      <span className="truncate">{pred.medicine_name ?? humanizeClassName(pred.class_name)}</span>
-                      <span className="font-mono text-[10px] text-muted-foreground ml-2">{formatPercent(pred.confidence, 0)}</span>
+                    <div
+                      key={pred.class_name}
+                      className="flex items-center justify-between rounded-[4px] bg-secondary/30 px-2.5 py-1.5 text-[11px]"
+                    >
+                      <span className="truncate">
+                        {pred.medicine_name ?? humanizeClassName(pred.class_name)}
+                      </span>
+                      <span className="font-mono text-[10px] text-muted-foreground ml-2">
+                        {formatPercent(pred.confidence, 0)}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -827,8 +853,9 @@ function ScanDetail({
         <div className="mt-4 flex gap-2 rounded-[5px] border border-border bg-secondary/40 p-3 text-[10px] leading-relaxed text-muted-foreground">
           <Info className="mt-0.5 size-3 shrink-0" />
           <span>
-            Candidate retrieval combines OCR label reading, normalized RxNorm / DailyMed drug knowledge,
-            and MobileNetV3 visual evidence to identify medicines beyond the closed classifier training set.
+            Candidate retrieval combines OCR label reading, normalized RxNorm / DailyMed drug
+            knowledge, and MobileNetV3 visual evidence to identify medicines beyond the closed
+            classifier training set.
           </span>
         </div>
       </section>
@@ -932,7 +959,8 @@ function OcrPanel({ result }: { result: ScanResponse }) {
   const [userCorrections, setUserCorrections] = useState<Record<string, string>>({});
 
   const populated = useMemo(
-    () => (ocr ? OCR_FIELD_LABELS.filter(([key]) => ocr.fields[key].value || userCorrections[key]) : []),
+    () =>
+      ocr ? OCR_FIELD_LABELS.filter(([key]) => ocr.fields[key].value || userCorrections[key]) : [],
     [ocr, userCorrections],
   );
 
@@ -1025,7 +1053,10 @@ function OcrPanel({ result }: { result: ScanResponse }) {
                             type="button"
                             onClick={() => {
                               if (editValue.trim()) {
-                                setUserCorrections((prev) => ({ ...prev, [key]: editValue.trim() }));
+                                setUserCorrections((prev) => ({
+                                  ...prev,
+                                  [key]: editValue.trim(),
+                                }));
                               }
                               setEditingKey(null);
                             }}

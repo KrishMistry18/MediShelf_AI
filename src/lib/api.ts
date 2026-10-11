@@ -180,7 +180,8 @@ export type ScanResponse = {
   ocr_status: OcrStatus;
   inference_time_ms: number;
   message: string;
-  product_status?: "IDENTIFIED" | "LIKELY_MATCH" | "PARTIAL_MATCH" | "CONFLICTING_EVIDENCE" | "UNKNOWN";
+  product_status?:
+    "IDENTIFIED" | "LIKELY_MATCH" | "PARTIAL_MATCH" | "CONFLICTING_EVIDENCE" | "UNKNOWN";
   provenance?: {
     source_name: string;
     source_identifier?: string | null;
@@ -493,11 +494,7 @@ export const OCR_STATUS_LABELS: Record<OcrStatus, string> = {
 };
 
 export type ProductStatus =
-  | "IDENTIFIED"
-  | "LIKELY_MATCH"
-  | "PARTIAL_MATCH"
-  | "CONFLICTING_EVIDENCE"
-  | "UNKNOWN";
+  "IDENTIFIED" | "LIKELY_MATCH" | "PARTIAL_MATCH" | "CONFLICTING_EVIDENCE" | "UNKNOWN";
 
 export const PRODUCT_STATUS_CONFIG: Record<
   ProductStatus,
@@ -510,7 +507,8 @@ export const PRODUCT_STATUS_CONFIG: Record<
 > = {
   IDENTIFIED: {
     label: "Medicine Identified",
-    description: "High-confidence evidence across label text, ingredients, and verified product catalog.",
+    description:
+      "High-confidence evidence across label text, ingredients, and verified product catalog.",
     tone: "success",
     badgeClass: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
   },
@@ -522,21 +520,23 @@ export const PRODUCT_STATUS_CONFIG: Record<
   },
   PARTIAL_MATCH: {
     label: "Partial Evidence",
-    description: "Some medicine information extracted, but exact strength or dosage form could not be confirmed.",
+    description:
+      "Some medicine information extracted, but exact strength or dosage form could not be confirmed.",
     tone: "amber",
     badgeClass: "bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/30",
   },
   CONFLICTING_EVIDENCE: {
     label: "Conflicting Evidence",
-    description: "Visual classifier and printed label text point to different medicines. Inspect packaging manually.",
+    description:
+      "Visual classifier and printed label text point to different medicines. Inspect packaging manually.",
     tone: "danger",
     badgeClass: "bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/30",
   },
   UNKNOWN: {
     label: "Medicine Not Confidently Identified",
-    description: "Insufficient evidence to verify the exact product. Retake photo or inspect label.",
+    description:
+      "Insufficient evidence to verify the exact product. Retake photo or inspect label.",
     tone: "neutral",
     badgeClass: "bg-secondary text-muted-foreground border-border",
   },
 };
-

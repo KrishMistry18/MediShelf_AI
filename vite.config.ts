@@ -42,7 +42,9 @@ function autoStartBackendPlugin() {
             : path.resolve(process.cwd(), ".venv/bin/python");
           const pythonCmd = fs.existsSync(venvPython) ? venvPython : "python";
 
-          console.log(`[vite] Launching MediShelf Python API at http://127.0.0.1:8000 using ${pythonCmd}...`);
+          console.log(
+            `[vite] Launching MediShelf Python API at http://127.0.0.1:8000 using ${pythonCmd}...`,
+          );
           backendProcess = spawn(pythonCmd, ["tools/serve_api.py"], {
             stdio: "inherit",
             shell: true,
