@@ -18,6 +18,7 @@ import { PageIntro } from "@/components/PageIntro";
 import { EmptyState, ErrorState, LoadingState, Skeleton } from "@/components/States";
 import { recordAssessment } from "@/lib/activity";
 import {
+  ApiError,
   formatPercent,
   predictStorageRisk,
   searchMedicines,
@@ -131,7 +132,9 @@ function AssessmentPage() {
   const isCatalogMedicine = Boolean(
     medicines.data?.some((item) => item.medicine_id.toLowerCase() === medicineId.toLowerCase()),
   );
-  const customMedicine = useMedicine(!isCatalogMedicine ? medicineId : undefined);
+  const customMedicine = useMedicine(
+    !medicines.isLoading && !isCatalogMedicine ? medicineId : undefined,
+  );
 
   const selected: Medicine | undefined = useMemo(() => {
     const fromList = medicines.data?.find(
@@ -193,14 +196,30 @@ function AssessmentPage() {
               <Skeleton className="h-9 w-full" />
             ) : customMedicine.isError && !selected ? (
               <div className="rounded-[4px] border border-destructive/30 bg-destructive/10 p-2 text-[11px] text-destructive">
-                Medicine &apos;{medicineId}&apos; not found in verified catalog or knowledge base.
-                <button
-                  type="button"
-                  onClick={() => setMedicineId("MED-001")}
-                  className="ml-2 font-medium underline hover:text-foreground"
-                >
-                  Reset to catalog
-                </button>
+                {customMedicine.error instanceof ApiError && customMedicine.error.status === 404 ? (
+                  <>
+                    Medicine &apos;{medicineId}&apos; not found in verified catalog or knowledge
+                    base.
+                    <button
+                      type="button"
+                      onClick={() => setMedicineId("MED-001")}
+                      className="ml-2 font-medium underline hover:text-foreground"
+                    >
+                      Reset to catalog
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    Unable to reach medicine service.
+                    <button
+                      type="button"
+                      onClick={() => void customMedicine.refetch()}
+                      className="ml-2 font-medium underline hover:text-foreground"
+                    >
+                      Retry
+                    </button>
+                  </>
+                )}
               </div>
             ) : (
               <div>

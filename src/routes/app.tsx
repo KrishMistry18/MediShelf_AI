@@ -92,10 +92,16 @@ function WorkspaceOverview() {
           </p>
           <div className="mt-1 flex items-baseline gap-2">
             <span className="font-head text-2xl font-bold text-foreground">
-              {catalogCount.isSuccess ? Number(catalogCount.data).toLocaleString() : "27,326"}
+              {catalogCount.isLoading
+                ? "…"
+                : catalogCount.isSuccess
+                  ? Number(catalogCount.data).toLocaleString()
+                  : "—"}
             </span>
           </div>
-          <p className="mt-1 text-[11px] text-muted-foreground">NLM RxNorm & FDA DailyMed</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            {catalogCount.isError ? "Catalogue service unavailable" : "NLM RxNorm & FDA DailyMed"}
+          </p>
         </div>
 
         <div className="panel p-4">
@@ -104,15 +110,23 @@ function WorkspaceOverview() {
           </p>
           <div className="mt-1 flex items-baseline gap-2">
             <span className="font-head text-2xl font-bold text-foreground">
-              {models.isSuccess ? String(models.data.vision.class_count ?? 10) : "10"}
+              {models.isLoading
+                ? "…"
+                : models.isSuccess
+                  ? String(models.data.vision.class_count ?? 10)
+                  : "—"}
             </span>
             <span className="text-[11px] font-medium text-accent">
               {models.isSuccess && models.data.vision.test_metrics.top1_accuracy
                 ? `${(models.data.vision.test_metrics.top1_accuracy * 100).toFixed(1)}% Top-1`
-                : "63.3% Top-1"}
+                : models.isError
+                  ? "Unavailable"
+                  : "63.3% Top-1"}
             </span>
           </div>
-          <p className="mt-1 text-[11px] text-muted-foreground">MobileNetV3-Small packaging</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            {models.isError ? "Model metadata unavailable" : "MobileNetV3-Small packaging"}
+          </p>
         </div>
 
         <div className="panel p-4">
@@ -120,10 +134,22 @@ function WorkspaceOverview() {
             ML Storage Risk
           </p>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="font-head text-2xl font-bold text-foreground">15</span>
-            <span className="text-[11px] font-medium text-accent">Features</span>
+            <span className="font-head text-2xl font-bold text-foreground">
+              {models.isLoading
+                ? "…"
+                : models.isSuccess
+                  ? String(models.data.storage_risk.features.length)
+                  : models.isError
+                    ? "—"
+                    : "15"}
+            </span>
+            <span className="text-[11px] font-medium text-accent">
+              {models.isError ? "Unavailable" : "Features"}
+            </span>
           </div>
-          <p className="mt-1 text-[11px] text-muted-foreground">GradientBoosting excursion model</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            {models.isError ? "Risk model unavailable" : "GradientBoosting excursion model"}
+          </p>
         </div>
 
         <div className="panel p-4">

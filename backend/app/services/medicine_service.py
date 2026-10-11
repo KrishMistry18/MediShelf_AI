@@ -132,6 +132,19 @@ class MedicineResolutionService:
             if not cat_row and clean_id.isdigit():
                 cat_row = db.query(Medicine).filter(Medicine.id == int(clean_id)).first()
 
+            if not cat_row:
+                normalized_slug = clean_id.lower().replace("-", "_")
+                cat_row = (
+                    db.query(Medicine)
+                    .filter(
+                        or_(
+                            func.lower(Medicine.image_class) == normalized_slug,
+                            func.lower(Medicine.canonical_name) == clean_id.lower(),
+                        )
+                    )
+                    .first()
+                )
+
             if cat_row:
                 return MedicineResponse.model_validate(cat_row)
 
@@ -147,7 +160,8 @@ class MedicineResolutionService:
                 conn.row_factory = sqlite3.Row
                 cur = conn.cursor()
 
-                # Try case-insensitive medicine_id or source_id
+                normalized_slug = clean_id.lower().replace("-", "_")
+                # Try case-insensitive medicine_id, source_id, rxnorm, ndc, image_class, canonical_name
                 cur.execute(
                     """
                     SELECT * FROM medicines_master
@@ -155,9 +169,11 @@ class MedicineResolutionService:
                        OR LOWER(source_id) = LOWER(?)
                        OR LOWER(rxnorm_cui) = LOWER(?)
                        OR LOWER(ndc) = LOWER(?)
+                       OR LOWER(image_class) = LOWER(?)
+                       OR LOWER(canonical_name) = LOWER(?)
                     LIMIT 1
                     """,
-                    (clean_id, clean_id, clean_id, clean_id),
+                    (clean_id, clean_id, clean_id, clean_id, normalized_slug, clean_id),
                 )
                 row = cur.fetchone()
                 conn.close()

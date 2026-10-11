@@ -198,9 +198,13 @@ function PublicLandingPage() {
                     </span>
                   </div>
                   <span className="rounded bg-[#DDE9DF]/60 px-2 py-0.5 text-[11px] font-mono text-[#123E32]">
-                    LIVE ENGINE
+                    ILLUSTRATIVE PREVIEW
                   </span>
                 </div>
+                <p className="mt-2 text-[11px] text-[#172720]/70">
+                  Precomputed reference workflow demonstrating the 4-stage pipeline (MobileNetV3 →
+                  EasyOCR → Catalogue Retrieval → Excursion ML) on DailyMed monograph data.
+                </p>
 
                 {/* Step-by-step verified preview card */}
                 <div className="mt-5 space-y-4 text-xs">
@@ -562,7 +566,7 @@ function PublicLandingPage() {
                     navigate({
                       to: "/assessment",
                       search: {
-                        medicine: "paracetamol-500mg-tablet",
+                        medicine: "MED-001",
                       },
                     })
                   }
@@ -601,7 +605,7 @@ function PublicLandingPage() {
                     navigate({
                       to: "/assessment",
                       search: {
-                        medicine: "humulin-r-insulin-regular-100-units-ml",
+                        medicine: "MED-014",
                       },
                     })
                   }
@@ -640,7 +644,7 @@ function PublicLandingPage() {
                     navigate({
                       to: "/assessment",
                       search: {
-                        medicine: "omeprazole-20mg-capsule",
+                        medicine: "MED-006",
                       },
                     })
                   }
@@ -679,7 +683,7 @@ function PublicLandingPage() {
                     navigate({
                       to: "/assessment",
                       search: {
-                        medicine: "metformin-500mg-tablet",
+                        medicine: "MED-004",
                       },
                     })
                   }

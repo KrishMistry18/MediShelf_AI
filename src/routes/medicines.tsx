@@ -125,7 +125,11 @@ function MedicinesPage() {
               ))}
             </select>
             <span className="shrink-0 whitespace-nowrap font-mono text-[10px] text-muted-foreground">
-              {list.isLoading ? "…" : `${total} record${total === 1 ? "" : "s"}`}
+              {list.isLoading
+                ? "…"
+                : list.isError
+                  ? "—"
+                  : `${total} record${total === 1 ? "" : "s"}`}
             </span>
           </div>
         </div>

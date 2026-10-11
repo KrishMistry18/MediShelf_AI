@@ -50,6 +50,7 @@ _allow_all = "*" in _origins or len(_origins) == 0
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"] if _allow_all else _origins,
+    allow_origin_regex=None if _allow_all else r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=not _allow_all,
     allow_methods=["*"],
     allow_headers=["*"],
