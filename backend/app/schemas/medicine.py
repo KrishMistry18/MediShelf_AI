@@ -18,6 +18,7 @@ class MedicineBase(BaseModel):
     storage_max_humidity: Optional[float] = Field(None, description="Maximum relative humidity (% RH) if officially specified")
     expiry_warning_days: int = Field(default=60, description="Lead days before expiration to trigger shelf-life alert")
     image_class: Optional[str] = Field(None, description="Machine learning computer-vision classification label (nullable for open-world medicines)")
+    concept_type: Optional[str] = Field(None, description="Concept classification: CURATED_MONOGRAPH, CLINICAL_CONCEPT, or BRANDED_DRUG")
     canonical_name: Optional[str] = Field(None, description="Normalized standard title")
     active_ingredients: Optional[str] = Field(None, description="JSON array of normalized active ingredients")
     route: Optional[str] = Field(None, description="Route of administration")
