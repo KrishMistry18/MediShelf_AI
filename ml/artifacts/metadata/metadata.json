@@ -1,7 +1,7 @@
 {
   "model_name": "MediShelf MobileNetV3 Classifier",
   "architecture": "mobilenet_v3_small",
-  "dataset_version": "1.0.0-dailymed-spl",
+  "dataset_version": "2.0.0-dailymed-spl-expanded",
   "class_count": 10,
   "class_names": [
     "amoxicillin_500mg_capsule",
@@ -16,59 +16,214 @@
     "paracetamol_500mg_tablet"
   ],
   "image_size": 224,
-  "training_date": "2026-09-19T08:24:42.261760+00:00",
-  "framework_version": "PyTorch 2.12.1+cpu",
+  "training_date": "2026-10-11T06:28:39.654628+00:00",
+  "framework_version": "PyTorch 2.6.0+cpu",
+  "training_strategy": "two_phase_progressive_transfer_learning",
   "hyperparameters": {
-    "epochs": 6,
+    "warmup_epochs": 4,
+    "finetune_epochs": 20,
     "batch_size": 8,
-    "lr": 0.001,
-    "seed": 42,
+    "lr_head": 0.0005,
+    "lr_backbone": 8e-05,
+    "seed": 101,
     "optimizer": "AdamW",
     "scheduler": "CosineAnnealingLR"
   },
-  "best_val_accuracy": 0.5,
+  "best_val_accuracy": 0.7333,
+  "best_val_loss": 0.7208,
+  "best_epoch": 24,
   "history": [
     {
+      "phase": "warmup",
       "epoch": 1,
-      "train_loss": 2.1936,
-      "train_acc": 0.2571,
-      "val_loss": 2.0728,
-      "val_acc": 0.15
+      "train_loss": 2.2636,
+      "train_acc": 0.1786,
+      "val_loss": 2.1903,
+      "val_acc": 0.2667
     },
     {
+      "phase": "warmup",
       "epoch": 2,
-      "train_loss": 1.7601,
-      "train_acc": 0.4429,
-      "val_loss": 1.9505,
-      "val_acc": 0.3
+      "train_loss": 2.009,
+      "train_acc": 0.3857,
+      "val_loss": 2.0131,
+      "val_acc": 0.3333
     },
     {
+      "phase": "warmup",
       "epoch": 3,
-      "train_loss": 1.1852,
-      "train_acc": 0.6143,
-      "val_loss": 2.1036,
-      "val_acc": 0.25
+      "train_loss": 1.7243,
+      "train_acc": 0.4857,
+      "val_loss": 1.8099,
+      "val_acc": 0.4
     },
     {
+      "phase": "warmup",
       "epoch": 4,
-      "train_loss": 0.8772,
-      "train_acc": 0.7429,
-      "val_loss": 1.8932,
-      "val_acc": 0.5
+      "train_loss": 1.4422,
+      "train_acc": 0.55,
+      "val_loss": 1.6835,
+      "val_acc": 0.4333
     },
     {
+      "phase": "finetune",
       "epoch": 5,
-      "train_loss": 0.7025,
-      "train_acc": 0.7286,
-      "val_loss": 1.6654,
-      "val_acc": 0.5
+      "train_loss": 1.3518,
+      "train_acc": 0.4929,
+      "val_loss": 1.6587,
+      "val_acc": 0.4667
     },
     {
+      "phase": "finetune",
       "epoch": 6,
-      "train_loss": 0.7374,
+      "train_loss": 1.0761,
+      "train_acc": 0.6571,
+      "val_loss": 1.5348,
+      "val_acc": 0.5333
+    },
+    {
+      "phase": "finetune",
+      "epoch": 7,
+      "train_loss": 0.9074,
+      "train_acc": 0.7286,
+      "val_loss": 1.4476,
+      "val_acc": 0.5667
+    },
+    {
+      "phase": "finetune",
+      "epoch": 8,
+      "train_loss": 0.7916,
       "train_acc": 0.7429,
-      "val_loss": 1.6359,
-      "val_acc": 0.5
+      "val_loss": 1.3678,
+      "val_acc": 0.6
+    },
+    {
+      "phase": "finetune",
+      "epoch": 9,
+      "train_loss": 0.674,
+      "train_acc": 0.7857,
+      "val_loss": 1.3405,
+      "val_acc": 0.6
+    },
+    {
+      "phase": "finetune",
+      "epoch": 10,
+      "train_loss": 0.6879,
+      "train_acc": 0.7857,
+      "val_loss": 1.2597,
+      "val_acc": 0.5667
+    },
+    {
+      "phase": "finetune",
+      "epoch": 11,
+      "train_loss": 0.5467,
+      "train_acc": 0.8143,
+      "val_loss": 1.1205,
+      "val_acc": 0.7
+    },
+    {
+      "phase": "finetune",
+      "epoch": 12,
+      "train_loss": 0.4411,
+      "train_acc": 0.8786,
+      "val_loss": 0.9858,
+      "val_acc": 0.7333
+    },
+    {
+      "phase": "finetune",
+      "epoch": 13,
+      "train_loss": 0.4561,
+      "train_acc": 0.8643,
+      "val_loss": 1.1446,
+      "val_acc": 0.6667
+    },
+    {
+      "phase": "finetune",
+      "epoch": 14,
+      "train_loss": 0.5399,
+      "train_acc": 0.8214,
+      "val_loss": 0.9254,
+      "val_acc": 0.7333
+    },
+    {
+      "phase": "finetune",
+      "epoch": 15,
+      "train_loss": 0.4868,
+      "train_acc": 0.8643,
+      "val_loss": 0.8324,
+      "val_acc": 0.7333
+    },
+    {
+      "phase": "finetune",
+      "epoch": 16,
+      "train_loss": 0.4112,
+      "train_acc": 0.8643,
+      "val_loss": 0.8507,
+      "val_acc": 0.7333
+    },
+    {
+      "phase": "finetune",
+      "epoch": 17,
+      "train_loss": 0.4185,
+      "train_acc": 0.8714,
+      "val_loss": 0.8546,
+      "val_acc": 0.7
+    },
+    {
+      "phase": "finetune",
+      "epoch": 18,
+      "train_loss": 0.3578,
+      "train_acc": 0.9,
+      "val_loss": 0.8368,
+      "val_acc": 0.7
+    },
+    {
+      "phase": "finetune",
+      "epoch": 19,
+      "train_loss": 0.3412,
+      "train_acc": 0.8857,
+      "val_loss": 0.8015,
+      "val_acc": 0.7333
+    },
+    {
+      "phase": "finetune",
+      "epoch": 20,
+      "train_loss": 0.3879,
+      "train_acc": 0.8786,
+      "val_loss": 0.7712,
+      "val_acc": 0.7333
+    },
+    {
+      "phase": "finetune",
+      "epoch": 21,
+      "train_loss": 0.3329,
+      "train_acc": 0.8929,
+      "val_loss": 0.768,
+      "val_acc": 0.7333
+    },
+    {
+      "phase": "finetune",
+      "epoch": 22,
+      "train_loss": 0.2873,
+      "train_acc": 0.9214,
+      "val_loss": 0.7525,
+      "val_acc": 0.7333
+    },
+    {
+      "phase": "finetune",
+      "epoch": 23,
+      "train_loss": 0.3138,
+      "train_acc": 0.8857,
+      "val_loss": 0.7393,
+      "val_acc": 0.7333
+    },
+    {
+      "phase": "finetune",
+      "epoch": 24,
+      "train_loss": 0.3241,
+      "train_acc": 0.9,
+      "val_loss": 0.7208,
+      "val_acc": 0.7333
     }
   ]
 }

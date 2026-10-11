@@ -112,6 +112,7 @@ class MedicineClassifier:
             "confidence_threshold": active_threshold,
             "inference_time_ms": elapsed_ms,
             "total_classes": len(self.class_names),
+            "closed_set_scope": "10-class closed-set; softmax confidence reflects relative class distribution over trained classes, not calibrated probability of real-world membership.",
         }
 
 

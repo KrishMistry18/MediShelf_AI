@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 import os
 import random
 import sys
@@ -20,6 +21,9 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from ml.preprocessing.image_pipeline import get_train_transforms, get_eval_transforms
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger("medishelf.train_classifier")
+
 
 def set_seed(seed: int = 42):
     random.seed(seed)
@@ -36,10 +40,6 @@ def build_model(num_classes: int, architecture: str = "mobilenet_v3_small") -> n
     if architecture == "mobilenet_v3_small":
         weights = MobileNet_V3_Small_Weights.DEFAULT
         model = models.mobilenet_v3_small(weights=weights)
-
-        # Freeze earlier feature layers to prevent distortion of foundational visual features
-        for param in model.features[:-2].parameters():
-            param.requires_grad = False
 
         # Replace final classification head
         in_features = model.classifier[3].in_features
@@ -88,8 +88,9 @@ def train_model(args):
     print(f"Architecture:       {args.model_arch}")
     print(f"Image Resolution:   {args.image_size}x{args.image_size}")
     print(f"Batch Size:         {args.batch_size}")
-    print(f"Epochs:             {args.epochs}")
-    print(f"Initial LR:         {args.lr}")
+    print(f"Warmup Epochs:      {args.warmup_epochs}")
+    print(f"Fine-tune Epochs:   {args.finetune_epochs}")
+    print(f"LR (Head / Backbone): {args.lr_head} / {args.lr_backbone}")
     print(f"Seed:               {args.seed}")
     print("-" * 65)
 
@@ -113,111 +114,210 @@ def train_model(args):
     class_weights = compute_class_weights(train_dataset).to(device)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
 
-    optimizer = torch.optim.AdamW(
-        filter(lambda p: p.requires_grad, model.parameters()),
-        lr=args.lr,
-        weight_decay=1e-4
-    )
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
-
-    best_val_acc = 0.0
+    history: List[Dict[str, Any]] = []
+    best_val_acc = -1.0
+    best_val_loss = float("inf")
     best_checkpoint_path = model_save_dir / "medicine_classifier.pt"
-    history: List[Dict[str, float]] = []
+    best_state_dict = None
+    best_epoch = 0
+    patience_counter = 0
 
     start_time = time.time()
+    global_epoch = 0
 
-    for epoch in range(1, args.epochs + 1):
-        # 1. Training loop
+    # Phase 1: Classification Head Warmup
+    print("\n>>> Phase 1: Classification Head Warmup (Backbone Frozen)...")
+    for p in model.features.parameters():
+        p.requires_grad = False
+    for p in model.classifier.parameters():
+        p.requires_grad = True
+
+    warmup_optimizer = torch.optim.AdamW(model.classifier.parameters(), lr=args.lr_head, weight_decay=1e-4)
+
+    for ep in range(1, args.warmup_epochs + 1):
+        global_epoch += 1
         model.train()
-        train_loss = 0.0
-        train_correct = 0
-        total_train = 0
-
-        for images, labels in train_loader:
-            images, labels = images.to(device), labels.to(device)
-            optimizer.zero_grad()
-            outputs = model(images)
-            loss = criterion(outputs, labels)
+        train_loss, train_correct, total_train = 0.0, 0, 0
+        for imgs, lbls in train_loader:
+            imgs, lbls = imgs.to(device), lbls.to(device)
+            warmup_optimizer.zero_grad()
+            outputs = model(imgs)
+            loss = criterion(outputs, lbls)
             loss.backward()
-            optimizer.step()
+            warmup_optimizer.step()
+            train_loss += loss.item() * imgs.size(0)
+            preds = outputs.argmax(dim=1)
+            train_correct += (preds == lbls).sum().item()
+            total_train += imgs.size(0)
 
-            train_loss += loss.item() * images.size(0)
-            _, preds = torch.max(outputs, 1)
-            train_correct += torch.sum(preds == labels.data).item()
-            total_train += images.size(0)
+        ep_train_loss = train_loss / total_train
+        ep_train_acc = train_correct / total_train
 
-        scheduler.step()
-
-        epoch_train_loss = train_loss / total_train
-        epoch_train_acc = train_correct / total_train
-
-        # 2. Validation loop
         model.eval()
-        val_loss = 0.0
-        val_correct = 0
-        total_val = 0
-
+        val_loss, val_correct, total_val = 0.0, 0, 0
         with torch.no_grad():
-            for images, labels in val_loader:
-                images, labels = images.to(device), labels.to(device)
-                outputs = model(images)
-                loss = criterion(outputs, labels)
+            for imgs, lbls in val_loader:
+                imgs, lbls = imgs.to(device), lbls.to(device)
+                outputs = model(imgs)
+                loss = criterion(outputs, lbls)
+                val_loss += loss.item() * imgs.size(0)
+                preds = outputs.argmax(dim=1)
+                val_correct += (preds == lbls).sum().item()
+                total_val += imgs.size(0)
 
-                val_loss += loss.item() * images.size(0)
-                _, preds = torch.max(outputs, 1)
-                val_correct += torch.sum(preds == labels.data).item()
-                total_val += images.size(0)
-
-        epoch_val_loss = val_loss / total_val if total_val > 0 else 0
-        epoch_val_acc = val_correct / total_val if total_val > 0 else 0
+        ep_val_loss = val_loss / total_val
+        ep_val_acc = val_correct / total_val
 
         history.append({
-            "epoch": epoch,
-            "train_loss": round(epoch_train_loss, 4),
-            "train_acc": round(epoch_train_acc, 4),
-            "val_loss": round(epoch_val_loss, 4),
-            "val_acc": round(epoch_val_acc, 4),
+            "phase": "warmup",
+            "epoch": global_epoch,
+            "train_loss": round(ep_train_loss, 4),
+            "train_acc": round(ep_train_acc, 4),
+            "val_loss": round(ep_val_loss, 4),
+            "val_acc": round(ep_val_acc, 4),
         })
 
-        is_best = epoch_val_acc >= best_val_acc
-        if is_best:
-            best_val_acc = epoch_val_acc
-            # Save checkpoint state dict & class metadata
-            checkpoint = {
-                "model_state_dict": model.state_dict(),
-                "class_names": class_names,
-                "num_classes": num_classes,
-                "architecture": args.model_arch,
-                "image_size": args.image_size,
-                "val_acc": best_val_acc,
-                "epoch": epoch,
-            }
-            torch.save(checkpoint, best_checkpoint_path)
+        if ep_val_acc > best_val_acc or (ep_val_acc == best_val_acc and ep_val_loss < best_val_loss):
+            best_val_acc = ep_val_acc
+            best_val_loss = ep_val_loss
+            best_epoch = global_epoch
+            best_state_dict = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+            print(f"  [Warmup {ep}/{args.warmup_epochs}] Train Loss: {ep_train_loss:.4f} Acc: {ep_train_acc*100:.1f}% | "
+                  f"Val Loss: {ep_val_loss:.4f} Acc: {ep_val_acc*100:.1f}% (*Best)")
+        else:
+            print(f"  [Warmup {ep}/{args.warmup_epochs}] Train Loss: {ep_train_loss:.4f} Acc: {ep_train_acc*100:.1f}% | "
+                  f"Val Loss: {ep_val_loss:.4f} Acc: {ep_val_acc*100:.1f}%")
 
-        star = " (*Best Saved)" if is_best else ""
-        print(f"Epoch [{epoch:02d}/{args.epochs:02d}] "
-              f"Train Loss: {epoch_train_loss:.4f} Acc: {epoch_train_acc*100:.1f}% | "
-              f"Val Loss: {epoch_val_loss:.4f} Acc: {epoch_val_acc*100:.1f}%{star}")
+    # Phase 2: Progressive Fine-Tuning
+    print("\n>>> Phase 2: High-Level Feature Fine-Tuning (Unfreezing Layers 7+)...")
+    for idx, layer in enumerate(model.features):
+        if idx >= 7:
+            for p in layer.parameters():
+                p.requires_grad = True
+        else:
+            for p in layer.parameters():
+                p.requires_grad = False
+
+    finetune_params = [
+        {"params": [p for p in model.features[7:].parameters() if p.requires_grad], "lr": args.lr_backbone},
+        {"params": model.classifier.parameters(), "lr": args.lr_head},
+    ]
+    finetune_optimizer = torch.optim.AdamW(finetune_params, weight_decay=1e-4)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(finetune_optimizer, T_max=args.finetune_epochs, eta_min=1e-5)
+
+    for ep in range(1, args.finetune_epochs + 1):
+        global_epoch += 1
+        model.train()
+        train_loss, train_correct, total_train = 0.0, 0, 0
+        for imgs, lbls in train_loader:
+            imgs, lbls = imgs.to(device), lbls.to(device)
+            finetune_optimizer.zero_grad()
+            outputs = model(imgs)
+            loss = criterion(outputs, lbls)
+            loss.backward()
+            finetune_optimizer.step()
+            train_loss += loss.item() * imgs.size(0)
+            preds = outputs.argmax(dim=1)
+            train_correct += (preds == lbls).sum().item()
+            total_train += imgs.size(0)
+
+        scheduler.step()
+        ep_train_loss = train_loss / total_train
+        ep_train_acc = train_correct / total_train
+
+        model.eval()
+        val_loss, val_correct, total_val = 0.0, 0, 0
+        with torch.no_grad():
+            for imgs, lbls in val_loader:
+                imgs, lbls = imgs.to(device), lbls.to(device)
+                outputs = model(imgs)
+                loss = criterion(outputs, lbls)
+                val_loss += loss.item() * imgs.size(0)
+                preds = outputs.argmax(dim=1)
+                val_correct += (preds == lbls).sum().item()
+                total_val += imgs.size(0)
+
+        ep_val_loss = val_loss / total_val
+        ep_val_acc = val_correct / total_val
+
+        history.append({
+            "phase": "finetune",
+            "epoch": global_epoch,
+            "train_loss": round(ep_train_loss, 4),
+            "train_acc": round(ep_train_acc, 4),
+            "val_loss": round(ep_val_loss, 4),
+            "val_acc": round(ep_val_acc, 4),
+        })
+
+        improved = False
+        if ep_val_acc > best_val_acc:
+            improved = True
+        elif ep_val_acc == best_val_acc and ep_val_loss < best_val_loss:
+            improved = True
+
+        if improved:
+            best_val_acc = ep_val_acc
+            best_val_loss = ep_val_loss
+            best_epoch = global_epoch
+            best_state_dict = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+            patience_counter = 0
+            print(f"  [Fine-tune {ep:02d}/{args.finetune_epochs:02d}] Train: {ep_train_loss:.4f} ({ep_train_acc*100:.1f}%) | "
+                  f"Val: {ep_val_loss:.4f} ({ep_val_acc*100:.1f}%) (*Best Saved)")
+        else:
+            patience_counter += 1
+            print(f"  [Fine-tune {ep:02d}/{args.finetune_epochs:02d}] Train: {ep_train_loss:.4f} ({ep_train_acc*100:.1f}%) | "
+                  f"Val: {ep_val_loss:.4f} ({ep_val_acc*100:.1f}%) [patience {patience_counter}/{args.patience}]")
+            if patience_counter >= args.patience:
+                print(f"Early stopping triggered at epoch {global_epoch}.")
+                break
 
     total_time = time.time() - start_time
     print("-" * 65)
-    print(f"Training Complete in {total_time:.1f}s! Best Val Accuracy: {best_val_acc*100:.1f}%")
+    print(f"Training Complete in {total_time:.1f}s! Best Val Accuracy: {best_val_acc*100:.1f}% (Epoch {best_epoch})")
+
+    # Save best checkpoint
+    checkpoint = {
+        "model_state_dict": best_state_dict,
+        "class_names": class_names,
+        "num_classes": num_classes,
+        "architecture": args.model_arch,
+        "image_size": args.image_size,
+        "val_acc": round(best_val_acc, 4),
+        "val_loss": round(best_val_loss, 4),
+        "epoch": best_epoch,
+        "trained_at": datetime.now(timezone.utc).isoformat(),
+        "training_strategy": "two_phase_progressive_transfer_learning",
+        "hyperparameters": {
+            "warmup_epochs": args.warmup_epochs,
+            "finetune_epochs": args.finetune_epochs,
+            "batch_size": args.batch_size,
+            "lr_head": args.lr_head,
+            "lr_backbone": args.lr_backbone,
+            "seed": args.seed,
+            "optimizer": "AdamW",
+            "scheduler": "CosineAnnealingLR",
+        },
+        "history": history,
+    }
+    torch.save(checkpoint, best_checkpoint_path)
     print(f"Model Checkpoint saved to: {best_checkpoint_path}")
 
     # Save training metadata
     meta = {
         "model_name": "MediShelf MobileNetV3 Classifier",
         "architecture": args.model_arch,
-        "dataset_version": "1.0.0-dailymed-spl",
+        "dataset_version": "2.0.0-dailymed-spl-expanded",
         "class_count": num_classes,
         "class_names": class_names,
         "image_size": args.image_size,
         "training_date": datetime.now(timezone.utc).isoformat(),
         "framework_version": f"PyTorch {torch.__version__}",
         "hyperparameters": {
-            "epochs": args.epochs,
+            "warmup_epochs": args.warmup_epochs,
+            "finetune_epochs": args.finetune_epochs,
             "batch_size": args.batch_size,
-            "lr": args.lr,
+            "lr_head": args.lr_head,
+            "lr_backbone": args.lr_backbone,
             "seed": args.seed,
             "optimizer": "AdamW",
             "scheduler": "CosineAnnealingLR",
@@ -233,11 +333,14 @@ def train_model(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train MobileNetV3 Medicine Package Classifier")
-    parser.add_argument("--epochs", type=int, default=6, help="Number of training epochs")
+    parser.add_argument("--warmup-epochs", type=int, default=4, help="Number of warmup epochs for classification head")
+    parser.add_argument("--finetune-epochs", type=int, default=20, help="Number of progressive fine-tuning epochs")
     parser.add_argument("--batch-size", type=int, default=8, help="Mini-batch size")
-    parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate")
+    parser.add_argument("--lr-head", type=float, default=5e-4, help="Classification head learning rate")
+    parser.add_argument("--lr-backbone", type=float, default=8e-5, help="Backbone feature learning rate")
     parser.add_argument("--image-size", type=int, default=224, help="Input image dimension")
-    parser.add_argument("--seed", type=int, default=42, help="Random seed")
+    parser.add_argument("--patience", type=int, default=8, help="Early stopping patience")
+    parser.add_argument("--seed", type=int, default=101, help="Random seed")
     parser.add_argument("--model-arch", type=str, default="mobilenet_v3_small", help="Model architecture")
     parser.add_argument("--dataset-dir", type=str, default=str(PROJECT_ROOT / "ml" / "datasets"))
     parser.add_argument("--output-dir", type=str, default=str(PROJECT_ROOT / "ml" / "artifacts"))

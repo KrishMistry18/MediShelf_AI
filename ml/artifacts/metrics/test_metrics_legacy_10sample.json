@@ -1,0 +1,98 @@
+{
+  "evaluation_dataset": "Isolated Test Split (15%)",
+  "sample_count": 10,
+  "top1_accuracy": 0.5,
+  "top3_accuracy": 0.8,
+  "macro_precision": 0.4,
+  "macro_recall": 0.5,
+  "macro_f1": 0.4333,
+  "weighted_precision": 0.4,
+  "weighted_recall": 0.5,
+  "weighted_f1": 0.4333,
+  "per_class": {
+    "amoxicillin_500mg_capsule": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 1
+    },
+    "atorvastatin_20mg_tablet": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1
+    },
+    "cetirizine_10mg_tablet": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 1
+    },
+    "ciprofloxacin_500mg_tablet": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 1
+    },
+    "humulin_r_100u_vial": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1
+    },
+    "ibuprofen_400mg_tablet": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1-score": 0.6667,
+      "support": 1
+    },
+    "losartan_50mg_tablet": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 1
+    },
+    "metformin_500mg_tablet": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1-score": 0.6667,
+      "support": 1
+    },
+    "omeprazole_20mg_capsule": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 1
+    },
+    "paracetamol_500mg_tablet": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1
+    }
+  },
+  "confusion_matrix": [
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+  ],
+  "class_names": [
+    "amoxicillin_500mg_capsule",
+    "atorvastatin_20mg_tablet",
+    "cetirizine_10mg_tablet",
+    "ciprofloxacin_500mg_tablet",
+    "humulin_r_100u_vial",
+    "ibuprofen_400mg_tablet",
+    "losartan_50mg_tablet",
+    "metformin_500mg_tablet",
+    "omeprazole_20mg_capsule",
+    "paracetamol_500mg_tablet"
+  ]
+}

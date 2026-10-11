@@ -3,9 +3,12 @@ import sys
 from pathlib import Path
 from typing import Dict, Any
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+try:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -150,35 +153,37 @@ def evaluate_test_set(
     with open(cm_json_file, "w", encoding="utf-8") as f:
         json.dump({"matrix": cm_list, "classes": class_names}, f, indent=2)
 
-    # Render and save Confusion Matrix Plot
-    fig, ax = plt.subplots(figsize=(10, 8))
-    im = ax.imshow(cm, interpolation="nearest", cmap=plt.cm.Blues)
-    ax.figure.colorbar(im, ax=ax)
-    ax.set(
-        xticks=np.arange(cm.shape[1]),
-        yticks=np.arange(cm.shape[0]),
-        xticklabels=[c[:14] for c in class_names],
-        yticklabels=[c[:14] for c in class_names],
-        title="MediShelf AI — Confusion Matrix (Test Split)",
-        ylabel="True Class",
-        xlabel="Predicted Class",
-    )
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    # Render and save Confusion Matrix Plot (if matplotlib is available)
+    if plt is not None:
+        fig, ax = plt.subplots(figsize=(10, 8))
+        im = ax.imshow(cm, interpolation="nearest", cmap=plt.cm.Blues)
+        ax.figure.colorbar(im, ax=ax)
+        ax.set(
+            xticks=np.arange(cm.shape[1]),
+            yticks=np.arange(cm.shape[0]),
+            xticklabels=[c[:14] for c in class_names],
+            yticklabels=[c[:14] for c in class_names],
+            title="MediShelf AI — Confusion Matrix (Test Split)",
+            ylabel="True Class",
+            xlabel="Predicted Class",
+        )
+        plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
 
-    # Annotate cells
-    thresh = cm.max() / 2.0 if cm.max() > 0 else 1.0
-    for i in range(cm.shape[0]):
-        for j in range(cm.shape[1]):
-            ax.text(
-                j, i, format(cm[i, j], "d"),
-                ha="center", va="center",
-                color="white" if cm[i, j] > thresh else "black",
-                fontsize=9
-            )
-    fig.tight_layout()
-    cm_png_file = out_path / "confusion_matrix.png"
-    fig.savefig(cm_png_file, dpi=200)
-    plt.close(fig)
+        # Annotate cells
+        thresh = cm.max() / 2.0 if cm.max() > 0 else 1.0
+        for i in range(cm.shape[0]):
+            for j in range(cm.shape[1]):
+                ax.text(
+                    j, i, format(cm[i, j], "d"),
+                    ha="center", va="center",
+                    color="white" if cm[i, j] > thresh else "black",
+                    fontsize=9
+                )
+        fig.tight_layout()
+        cm_png_file = out_path / "confusion_matrix.png"
+        fig.savefig(cm_png_file, dpi=200)
+        plt.close(fig)
+        print(f"[OK] Confusion matrix plot saved to: {cm_png_file}")
 
     print(f"Top-1 Accuracy:     {top1_acc * 100:.1f}%")
     print(f"Top-3 Accuracy:     {top3_acc * 100:.1f}%")
@@ -186,7 +191,8 @@ def evaluate_test_set(
     print(f"Weighted F1 Score:  {f1_weighted:.4f}")
     print("-" * 65)
     print(f"[OK] Test metrics saved to:         {metrics_file}")
-    print(f"[OK] Confusion matrix saved to:     {cm_png_file}")
+    if plt is not None:
+        print(f"[OK] Confusion matrix saved to:     {cm_png_file}")
     print("=" * 65)
 
     return metrics_payload

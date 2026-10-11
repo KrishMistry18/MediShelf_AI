@@ -38,9 +38,9 @@ def test_dataset_splits_exist_and_balanced():
     val_count = sum(len(list(d.glob("*.*"))) for d in val_dir.iterdir() if d.is_dir())
     test_count = sum(len(list(d.glob("*.*"))) for d in test_dir.iterdir() if d.is_dir())
 
-    assert train_count == 70, f"Expected 70 train images, got {train_count}"
-    assert val_count == 20, f"Expected 20 validation images, got {val_count}"
-    assert test_count == 10, f"Expected 10 test images, got {test_count}"
+    assert train_count == 140, f"Expected 140 train images, got {train_count}"
+    assert val_count == 30, f"Expected 30 validation images, got {val_count}"
+    assert test_count == 30, f"Expected 30 test images, got {test_count}"
 
 
 # ---------------------------------------------------------------------------
@@ -193,7 +193,7 @@ def test_evaluation_metrics_artifact_exists():
     assert "top3_accuracy" in metrics
     assert "macro_f1" in metrics
     assert "confusion_matrix" in metrics
-    assert metrics["sample_count"] == 10
+    assert metrics["sample_count"] == 30
     assert len(metrics["class_names"]) == 10
 
 

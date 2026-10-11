@@ -301,7 +301,9 @@ def get_datasets_info() -> Dict[str, Any]:
         "computer_vision_dataset": {
             "model_architecture": vision_meta.get("architecture", "MobileNetV3-Small"),
             "class_count": vision_meta.get("class_count", 10),
-            "test_sample_count": 15,
+            "test_sample_count": (_read_json(VISION_TEST_METRICS) or {}).get("sample_count", 30),
+            "total_images": 200,
+            "splits": {"train": 140, "val": 30, "test": 30},
             "classes": vision_meta.get("class_names", []),
             "is_synthetic": False,
         },

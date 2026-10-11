@@ -97,9 +97,9 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
           </div>
 
           <p className="col-span-full bg-card p-3 text-[10px] leading-relaxed text-muted-foreground">
-            Fine-tuned for {String(vision.hyperparameters["epochs"] ?? "—")} epochs with{" "}
+            Fine-tuned for {String(vision.hyperparameters["finetune_epochs"] ?? vision.hyperparameters["epochs"] ?? "—")} epochs with{" "}
             {String(vision.hyperparameters["optimizer"] ?? "—")} at learning rate{" "}
-            {String(vision.hyperparameters["lr"] ?? "—")}, batch size{" "}
+            {String(vision.hyperparameters["lr_backbone"] ?? vision.hyperparameters["lr"] ?? "—")}, batch size{" "}
             {String(vision.hyperparameters["batch_size"] ?? "—")}, seed{" "}
             {String(vision.hyperparameters["seed"] ?? "—")}. Dataset {vision.dataset_version ?? "—"}
             .
@@ -169,8 +169,7 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
             <div className="border-b border-border p-4">
               <h2 className="font-head text-base">Per-class vision results</h2>
               <p className="mt-1 text-[10px] text-muted-foreground">
-                One test image per class. Support of 1 means precision and recall can only be 0 or
-                1.
+                Held-out test split evaluation ({vision.test_metrics.sample_count ?? 30} images across {vision.class_count ?? 10} classes).
               </p>
             </div>
             <div className="overflow-x-auto">

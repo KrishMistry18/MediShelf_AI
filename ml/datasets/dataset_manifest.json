@@ -1,1 +1,3402 @@
-[]
+[
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_001",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_001.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_001.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_001",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      952,
+      1414
+    ],
+    "sha256": "6aeab1fb1686c5e489d9db651ab7499e63b43ab4f941d78a9dd94a826719e4df",
+    "split": "test"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_002",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_002.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_002.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_002",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      948,
+      1390
+    ],
+    "sha256": "51956c8a51708eb1ae4fc3d2ca83413aa4209d988c48b94991889b88a0b2b118",
+    "split": "test"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_003",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_003.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_003.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_003",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1736,
+      2456
+    ],
+    "sha256": "d8c9fbf23e9bbc74b67f54651f5cff8eb222b78d92b54370111355897cb3236b",
+    "split": "val"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_004",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_004.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_004.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_004",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1736,
+      2456
+    ],
+    "sha256": "edee5ad48c9a6bf3ae4a082ce6d130dd0452dbd39de845f426ac4949e7ad274d",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_005",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_005.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_005.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_005",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1326,
+      778
+    ],
+    "sha256": "c1a79e0336aac043a5d20d9f4e4b922a9c8c5bb61a17aa1683b1bdad0ea57515",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_006",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_006.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_006.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_006",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1199,
+      783
+    ],
+    "sha256": "7e7837c7f4180f66686f2ccdc54e51354528fce12cd3b3a5a60301a982e75173",
+    "split": "test"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_007",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_007.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_007.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_007",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1091,
+      731
+    ],
+    "sha256": "3d7928c30be8748b55a91fc6a46347257cf7ca7e142d8163c46c155358800171",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_008",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_008.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_008.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_008",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1380,
+      571
+    ],
+    "sha256": "ed383e032b4aa99ad7f20c7110cda890d39f921c1f7c21c282358b9e54631283",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_009",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_009.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_009.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_009",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1278,
+      554
+    ],
+    "sha256": "9595705c457863edde77a67ee238a9e2e47ee7912738957e44fd6ea9fae52d3d",
+    "split": "val"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_010",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_010.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_010.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_010",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      806,
+      766
+    ],
+    "sha256": "7feb0f5f2b0c159c64fb977cd69461764e9a659dcf828467a97f2ca3a2f8e225",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_011",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_011.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_011.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_011",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      886,
+      616
+    ],
+    "sha256": "a1f274c812c5ed25389fc11214d5822bca54af7130552d4673dab3c578abcf36",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_012",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_012.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_012.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_012",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      705,
+      484
+    ],
+    "sha256": "d5c2ddec490469ff673e38bc41210cc4193cf184b517e20d6b66572cef5204a9",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_013",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_013.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_013.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_013",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      819,
+      506
+    ],
+    "sha256": "c6ff9d490c5d81822c01c6c9a629ca3fbf1d15434d0944c2cc2630a9e698c620",
+    "split": "val"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_014",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_014.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_014.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_014",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      796,
+      542
+    ],
+    "sha256": "d02c0aaa9025325ff2f56e72e3d4e00ebc4cb4253aff1f81dee68dfbde031f7f",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_015",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_015.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_015.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_015",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      901,
+      601
+    ],
+    "sha256": "8df192a7b482d7369a0a43e84927e36e3963e168ef2a31cb02f912e43000273c",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_016",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_016.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_016.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_016",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      5998,
+      3992
+    ],
+    "sha256": "5020ea2e857de4b926dda63aef94fe00cf179db0075799ed4637a422581d772f",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_017",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_017.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_017.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_017",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      245,
+      191
+    ],
+    "sha256": "313fd7d3b6e96fb19444fd753c60851e6f429f162a799bc53e8f4dcf89b9dcaa",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_018",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_018.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_018.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_018",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      189,
+      191
+    ],
+    "sha256": "e326ab3d0bb0b6e87573c48e2962a5a79c9b13855e8c5066b5f85717350c6327",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_019",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_019.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_019.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_019",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1897,
+      700
+    ],
+    "sha256": "0b1521981651b3e61d2cadc513992da53f24504f9cdead1db13748b27e4708f2",
+    "split": "train"
+  },
+  {
+    "image_id": "paracetamol_500mg_tablet_pkg_020",
+    "class_name": "paracetamol_500mg_tablet",
+    "file_name": "pkg_020.jpg",
+    "file_path": "ml\\datasets\\raw\\paracetamol_500mg_tablet\\pkg_020.jpg",
+    "setid": "baseline_paracetamol_500mg_tablet_pkg_020",
+    "spl_title": "Verified SPL packaging: paracetamol_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1200,
+      996
+    ],
+    "sha256": "94b5851e06cc0fa15dccafc0f83490f4b6402135f90e90e45d4d892677a91d99",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_001",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_001.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_001.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_001",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      510,
+      232
+    ],
+    "sha256": "73778db3e15c8a55c030dd7403dbf476e3472d9d4b62199c044b7ad812204213",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_002",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_002.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_002.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_002",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      359,
+      100
+    ],
+    "sha256": "3fe5c950d97e92823ea756c865ef943d231c21881fda6e6aa6cfb12f2a27a02b",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_003",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_003.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_003.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_003",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1068,
+      515
+    ],
+    "sha256": "29c283ebc8420465a05f13168070ca93ec20f95f1527ba32e9d7be5e48056e52",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_004",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_004.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_004.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_004",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1068,
+      511
+    ],
+    "sha256": "007f20c26afba3a6397d12b59fd309424f8b29416fe4ce0a60634c46b6149f22",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_005",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_005.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_005.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_005",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      783,
+      158
+    ],
+    "sha256": "cc30e455a6e31b3d207209e948b99804d462111ec4305e5686fb85ae829b785f",
+    "split": "val"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_006",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_006.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_006.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_006",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      416,
+      181
+    ],
+    "sha256": "af33a656736b8960bf9b3aa6c04dc730783b079b7e946c1c6366a2676ff70e31",
+    "split": "test"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_007",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_007.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_007.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_007",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "b8965f6b33660f3aad21ff3922afd94e02901ae893c2730de66c9dbaf4ef21b3",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_008",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_008.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_008.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_008",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "0f3d50c24face5020f40bf30139c34aaee24a3a103862abee609be21e230ea20",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_009",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_009.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_009.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_009",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      376,
+      135
+    ],
+    "sha256": "75e49f28e59317bbabffd83b96e69db94dac87d86be2ec825352cbb61ccc7378",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_010",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_010.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_010.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_010",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "7d27ed6b8c3788f91e6c2947dbde091f33d67ecacf43fe2c6237a52325dd4542",
+    "split": "val"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_011",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_011.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_011.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_011",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "a7fcdb1f2c8f627d55a8d9b4bd1e58c4f40e6e5aa5f1d00b5b94ce18d46aefc1",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_012",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_012.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_012.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_012",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "7fe9f4262b8bab9b667e930a539c01d3417c91193aca8e5eaaca0039a6d68099",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_013",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_013.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_013.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_013",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "fa306c7d20f3b51bd218f506be6b024c11407fc46e50e280195183dec3c933a3",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_014",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_014.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_014.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_014",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "d7ca45cf31185c56bcf026a9a48a1ac24c2f01ab49a2a76dcabd94314dfe9a03",
+    "split": "val"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_015",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_015.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_015.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_015",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "ea21a8427a6efd0269b2284ea6336068da4d8a62471b7eb30c37c877cab1120b",
+    "split": "test"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_016",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_016.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_016.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_016",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "371295965f7d887ab9e2be88fa3c97e68600a19bcab065353e653305950a7c1e",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_017",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_017.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_017.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_017",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      408,
+      166
+    ],
+    "sha256": "2123eff176626bad1022e56081ed1f4a31a63dc8c18c520e1ffe2184cb9fd4b9",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_018",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_018.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_018.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_018",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      586,
+      216
+    ],
+    "sha256": "94f7958cd263a4c220b086e066e2f7201918437f6b8df0b35e122a572eb40078",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_019",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_019.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_019.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_019",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      468,
+      139
+    ],
+    "sha256": "cf48d56d7067fe811ac8155dfce3ff346c94b4af013bfe492298aba69f9c9ff9",
+    "split": "train"
+  },
+  {
+    "image_id": "amoxicillin_500mg_capsule_pkg_020",
+    "class_name": "amoxicillin_500mg_capsule",
+    "file_name": "pkg_020.jpg",
+    "file_path": "ml\\datasets\\raw\\amoxicillin_500mg_capsule\\pkg_020.jpg",
+    "setid": "baseline_amoxicillin_500mg_capsule_pkg_020",
+    "spl_title": "Verified SPL packaging: amoxicillin_500mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1298,
+      1142
+    ],
+    "sha256": "ed2f50bf3261d143326ae19e98a4300b14f12007da1c8811e89f92657f4a4e41",
+    "split": "test"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_001",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_001.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_001.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_001",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1414,
+      595
+    ],
+    "sha256": "0646ee6ea9ef4e18c4b5ed74f354a8cb72ba58539fea7af211405e1c5bf00905",
+    "split": "test"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_002",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_002.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_002.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_002",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1023,
+      369
+    ],
+    "sha256": "5dbb310556dd74065b7913ffb27502cd5d2c25fd95966dee9f1942246647c331",
+    "split": "test"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_003",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_003.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_003.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_003",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1025,
+      420
+    ],
+    "sha256": "4d72e4f44232cbf11e64a34636d225cd8afc645e0e605ec72814899b22f76077",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_004",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_004.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_004.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_004",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1019,
+      369
+    ],
+    "sha256": "6169bc83c38bb837274ef7f6e8d1fd7329cd8f23e15ba69b991971b527af16a3",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_005",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_005.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_005.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_005",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1025,
+      420
+    ],
+    "sha256": "c13c691d9af7067b9b2f56681e60b0be0fc917b2734e7bba6510d93225dd800d",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_006",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_006.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_006.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_006",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1021,
+      370
+    ],
+    "sha256": "ecfa4409d2c2241381273813caa4b311debe115f1a8381a6cd784d37e6a74fe3",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_007",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_007.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_007.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_007",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1024,
+      417
+    ],
+    "sha256": "64427d5c2a1aa9718b6126666518b44d7f57953cebcc5a9aad3fbded25e2a389",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_008",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_008.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_008.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_008",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1018,
+      367
+    ],
+    "sha256": "cadef3633a490b1cdaf5c2b75bcde3dcd1bff05b203d6cacbea941dc54e8cb40",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_009",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_009.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_009.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_009",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1026,
+      426
+    ],
+    "sha256": "0f02099d5134552bdd8a9d8bf87793f6c27435c33ff59e85b0f549f980a8bfb3",
+    "split": "val"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_010",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_010.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_010.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_010",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1031,
+      420
+    ],
+    "sha256": "d73ac08cae6805036ef4e3724567b4669a5124076af283364415d69869183538",
+    "split": "test"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_011",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_011.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_011.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_011",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1647,
+      582
+    ],
+    "sha256": "e047c59e1b699a6e801271ce941074eb398de221ea0575dfddfd776b2a354808",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_012",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_012.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_012.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_012",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1427,
+      505
+    ],
+    "sha256": "93aaf460b1760c9b2e8037ff755b11aa67bd2bed09c92792bb26e53fab96874b",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_013",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_013.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_013.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_013",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1433,
+      507
+    ],
+    "sha256": "418e4aa635f960660c037e7f1e9e60e8bf3fa970c29f4c248b5221dba28912ed",
+    "split": "val"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_014",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_014.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_014.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_014",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      689,
+      137
+    ],
+    "sha256": "529b0cb9e32a9fc0c6a3acd2130e113c12f2f94af92cd35462eddec12995a82a",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_015",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_015.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_015.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_015",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      179,
+      240
+    ],
+    "sha256": "3cb4260bb8a877b865d5a64b8c0ca59c1de32a96b89874f28e3c2ee56dec25c2",
+    "split": "val"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_016",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_016.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_016.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_016",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      179,
+      240
+    ],
+    "sha256": "1eb0e45a31a3ebc2e86d5870c00bf52abbfc59b2e16931cb8fb3c5c20f66bf45",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_017",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_017.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_017.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_017",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      862,
+      941
+    ],
+    "sha256": "7cd8a82d69b3a85318570a1b85f159c546e65a573e330bf1beb91118123e6ffe",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_018",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_018.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_018.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_018",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      829,
+      917
+    ],
+    "sha256": "8d0a3079ff11e5000528e2bd3f47ff8c0b0bb36b07c5d1d546a4ba6194509463",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_019",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_019.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_019.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_019",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1200,
+      1039
+    ],
+    "sha256": "f0143d96910f315f01a88d751c826da86e6687b2a3bd6c6907b4cad80fdad11c",
+    "split": "train"
+  },
+  {
+    "image_id": "ibuprofen_400mg_tablet_pkg_020",
+    "class_name": "ibuprofen_400mg_tablet",
+    "file_name": "pkg_020.jpg",
+    "file_path": "ml\\datasets\\raw\\ibuprofen_400mg_tablet\\pkg_020.jpg",
+    "setid": "baseline_ibuprofen_400mg_tablet_pkg_020",
+    "spl_title": "Verified SPL packaging: ibuprofen_400mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1140,
+      1238
+    ],
+    "sha256": "c137a86d853a60e83382ce41ff254962dc347745bf7b0972ae0ff7dfeb315a23",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_001",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_001.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_001.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_001",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      759,
+      298
+    ],
+    "sha256": "d92a9d56cee25b458ea8856a86775058e7c771bfbbbc457d53ce9bb2c449e910",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_002",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_002.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_002.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_002",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      266,
+      114
+    ],
+    "sha256": "202a275c78068bce56339841a8f106ce1b6980fba91324e0c021a51d4390e1b3",
+    "split": "val"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_003",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_003.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_003.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_003",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      679,
+      287
+    ],
+    "sha256": "40c00919ee635b1e26ef6fff74884dc165000e34142ef9f28dce7bce7cbe381f",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_004",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_004.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_004.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_004",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      484,
+      219
+    ],
+    "sha256": "d1e09c37e6eb99eb31d122b6f94256a6a1a9912f2f7d449ddd54f2872407b7ff",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_005",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_005.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_005.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_005",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      718,
+      292
+    ],
+    "sha256": "c48f6bba601634c0b6e869b610246ba61c9c39986832c0e6759d71c3eaa56ce8",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_006",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_006.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_006.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_006",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      471,
+      262
+    ],
+    "sha256": "1ce064497c68ed78d1a2d940d200fdf201707b9ef7054421a8133357ac07da12",
+    "split": "test"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_007",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_007.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_007.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_007",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      589,
+      628
+    ],
+    "sha256": "1af5978e2d646243c75ac3defa3fd7778592641c4c78ae1c61627eabeb48f067",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_008",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_008.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_008.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_008",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      587,
+      622
+    ],
+    "sha256": "07ea1ef0f6774b5ab52c23061122c37f9502cd318389893afb02b55d383f5fdc",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_009",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_009.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_009.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_009",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      857,
+      340
+    ],
+    "sha256": "7a20370660422d83d06adfee1dce3fae1dce4e51a22bfcf4dd6b79e69625a6bd",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_010",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_010.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_010.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_010",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      681,
+      263
+    ],
+    "sha256": "3033704ad1defe8f634e58deebe143ab2870b27616f6b45e3ce52384fd7715ff",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_011",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_011.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_011.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_011",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      576,
+      471
+    ],
+    "sha256": "e2ae776cba310b470cabfe4fab6aea45a4f31bc12b69a0a63b360bbbd9b5eec6",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_012",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_012.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_012.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_012",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1045,
+      477
+    ],
+    "sha256": "ce8af9c6412710342b246ab796723553abc51a9760c9228a2b36a6ba07f785f9",
+    "split": "val"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_013",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_013.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_013.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_013",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1041,
+      472
+    ],
+    "sha256": "93e2c875ae33ef0200434235bab2fe2fd3376f23b20ec94600700b243a481e1f",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_014",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_014.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_014.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_014",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1055,
+      466
+    ],
+    "sha256": "f46226fdac4d0ca7591eb5a21870f226f68fc9ca99b66ce01d9512ab23d1e73c",
+    "split": "test"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_015",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_015.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_015.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_015",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1049,
+      483
+    ],
+    "sha256": "94bbad07302bcf2edd924078840c4df2c5a406cc1ac925ff77c0e0befd8fa6bb",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_016",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_016.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_016.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_016",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      600,
+      427
+    ],
+    "sha256": "2557cd4642a2ace4042b23d5c7a2132b659e303dc759595fb7a16c996ae97704",
+    "split": "test"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_017",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_017.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_017.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_017",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1076,
+      666
+    ],
+    "sha256": "4816901f179b71742f4a2b40bfe3fe49be2555294811798619fec099db6867ca",
+    "split": "val"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_018",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_018.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_018.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_018",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      404,
+      260
+    ],
+    "sha256": "e114126f126564542a70a22a1d09cc4fceda7e8763dd069c9e9fd0d87b1e4290",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_019",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_019.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_019.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_019",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      379,
+      204
+    ],
+    "sha256": "5d65f24b634ac0d36fa6c1a871735fac7941ee7a0a08747c0f7b124ff1b3cd07",
+    "split": "train"
+  },
+  {
+    "image_id": "metformin_500mg_tablet_pkg_020",
+    "class_name": "metformin_500mg_tablet",
+    "file_name": "pkg_020.jpg",
+    "file_path": "ml\\datasets\\raw\\metformin_500mg_tablet\\pkg_020.jpg",
+    "setid": "baseline_metformin_500mg_tablet_pkg_020",
+    "spl_title": "Verified SPL packaging: metformin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      577,
+      385
+    ],
+    "sha256": "6cf2c6034b4a0df68ea1967163d67ac49d56bb6bfc221c7d1a695c193d1fe23a",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_001",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_001.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_001.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_001",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      454,
+      300
+    ],
+    "sha256": "375064a5eb55e33839c26efe679c2ca97ed23491e19ccaf1ab7e7e6f799e4bb0",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_002",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_002.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_002.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_002",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      745,
+      611
+    ],
+    "sha256": "a0d0c4d4ca78e5edcbfb630b6ee7a988fd655e617b96e1f633896e019abbb345",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_003",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_003.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_003.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_003",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      803,
+      505
+    ],
+    "sha256": "90048c10e17c1d76d97c5b031528eeda008e423b5f1d64cf80380ae5ac9689a1",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_004",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_004.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_004.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_004",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      813,
+      485
+    ],
+    "sha256": "17c57e2ff61768e44d8dac4f843773409d942c3415e2c4a5061105796c7e664f",
+    "split": "test"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_005",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_005.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_005.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_005",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "5d6b8f541cbf0f88bacd28764db19c2fb97893f14b70b0c70ddb50fb51d7c855",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_006",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_006.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_006.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_006",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "92c4c9848a78b084dec41d625abad95fe4a1f02c7837e036f0e0b25091939fd6",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_007",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_007.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_007.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_007",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "549e4c811900c7d746b00994466ab7535b8ddbfe2c69e2fa03e0b479cd399ff2",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_008",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_008.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_008.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_008",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      340,
+      562
+    ],
+    "sha256": "e6f0c4bf765afe2a56353874b3f41cf9a3416d5a7118741e6323e86c05ed289b",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_009",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_009.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_009.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_009",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      340,
+      857
+    ],
+    "sha256": "5a48e719326c407df0454bc3133bc90ce82afb4db2258d7ff29a545cb5b63e72",
+    "split": "test"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_010",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_010.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_010.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_010",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      340,
+      565
+    ],
+    "sha256": "d3dfc7e60c642e7215c96d6fdc0b2d25ca67aaa7c62995b7d270809336c43da4",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_011",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_011.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_011.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_011",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      322,
+      345
+    ],
+    "sha256": "c47d2d778d534851c5a625276d984b06fefff77af3ba5c9bec9789fbf9b0dad3",
+    "split": "val"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_012",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_012.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_012.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_012",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      475,
+      185
+    ],
+    "sha256": "09eb217f484a099d8791c156b8a37483dd1553bcbff6a71798a987df98110b43",
+    "split": "val"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_013",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_013.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_013.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_013",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      671,
+      424
+    ],
+    "sha256": "82eabbfe7375eff998c690fe81a173784e183297e2d0cd0aa3667763124de715",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_014",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_014.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_014.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_014",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      527,
+      663
+    ],
+    "sha256": "1728a0f194a55a8b4dc40ad605c7b3859987c04143feac8d74156783c47b2a57",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_015",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_015.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_015.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_015",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      523,
+      422
+    ],
+    "sha256": "586b8d2eacb5c6a155be3beac62fcc9422890f1e985c3886fcac752d970c6dc5",
+    "split": "test"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_016",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_016.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_016.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_016",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      628,
+      401
+    ],
+    "sha256": "6934688177cdcf667389fc768359aa060f2dac3d3470cf1a7acb81c93f3d725f",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_017",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_017.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_017.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_017",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      709,
+      421
+    ],
+    "sha256": "0826af562a3b1908eb1b5636ae9435137528668684245c497b96b27cff0b37bd",
+    "split": "val"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_018",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_018.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_018.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_018",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      852,
+      360
+    ],
+    "sha256": "80663db6712adbc75062ec387c7dead20591f40fd56b7cd216c9038169d0632b",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_019",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_019.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_019.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_019",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      852,
+      355
+    ],
+    "sha256": "a53df708fe3ab986b011f19e15385a4630ea0a04eeca7b45ac79d10828e98d1f",
+    "split": "train"
+  },
+  {
+    "image_id": "atorvastatin_20mg_tablet_pkg_020",
+    "class_name": "atorvastatin_20mg_tablet",
+    "file_name": "pkg_020.jpg",
+    "file_path": "ml\\datasets\\raw\\atorvastatin_20mg_tablet\\pkg_020.jpg",
+    "setid": "baseline_atorvastatin_20mg_tablet_pkg_020",
+    "spl_title": "Verified SPL packaging: atorvastatin_20mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      849,
+      351
+    ],
+    "sha256": "6391f71710126b84bd07bddba198b496538a91712366e4da453cc2c50afc9c47",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_001",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_001.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_001.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_001",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      724,
+      294
+    ],
+    "sha256": "bca231ae89d3f0576f657d6f1d7653e166f4e122f8d3dca0c489d5cc747218a3",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_002",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_002.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_002.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_002",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      387,
+      154
+    ],
+    "sha256": "eccdc4f1c915c94ad1d868da0f12e3327f23b62f69075e7b19abdc892bfa10de",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_003",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_003.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_003.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_003",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1272,
+      829
+    ],
+    "sha256": "6eb4d111e6a2ed80670851ff44ad26566c79fa0c3d3fc6d2e470848a3fd02f5b",
+    "split": "test"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_004",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_004.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_004.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_004",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1269,
+      922
+    ],
+    "sha256": "64da3762edb00d28190828fdbe7bbd6622ca5c44c6ac618ad2f0cad6dd22dff3",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_005",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_005.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_005.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_005",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      850,
+      1747
+    ],
+    "sha256": "857c7499821a2614ad91d16d38d5ef587b42799a13ca43cc583229ad55b3f9a6",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_006",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_006.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_006.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_006",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1141,
+      1135
+    ],
+    "sha256": "90b5d6801c5c0ebaa883c296194a3b58e7035e0bf6f4a06783b75daf990bdb8f",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_007",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_007.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_007.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_007",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      912,
+      870
+    ],
+    "sha256": "401969036169d4c28d8c5ecdc2fdc3afcb6e4acf940a0cf7a8c9d195784e6e7f",
+    "split": "test"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_008",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_008.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_008.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_008",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      982,
+      892
+    ],
+    "sha256": "978b828cfa8e53350cfd6d4ad46604b68e44974e8e67c1264021a3ab10969feb",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_009",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_009.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_009.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_009",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1111,
+      889
+    ],
+    "sha256": "3ff8b54022ed45e24df5b0f0d50af053a40b1d0d82db569ed839b8907452e564",
+    "split": "val"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_010",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_010.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_010.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_010",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      939,
+      457
+    ],
+    "sha256": "90abd53cd400477d7de98e1cb98e940b98e21c31b44f1b24e1c00fca2d44be13",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_011",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_011.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_011.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_011",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1241,
+      1168
+    ],
+    "sha256": "a5cb9bbc8a893699c4b1ab0719081436bfd360f13d91e41361cf2de7e6ba06d0",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_012",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_012.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_012.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_012",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1248,
+      1107
+    ],
+    "sha256": "5e1dab40ca376d0cfb4c05a880f9306ea1391eca1da6403f33bf194aeb521972",
+    "split": "val"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_013",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_013.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_013.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_013",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1892,
+      664
+    ],
+    "sha256": "b053a7f253e6b3e89a7d7e3d3b77c9897bbba61bd2f151d4d05386efd0e7152d",
+    "split": "test"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_014",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_014.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_014.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_014",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      333,
+      126
+    ],
+    "sha256": "12385191a42d3b63da75d135e4e3913657a6471e2ef610e7c10723b7db28a5a9",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_015",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_015.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_015.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_015",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      800,
+      335
+    ],
+    "sha256": "a03a7a2bda04e7140f521683999fd6cfb2962ff8d3f3a0f5934dd6f505553278",
+    "split": "val"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_016",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_016.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_016.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_016",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      800,
+      333
+    ],
+    "sha256": "106e6688454383887ec840fbb4f1be3bf9922a95f4b597dd463964678e327e2f",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_017",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_017.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_017.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_017",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      940,
+      1022
+    ],
+    "sha256": "a54a23bd9a042f4d78780cdd5f37fb5d9fc7b6cc4a00af6301aedffdfd04f292",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_018",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_018.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_018.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_018",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1561,
+      831
+    ],
+    "sha256": "429efa0399938b891fd89bcc31126e6bdfc8d3d9636881f3e144b8fb4b420780",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_019",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_019.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_019.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_019",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      724,
+      294
+    ],
+    "sha256": "beb172b63e121aabbde08b8329e24865da35be04a9d47d1c47cae9abd2a7e8e0",
+    "split": "train"
+  },
+  {
+    "image_id": "omeprazole_20mg_capsule_pkg_020",
+    "class_name": "omeprazole_20mg_capsule",
+    "file_name": "pkg_020.jpg",
+    "file_path": "ml\\datasets\\raw\\omeprazole_20mg_capsule\\pkg_020.jpg",
+    "setid": "baseline_omeprazole_20mg_capsule_pkg_020",
+    "spl_title": "Verified SPL packaging: omeprazole_20mg_capsule",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      387,
+      154
+    ],
+    "sha256": "ad12ac0fe1c612077404d43b1b9dfb2799ecd5e798ef8544e58df6123addd631",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_001",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_001.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_001.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_001",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      232,
+      110
+    ],
+    "sha256": "c45ed770a18740d114b21ba1af94beb2c244085627bfa0c79a2bb14b9457d79d",
+    "split": "test"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_002",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_002.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_002.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_002",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      179,
+      240
+    ],
+    "sha256": "02f968689f2409accb8291723222123f0c60f39a200aa69b998cccee83578e90",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_003",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_003.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_003.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_003",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      474,
+      216
+    ],
+    "sha256": "e80f2e90e71b66f831d312baf5b2f3a63e0640e2d58a86504269fe17936c126e",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_004",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_004.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_004.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_004",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      466,
+      214
+    ],
+    "sha256": "0b4cc00779a764bf1c670ab9c3066eb22a2b02bdba448f0d71013d59fae28a4f",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_005",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_005.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_005.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_005",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      724,
+      304
+    ],
+    "sha256": "df9e0921af3dfb72ec943f1cab187da10e8f1bb58f2702c54f5f31a47e1e7d6d",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_006",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_006.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_006.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_006",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      785,
+      310
+    ],
+    "sha256": "d91693741c7f74d6649be0e0d8d267c42214b7525e33048db3504877c60706a5",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_007",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_007.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_007.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_007",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      802,
+      314
+    ],
+    "sha256": "1e3e4e0f8e394aa4ab41e8861019f6f7e683e6902a338edb7e10e5408c79dc71",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_008",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_008.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_008.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_008",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "abffa5bc0970745784ce6d1ac86786e0a8c59462f1a019ec6d49e6ef299add07",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_009",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_009.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_009.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_009",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "c098a861992b6f7ae40869388d069ebf36c3a2dfc9df12331eaac203d6af8c7a",
+    "split": "val"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_010",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_010.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_010.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_010",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      900,
+      384
+    ],
+    "sha256": "75f98382ece521d4acd8c47e4e6289f80759bb4aadb61297335092e0d409a3a7",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_011",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_011.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_011.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_011",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      413,
+      165
+    ],
+    "sha256": "1171fd5880481e11659f32f38ebec7fa2bbc3625c07daca2ad08b78bb3755bcf",
+    "split": "test"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_012",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_012.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_012.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_012",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      396,
+      177
+    ],
+    "sha256": "437d8d4428ceeeb3c348dd7c17b93ac1f85d9d3949dc33c8d9d2f2ae41f91ed6",
+    "split": "val"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_013",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_013.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_013.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_013",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      783,
+      307
+    ],
+    "sha256": "54710832024321e062ef04a84ad5ec3c0c6e5c7ecdb21ae2103893f921c5953f",
+    "split": "val"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_014",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_014.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_014.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_014",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      783,
+      295
+    ],
+    "sha256": "a3d92f5a4f39c732ad17dfb2b9426cf1d87197b4136a5ccafffb84f51be5ce34",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_015",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_015.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_015.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_015",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      784,
+      297
+    ],
+    "sha256": "a6af8143ff2a4700a5f1cde9b19f2e41fa90bb39d810c0d41c4896948814f027",
+    "split": "test"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_016",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_016.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_016.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_016",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      474,
+      216
+    ],
+    "sha256": "da2a04e2caa9bb761dc3b51c15613268aca680fc54fe482ebd0fff782b0ef9ca",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_017",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_017.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_017.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_017",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      466,
+      214
+    ],
+    "sha256": "e92b4b1abd42a3fb610775c75289cd28fa8629d08954ba0f9afcdce0d9d7271b",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_018",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_018.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_018.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_018",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      724,
+      304
+    ],
+    "sha256": "3f3ae3c7d69f12bf420aee7534f5c60b3be5e2a8f7c5b1b5d388f23eb0cd7803",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_019",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_019.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_019.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_019",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      785,
+      310
+    ],
+    "sha256": "d30a8512e1ee3085afd9718368f35d7d28f35d40a0c92a423e011fb7eb70c990",
+    "split": "train"
+  },
+  {
+    "image_id": "ciprofloxacin_500mg_tablet_pkg_020",
+    "class_name": "ciprofloxacin_500mg_tablet",
+    "file_name": "pkg_020.jpg",
+    "file_path": "ml\\datasets\\raw\\ciprofloxacin_500mg_tablet\\pkg_020.jpg",
+    "setid": "baseline_ciprofloxacin_500mg_tablet_pkg_020",
+    "spl_title": "Verified SPL packaging: ciprofloxacin_500mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      802,
+      314
+    ],
+    "sha256": "f1dc105b222b78cc39621c364319e214b5483e15b4e63536df3a7b50cc5c069c",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_001",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_001.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_001.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_001",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      967,
+      886
+    ],
+    "sha256": "b0b34adfd46a7cf2f3d54e719050e3b0d1e174a70a0485104d6da284428e4e22",
+    "split": "test"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_002",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_002.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_002.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_002",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1000,
+      1104
+    ],
+    "sha256": "4bce60492b98d29e1636f8b544c05c3a3e637139784d35537d641a6007d43b82",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_003",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_003.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_003.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_003",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1125,
+      639
+    ],
+    "sha256": "980c09072a1d1c513a6f37b42b63f885248e2174dc467cb6cd1d41abbbe04d50",
+    "split": "val"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_004",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_004.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_004.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_004",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      913,
+      1149
+    ],
+    "sha256": "757f2f0036d783ed8361e2a0f3006eed1e958790e6a7d8c02e87368330fd22df",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_005",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_005.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_005.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_005",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      722,
+      916
+    ],
+    "sha256": "cf2c35072548f931283c99742be0680baeff9a3ef8776abb1a2eda11fdd7a9ba",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_006",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_006.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_006.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_006",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      816,
+      1146
+    ],
+    "sha256": "73925e421b400021c4c358b8c6db0d4def0108c985499ab3751b9cbf86ffc79e",
+    "split": "val"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_007",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_007.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_007.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_007",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      702,
+      907
+    ],
+    "sha256": "45849b738f7ce74fa0adc3e928505ce36067b5dbb906889a5eab45bf1f5ec16f",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_008",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_008.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_008.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_008",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      862,
+      348
+    ],
+    "sha256": "31e0be128f33b8cd3541586c57f4e3f88737472ebd6505df221a48a25e07b86f",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_009",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_009.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_009.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_009",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1303,
+      788
+    ],
+    "sha256": "a0ebf58969c16c8c8e019cc7ff343c399d2b7d94c0bca35cf09852d57afd6e71",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_010",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_010.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_010.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_010",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      808,
+      790
+    ],
+    "sha256": "85d52c123a8d14c1a91b976c303d507e5d1e9114806b6dbb2739b81c023c6c24",
+    "split": "test"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_011",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_011.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_011.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_011",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1445,
+      636
+    ],
+    "sha256": "73cf72ba9fd4db68cfff4900d5d0a02f66d19798e91bbe66ee5c4eeff2d0e37c",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_012",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_012.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_012.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_012",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      721,
+      1027
+    ],
+    "sha256": "6e6891a64e5b0a9d83c8f05016afb370924f0a8ffab69e751b519d7557d23545",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_013",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_013.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_013.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_013",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      304,
+      704
+    ],
+    "sha256": "bc9e15e60b6c67670c28aa5f44d549d2cc9c4ed0cb9ca82e03a7c4695d3fdbdd",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_014",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_014.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_014.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_014",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1086,
+      1027
+    ],
+    "sha256": "94cd21dbfb1a983a6dac9657425b21f43bdea28293f90a709a87d97526a9c4f0",
+    "split": "val"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_015",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_015.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_015.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_015",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      636,
+      798
+    ],
+    "sha256": "c208b98ed7a057729c2c1be20483e74d0a865ecb765a497f2f15476decc3eb1b",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_016",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_016.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_016.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_016",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      721,
+      656
+    ],
+    "sha256": "0c7275afde8b5915fac2a8444e66a19455dfd5ed29f8a626c835d303e95e30c4",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_017",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_017.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_017.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_017",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      254,
+      534
+    ],
+    "sha256": "28459ad104c54577f6c0315a1de5fe94adb4a3a5f001bc5d48fc4a16862ec59a",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_018",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_018.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_018.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_018",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      820,
+      1077
+    ],
+    "sha256": "eee2303402393f173d9814972888c971b4877031c1b5bf685dd2b74e2698a1be",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_019",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_019.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_019.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_019",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      759,
+      1087
+    ],
+    "sha256": "a28042c303840a3ac48ca581e74be653c1ffe781c913137c54257d7d08264d23",
+    "split": "train"
+  },
+  {
+    "image_id": "cetirizine_10mg_tablet_pkg_020",
+    "class_name": "cetirizine_10mg_tablet",
+    "file_name": "pkg_020.jpg",
+    "file_path": "ml\\datasets\\raw\\cetirizine_10mg_tablet\\pkg_020.jpg",
+    "setid": "baseline_cetirizine_10mg_tablet_pkg_020",
+    "spl_title": "Verified SPL packaging: cetirizine_10mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      748,
+      571
+    ],
+    "sha256": "8f19d5d254f446a16223c1a2c793727232d3315ff0de82b7d6c3127540a87a13",
+    "split": "test"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_001",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_001.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_001.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_001",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1100,
+      700
+    ],
+    "sha256": "9f1ec16cf4a0779ecc4b6ec04a2b2186ae2f06cf60330174745acfbd8ed23334",
+    "split": "test"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_002",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_002.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_002.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_002",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      674,
+      407
+    ],
+    "sha256": "a48c9c3ee3cfcff873e7ae01541ec6f46326b945447bfc93308a9e24ec046348",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_003",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_003.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_003.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_003",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      860,
+      652
+    ],
+    "sha256": "d4e4fe6a17933ff6851731d432218fd3e8b3713ee8f3f8ee4e0d3cecae699d89",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_004",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_004.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_004.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_004",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      836,
+      601
+    ],
+    "sha256": "7011611070da51ea9e15a5e4f447b2f899aa278485a1b74ecd1ff4f560e82792",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_005",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_005.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_005.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_005",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1228,
+      716
+    ],
+    "sha256": "048c102820dd4d385a0dd3896b647cfbc28b56edaab411102345cf2540c49c85",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_006",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_006.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_006.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_006",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      922,
+      610
+    ],
+    "sha256": "7810e1d2f4f405daaaacf101fa73a84aa834d45c59bde8b75bac5237d84b7305",
+    "split": "test"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_007",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_007.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_007.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_007",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      482,
+      592
+    ],
+    "sha256": "b76ddd4d38bba0d1905b7872379f4daed53b944a56e9c5bad5117dac2d6df3a8",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_008",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_008.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_008.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_008",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      485,
+      513
+    ],
+    "sha256": "926fc9381657aa892e75dd43aa2ca291717d7024291019029f40f2437e779da7",
+    "split": "val"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_009",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_009.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_009.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_009",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      485,
+      523
+    ],
+    "sha256": "5aad1836e60e93194e90a3371a2760b3de9f3140671961c676c582f51604cd41",
+    "split": "test"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_010",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_010.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_010.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_010",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      657,
+      368
+    ],
+    "sha256": "11116f459b670a13229577f06af6c059b2cfc79c5eddc2b335f03b270c516d79",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_011",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_011.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_011.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_011",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      2128,
+      880
+    ],
+    "sha256": "59e85f37353a4a240520c66347bf4140ae6ec02d9a7ba6e3953fe309ef68746a",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_012",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_012.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_012.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_012",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      2123,
+      877
+    ],
+    "sha256": "2dd0cee0b067dbd34fe0c3450758f6f0f64c40e597fe78cef615a5cc2bea6546",
+    "split": "val"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_013",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_013.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_013.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_013",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      3186,
+      1320
+    ],
+    "sha256": "d4c73b564ff5ad42f14aa8f6de7c952c861835ca192d0f4b42ec2f0786ca4aea",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_014",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_014.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_014.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_014",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      395,
+      303
+    ],
+    "sha256": "6bbb3188f4218f64263c49d5cc612273c9d0d88891506cc26125f9ef8dc131a1",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_015",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_015.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_015.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_015",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      420,
+      317
+    ],
+    "sha256": "13df34d8038bb6b18332ea8eb16ceee068edc4c572c3b0bdf0898d00cc0d2fda",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_016",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_016.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_016.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_016",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      837,
+      516
+    ],
+    "sha256": "dec2cd5eb3778bb84f59bf765f89fcbaf189df5d7628fb6b09b0bb3eab0a804d",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_017",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_017.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_017.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_017",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      478,
+      338
+    ],
+    "sha256": "6b8993298a932b3c84ea34c8c844f39ca2640cb73e63d81e16ff22198a274601",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_018",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_018.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_018.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_018",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      357,
+      204
+    ],
+    "sha256": "da93b582a2ed60d6de6c17092a4f9d933e1e237b017fbc51b5c0fbf950f0df46",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_019",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_019.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_019.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_019",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      337,
+      203
+    ],
+    "sha256": "f77f6fe5863fac4e52cc7fbc54cdb3393d415c5156be35eefffe4263fff02702",
+    "split": "train"
+  },
+  {
+    "image_id": "losartan_50mg_tablet_pkg_020",
+    "class_name": "losartan_50mg_tablet",
+    "file_name": "pkg_020.jpg",
+    "file_path": "ml\\datasets\\raw\\losartan_50mg_tablet\\pkg_020.jpg",
+    "setid": "baseline_losartan_50mg_tablet_pkg_020",
+    "spl_title": "Verified SPL packaging: losartan_50mg_tablet",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      537,
+      394
+    ],
+    "sha256": "1af3bf072960ddb5d8db780b34b1eae20eb7cfe1305e698b554e52123ae8f9bc",
+    "split": "val"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_001",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_001.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_001.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_001",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      650,
+      609
+    ],
+    "sha256": "1fdfdf7a7d0ac9416c07041a7fbe079ccd363b7775edd4d7eea38a2df2c865a9",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_002",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_002.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_002.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_002",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      250,
+      249
+    ],
+    "sha256": "7135833e119032ee4e5216332f21b3e114442de8304fd7dc2b7174f04dfa7f22",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_003",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_003.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_003.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_003",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      250,
+      250
+    ],
+    "sha256": "6ab3d6774604e94b6e37f18034636011524485c25dec45d1b8526affb6e41e69",
+    "split": "val"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_004",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_004.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_004.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_004",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      250,
+      249
+    ],
+    "sha256": "cdc03d190fdb50fce83944947429788c6c2dedf4fb7e8667b3d494e2121559c0",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_005",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_005.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_005.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_005",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      250,
+      250
+    ],
+    "sha256": "49961f0d6bcb0381935a3e69f2779866d31344787b458ebcab0a575b210a8a41",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_006",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_006.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_006.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_006",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      250,
+      252
+    ],
+    "sha256": "3c442f5b2a2f6583be6456affb46f3777aff6130808bb0585649340b7cd1c560",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_007",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_007.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_007.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_007",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      250,
+      248
+    ],
+    "sha256": "83cc263cd68406496ce464f5517a85263e014f184a61ddb31a55928b684aa7bb",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_008",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_008.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_008.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_008",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      700,
+      283
+    ],
+    "sha256": "2359a2f2b9a4989d3aa9ecafe8f883f03e6ddd3b1235f0abf7eaa2294be233cc",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_009",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_009.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_009.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_009",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      328,
+      378
+    ],
+    "sha256": "d586f31b533fac58f8d499fe47108d68cc34b7a6fd784ca483ed3611c46d0469",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_010",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_010.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_010.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_010",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      250,
+      250
+    ],
+    "sha256": "3eb8c28b90339dfe970d77a504f16ba1a81c48cf32c28cac4f71b89758ede8ae",
+    "split": "val"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_011",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_011.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_011.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_011",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1069,
+      568
+    ],
+    "sha256": "8c5de2bf008c4a622c9badab02f68139480de2bc30a7389e2ab350efead7e1b9",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_012",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_012.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_012.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_012",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      785,
+      886
+    ],
+    "sha256": "c738f87d23c19594e30e39e574e59ee1ab83ed7be8e21a714fb98f995f59b7a3",
+    "split": "test"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_013",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_013.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_013.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_013",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      788,
+      884
+    ],
+    "sha256": "941ee0050670528cf09fa69c060045da279fc6efa4fc9c9972c5ec6013d4a07e",
+    "split": "test"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_014",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_014.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_014.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_014",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1013,
+      999
+    ],
+    "sha256": "254091a866327e1d4395a02e374408d77f1359773b5a875b186cac02aaed1ad1",
+    "split": "test"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_015",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_015.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_015.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_015",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      1007,
+      985
+    ],
+    "sha256": "018fae28635cef66ed4c481c417006232425e9e801e365896e7c8c4f25113e7d",
+    "split": "val"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_016",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_016.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_016.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_016",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      624,
+      244
+    ],
+    "sha256": "915b6c747effd585400ff71f8934f65f291d21ae660bc41240c24f340a29e68d",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_017",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_017.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_017.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_017",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      459,
+      408
+    ],
+    "sha256": "6f1628ebb8dc14c3d73d47b534cae1eeb33682e4f0ac7ff77f6d3e99d3f4e225",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_018",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_018.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_018.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_018",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      144,
+      109
+    ],
+    "sha256": "a3237bfdfcd409126eb2e884a7237277e6666d81d7fa028e1ce798106850bf50",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_019",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_019.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_019.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_019",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      149,
+      220
+    ],
+    "sha256": "66904d4ad9a57e72b54821fe2b125f376e707c6c294d9dd4288703caf6aeeed1",
+    "split": "train"
+  },
+  {
+    "image_id": "humulin_r_100u_vial_pkg_020",
+    "class_name": "humulin_r_100u_vial",
+    "file_name": "pkg_020.jpg",
+    "file_path": "ml\\datasets\\raw\\humulin_r_100u_vial\\pkg_020.jpg",
+    "setid": "baseline_humulin_r_100u_vial_pkg_020",
+    "spl_title": "Verified SPL packaging: humulin_r_100u_vial",
+    "source_url": "https://dailymed.nlm.nih.gov/dailymed/",
+    "acquisition_date": "2026-10-10",
+    "license": "U.S. Public Domain / FDA DailyMed SPL Archive",
+    "dimensions": [
+      187,
+      175
+    ],
+    "sha256": "882ad848d91e8cabf0698dc7a319c84b6c4ffa6b6f39640b5a2507bcb125a5a2",
+    "split": "train"
+  }
+]
