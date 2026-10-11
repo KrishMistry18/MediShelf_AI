@@ -1,0 +1,32 @@
+services:
+  # Python FastAPI Backend with PyTorch & EasyOCR
+  - type: web
+    name: medishelf-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: standard
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: HOST
+        value: 0.0.0.0
+      - key: ENVIRONMENT
+        value: staging
+      - key: CORS_ORIGINS
+        value: https://medishelf.onrender.com,https://medishelf-web.pages.dev
+    healthCheckPath: /api/health
+
+  # React + TypeScript Frontend
+  - type: web
+    name: medishelf-web
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: node .output/server/index.mjs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: medishelf-api
+          property: host

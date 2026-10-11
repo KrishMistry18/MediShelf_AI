@@ -44,12 +44,14 @@ class Settings(BaseSettings):
         "http://localhost:5173,http://127.0.0.1:5173,"
         "http://localhost:8080,http://127.0.0.1:8080"
     )
+    CORS_ORIGINS: Optional[Union[str, List[str]]] = None
 
     @property
     def cors_origins(self) -> List[str]:
-        if isinstance(self.ALLOWED_ORIGINS, list):
-            return self.ALLOWED_ORIGINS
-        return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",") if origin.strip()]
+        target = self.CORS_ORIGINS if self.CORS_ORIGINS is not None else self.ALLOWED_ORIGINS
+        if isinstance(target, list):
+            return target
+        return [origin.strip() for origin in target.split(",") if origin.strip()]
 
     model_config = SettingsConfigDict(
         env_file=".env",

@@ -80,6 +80,22 @@ app.include_router(models_router, prefix="/api")
 app.include_router(models_router, prefix="/api/v1")
 
 
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request, exc):
+    logger.error("Unhandled exception processing %s %s: %s", request.method, request.url.path, exc, exc_info=True)
+    if settings.DEBUG:
+        return JSONResponse(
+            status_code=500,
+            content={"detail": f"Internal Server Error: {str(exc)}"},
+        )
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "An internal server error occurred. Please try again later."},
+    )
+
+
 @app.get("/", tags=["Root"])
 def root():
     return {
