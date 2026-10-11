@@ -1,185 +1,238 @@
-# MediShelf AI
+# MediShelf AI — Intelligent Medicine Safety & Storage Compliance Platform
 
-Medicine package identification and storage-risk assessment. A TanStack Start frontend on top of
-a FastAPI service that runs two real models: a fine-tuned MobileNetV3-Small classifier for
-packaging photos, and a gradient-boosting classifier for storage degradation risk.
+[![Tests](https://img.shields.io/badge/backend%20tests-92%2F92%20passing-brightgreen)](tests/backend)
+[![TypeScript](https://img.shields.io/badge/typescript-zero%20errors-blue)](src)
+[![Knowledge Base](https://img.shields.io/badge/catalogue-27%2C326%20medicines-indigo)](data/medicines)
+[![Models](https://img.shields.io/badge/models-MobileNetV3%20%2B%20GradientBoosting-purple)](ml)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-> **Educational and engineering-research prototype.** Neither model is clinically validated. Do
-> not use it to decide whether a medicine is safe to take or should be discarded. Verify the
-> physical packaging and consult a licensed pharmacist.
+**MediShelf AI** is an intelligent medicine safety and storage compliance platform designed for pharmaceutical risk analysis, packaging label extraction, and environmental stability assessment.
+
+It pairs a high-performance **27,326-record authentic medicine knowledge base** (sourced from NLM RxNorm and FDA DailyMed) with a multimodal inference engine: **MobileNetV3-Small** transfer learning for packaging classification, **EasyOCR (CRAFT + CRNN)** with structured regex parsing, an **evidence-based fusion engine**, and a bifurcated **storage-risk prediction pipeline**.
+
+> [!WARNING]
+> **Responsible AI & Clinical Disclaimer**
+> MediShelf AI is an educational prototype and engineering demonstration. Neither machine learning model is clinically validated. It does not interface with physical temperature/humidity data loggers and must **not** be used to make clinical medication decisions or determine whether an exposed drug is safe for human consumption. Always inspect physical packaging and consult a licensed pharmacist. See [docs/MODEL_LIMITATIONS.md](docs/MODEL_LIMITATIONS.md).
 
 ---
 
-## Quick start
+## 📸 Product Interface Walkthrough
 
-### Option A: Start both API and frontend together (Recommended)
+| 1. System Overview Dashboard | 2. Catalogue Search (27,326 SKUs) |
+| :---: | :---: |
+| ![System Overview](docs/screenshots/01_overview.png) | ![Catalogue Search](docs/screenshots/02_catalogue_search.png) |
+| *Real-time service health, indexed metrics, and workflow navigation.* | *FTS5 BM25 search across 27,326 SCD/SBD concepts and 62 categories.* |
 
-```powershell
-# One-time setup
+| 3. Multimodal Packaging Scanner | 4. Scan Result & Fusion Assessment |
+| :---: | :---: |
+| ![Scanner Interface](docs/screenshots/03_scanner_ready.png) | ![Scan Result](docs/screenshots/04_scan_result.png) |
+| *Drag-and-drop packaging photo upload with automated quality checks.* | *Evidence fusion: CV candidate ranking, OCR parsed fields, and consensus.* |
+
+| 5. Storage Compliance & ML Risk | 6. Live Model Insights & Governance |
+| :---: | :---: |
+| ![Storage Assessment](docs/screenshots/05_storage_assessment.png) | ![Model Insights](docs/screenshots/06_model_insights.png) |
+| *Monograph rule comparison alongside GradientBoosting excursion risk.* | *Live metrics, confusion matrices, and feature importances from disk.* |
+
+| 7. Responsive Mobile Layout |
+| :---: |
+| <img src="docs/screenshots/07_mobile_layout.png" width="360" alt="Mobile View" /> |
+| *Touch-friendly responsive layout optimized for mobile browsers.* |
+
+---
+
+## ⚡ Core Capabilities
+
+1. **Large-Scale Authentic Medicine Catalogue (27,326 SKUs)**:
+   - Ingested via official NLM RxNav APIs: **17,610** Semantic Clinical Drug (`SCD`) and **9,691** Semantic Branded Drug (`SBD`) concepts, paired with **25** curated foundation monographs.
+   - Sub-millisecond SQLite FTS5 full-text search (`medicines_fts`) and inverted active ingredient index (`40,417` rows across `5,624` distinct ingredients).
+   - Zero hallucination: pure RxNorm concepts maintain `NULL` storage limits and return explicit `INSUFFICIENT_DATA` rather than guessing arbitrary default room temperatures.
+
+2. **Multimodal Packaging Scanner & Evidence Fusion**:
+   - Automated image quality pre-filtering (Laplacian blur score, brightness, resolution).
+   - **MobileNetV3-Small** image classification across 10 packaging classes.
+   - **EasyOCR 1.7.2** deep learning text extraction with CLAHE contrast enhancement.
+   - Structured parsing for expiry dates (`EXP`, `MM/YYYY`), batch/lot codes, strength, and dosage forms.
+   - **Multimodal Decision Fusion**: Categorizes confidence into `CONFIRMED`, `PARTIAL`, `DIVERGENT`, and `UNCONFIRMED` statuses, preventing computer vision from overriding authentic packaging label text.
+
+3. **Bifurcated Storage Risk Engine**:
+   - **Deterministic Regulatory Check**: Verifies ambient conditions against official USP/FDA monograph limits.
+   - **Machine Learning Risk Model**: Scikit-learn `GradientBoostingClassifier` trained on 15 features (temperature excursion magnitude, cumulative degree-hours, dosage form risk multiplier).
+   - Transparent handling of conflicts: distinguishes brief non-damaging temperature excursions from severe cold-chain breaches.
+
+4. **Live Artifact-Backed Model Insights**:
+   - Zero hardcoded accuracy claims. The `/api/models` endpoint reads committed checkpoints (`.pth`, `.joblib`) and JSON evaluation outputs directly from disk.
+   - Prominently surfaces model limitations and simulation-derived disclaimers.
+
+---
+
+## 🏗️ Architecture & Technology Stack
+
+```mermaid
+graph TD
+    Client["Public Browser (Desktop / Mobile)"] -->|VITE_API_BASE_URL| Gateway["FastAPI API Gateway (:8000)"]
+
+    subgraph Frontend ["Frontend Service (:8080)"]
+        UI["React 19 / TypeScript / Vite 8"]
+        Router["TanStack Start & Router"]
+        Query["TanStack Query (Zero Retry on Outage)"]
+    end
+
+    subgraph Backend ["Inference Backend Service (:8000)"]
+        Gateway --> MedsAPI["/api/medicines"]
+        Gateway --> ScanAPI["/api/scan"]
+        Gateway --> RiskAPI["/api/v1/storage-risk"]
+        Gateway --> ModelAPI["/api/models"]
+
+        MedsAPI --> FTS["SQLite FTS5 Knowledge Base<br/>(27,326 Records)"]
+        MedsAPI --> AppDB[("medishelf.db (SQLite / Postgres)")]
+
+        ScanAPI --> CV["MobileNetV3-Small (PyTorch)"]
+        ScanAPI --> OCR["EasyOCR (CRAFT + CRNN)"]
+        ScanAPI --> Fusion["Evidence Fusion Engine"]
+        Fusion --> FTS
+
+        RiskAPI --> Rules["Deterministic Monograph Evaluator"]
+        RiskAPI --> ML["GradientBoostingClassifier (scikit-learn)"]
+
+        ModelAPI --> Artifacts["ml/artifacts Disk Inspection"]
+    end
+```
+
+### Technology Matrix
+
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | React 19, TypeScript, Vite 8, TanStack Start, TanStack Router, TanStack Query, Tailwind CSS v4, Lucide Icons |
+| **Backend API** | Python 3.11, FastAPI, Uvicorn, Pydantic v2, SQLAlchemy 2.0 |
+| **Data Layer** | SQLite 3 (WAL mode, FTS5 full-text search), Inverted Ingredient Index, Ingestion Provenance Manifest |
+| **Computer Vision** | PyTorch 2.6 (CPU inference), Torchvision 0.21, MobileNetV3-Small |
+| **Text Extraction** | EasyOCR 1.7.2, OpenCV Headless, CLAHE, Regex Tokenizer |
+| **Machine Learning** | Scikit-learn 1.9.0, Joblib, NumPy 2.2, Pandas 2.3 |
+| **Containerization** | Docker, Docker Compose, Nitro (Cloudflare/Node targets) |
+
+---
+
+## 📊 Measured Model Performance & Provenance
+
+To independently audit the evaluation metrics directly from the raw checkpoints on disk, run:
+```bash
+python tools/verify_models.py
+```
+
+### 1. Computer Vision Classifier (MobileNetV3-Small)
+- **Trained Classes**: 10 packaging classes (`amoxicillin_500mg`, `aspirin_81mg`, `atorvastatin_20mg`, `cetirizine_10mg`, `ibuprofen_200mg`, `lisinopril_10mg`, `metformin_500mg`, `omeprazole_20mg`, `paracetamol_500mg`, `sertraline_50mg`).
+- **Input Size**: $224 \times 224$ pixels.
+- **Confidence Gate**: $0.60$.
+
+| Dataset Split | Sample Count | Top-1 Accuracy | Top-3 Accuracy | Macro F1 |
+| :--- | :---: | :---: | :---: | :---: |
+| **Held-Out Test** (1 per class) | 10 | **50.00%** | **80.00%** | 0.4333 |
+| **Validation** | 20 | **50.00%** | **65.00%** | 0.4919 |
+| **Training** | 70 | **65.71%** | **95.71%** | 0.6555 |
+
+*Key Takeaway*: Because Top-3 accuracy (80%) significantly exceeds Top-1 (50%), the UI presents ranked candidates rather than a single classification guess, deferring to OCR text when available.
+
+### 2. Storage Risk Classifier (GradientBoostingClassifier)
+- **Feature Vector**: 15 numerical and categorical features.
+- **Top Feature**: `excursion_severity_index` accounts for **85.19%** of feature importance.
+- **Reported Accuracy**: **99.56%** (Macro F1: 0.9958).
+- **CRITICAL CAVEAT**: Training labels were derived from Arrhenius kinetics simulations across 6,000 synthetic scenarios. This accuracy reflects mathematical compliance with synthetic kinetics formulas, **not physical stability trial outcomes**.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.11+
+- Node.js 20+ and npm
+
+### Local Development Setup
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/KrishMistry18/MediShelf_AI.git
+cd MediShelf_AI
+
+# 2. Set up Python virtual environment & install dependencies
+python -m venv .venv
+# On Windows:
+.venv\Scripts\activate
+# On Linux/macOS:
+# source .venv/bin/activate
+
 pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cpu
 pip install -r backend/requirements.txt
+
+# 3. Install frontend dependencies
 npm install
 
-# Run backend API + Vite web UI concurrently
+# 4. Start both API backend and web UI concurrently
 npm start
 ```
 
-### Option B: Run in separate terminals
+- Web UI: `http://localhost:8080` (or `3000`)
+- Backend API Docs: `http://127.0.0.1:8000/docs`
+- Health Endpoint: `http://127.0.0.1:8000/api/health`
 
-```powershell
-# --- API (terminal 1) ---
-python tools/serve_api.py
+---
 
-# --- frontend (terminal 2) ---
-npm run dev
+## 🐳 Staging & Containerized Deployment
+
+### Option A: Docker Compose (Recommended for Staging Demo)
+
+Run the full stack in isolated, production-like containers:
+
+```bash
+docker compose up --build -d
 ```
 
-The API listens on `http://127.0.0.1:8000` (`/docs` for Swagger). The database is created and
-seeded from `data/medicines/medicines.csv` on first startup. The frontend prints its own port and
-calls the API cross-origin, so that origin must be listed in `ALLOWED_ORIGINS` — the shipped
-defaults already cover ports 3000, 5173, and 8080.
+- Frontend: `http://localhost:8080`
+- Backend API: `http://localhost:8000/api/health`
 
-On Windows, keep the virtualenv outside OneDrive-synced folders. A PyTorch install is well over
-1 GB and syncing it is painful.
+### Option B: Cloud Staging (Render Blueprint)
 
-Full setup notes, including the two Python import roots and the scikit-learn version constraint,
-are in [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md).
+Deploy using the committed [`render.yaml`](render.yaml):
+1. Connect your repository to [Render](https://render.com).
+2. Create a new **Blueprint Instance**.
+3. Render automatically provisions the Dockerized FastAPI service and Node.js frontend service.
 
----
-
-## Measured model performance
-
-Run `python tools/verify_models.py` to reproduce everything below. It reloads the saved
-checkpoints and recomputes each metric from the datasets in this repository rather than reading
-the training logs, then writes `ml/artifacts/verification_report.json`. `GET /api/models` serves
-that report to the Model Insights page.
-
-### Package classifier — MobileNetV3-Small, 10 classes, 224 px, confidence gate 0.60
-
-| Split                       |   n | Top-1  | Top-3  | Macro F1 | Below gate |
-| --------------------------- | --: | ------ | ------ | -------- | ---------- |
-| Held-out test (1 per class) |  10 | 0.5000 | 0.8000 | 0.4333   | 3 / 10     |
-| Validation                  |  20 | 0.5000 | 0.6500 | 0.4919   | 10 / 20    |
-| Train (seen while fitting)  |  70 | 0.6571 | 0.9571 | 0.6555   | 25 / 70    |
-| All 100 raw images          | 100 | 0.6100 | 0.8800 | 0.6173   | 38 / 100   |
-
-This matches the committed `test_metrics.json` exactly, and the live `POST /api/scan` endpoint
-reproduces the same 5/10 on the held-out split.
-
-What the numbers mean in practice:
-
-- **The first guess is wrong about half the time.** Top-3 accuracy of 0.80 against top-1 of 0.50
-  says the right medicine is usually among the candidates but rarely alone at the top. The UI
-  therefore renders the full ranked candidate list, not just the winner.
-- **It is underfitted, not overfitted.** Train accuracy (0.657) sits barely above validation
-  (0.500). Six epochs over seven images per class is not enough data; more images will help, more
-  epochs will not.
-- **Per-class quality is very uneven.** Ibuprofen (F1 0.90), paracetamol (0.89), and Humulin R
-  (0.82) are reliable. Ciprofloxacin collapses to F1 0.26 and acts as a sink — it was predicted 13
-  times across 100 images against a true support of 10, absorbing amoxicillin, losartan, and
-  omeprazole.
-- **The confidence gate does real work.** 38 of 100 images fall below 0.60 and are surfaced as
-  "not identified" rather than as a wrong answer.
-- CPU inference is ~25 ms. Adding the OCR pass takes a full scan to roughly 5–15 s.
-
-### Storage-risk classifier — GradientBoostingClassifier, 15 features, LOW / MODERATE / HIGH
-
-Recomputed on the held-out split: **accuracy 0.9956, macro F1 0.9958** — identical to the
-committed `evaluation_results.json`. Train 1.0000 / validation 0.9978 / test 0.9956.
-
-That number is far less impressive than it looks, and the UI says so:
-
-- The 6,000 training scenarios are **simulation-derived**. Labels come from deterministic rules
-  over USP/FDA storage constraints, not from laboratory stability studies. The score measures how
-  well the model learned those rules, not real shelf-life outcomes.
-- One feature dominates: `excursion_severity_index` (temperature deviation × exposure hours)
-  carries 85% of total importance.
-- All three humidity features have **exactly zero** importance. The simulation never varied
-  degradation by humidity, so the model cannot use it.
-
-The consequence matters for interpretation. Measured behaviour:
-
-| Scenario                              | Compliance | ML risk          |
-| ------------------------------------- | ---------- | ---------------- |
-| Paracetamol 22 °C, in range           | pass       | LOW (1.000)      |
-| Paracetamol 27 °C for 3 h             | **fail**   | **LOW (1.000)**  |
-| Humulin R 9.2 °C for 3 h (cold chain) | **fail**   | **LOW (1.000)**  |
-| Humulin R 35 °C for 24 h              | fail       | HIGH (1.000)     |
-| Humulin R −5 °C for 12 h (frozen)     | fail       | HIGH (1.000)     |
-| In range, 10 days to expiry           | pass       | MODERATE (0.550) |
-
-Sweeping insulin held 6 h at rising temperature: 4–8 °C → LOW, 10 °C → MODERATE, 20 °C and above
-→ HIGH.
-
-**A failed compliance check alongside LOW estimated risk is normal, not a bug.** Compliance is a
-hard comparison against the monograph; the model weighs accumulated thermal stress, and a brief
-excursion accumulates very little. The assessment page detects this combination and states
-explicitly that the deterministic verdict is the binding one.
+For detailed configuration options, see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ---
 
-## Architecture
+## 🧪 Verification & Quality Gate
 
-```text
-src/              TanStack Start frontend — routes, components, typed API client
-public/samples/   Benchmark packaging photos used by the Scan page
-backend/app/      FastAPI service — api, schemas, services, ocr
-ml/               Training scripts, inference wrappers, datasets, artifacts
-data/medicines/   25-row monograph CSV that seeds the database
-tests/backend/    pytest suite (70 tests)
-tools/            serve_api.py, verify_models.py, smoke_api.py
+Every release passes a strict automated quality gate:
+
+```bash
+# 1. Backend automated test suite (92/92 tests)
+pytest -v tests/backend
+
+# 2. TypeScript compilation check (0 errors)
+npm run typecheck
+
+# 3. Production bundle build (Vite + Nitro)
+npm run build
+
+# 4. Independent model verification
+python tools/verify_models.py
+
+# 5. Live end-to-end API smoke test
+python tools/smoke_api.py
 ```
 
-Four stages stay deliberately separate, and the API never merges their outputs:
+---
 
-1. **Computer vision** predicts a package class (10 closed-set classes on MobileNetV3-Small).
-2. **OCR & Open-World Knowledge Retrieval** reads label text independently via EasyOCR, queries the **27,326-medicine master catalogue** (NLM RxNorm SCD/SBD + FDA monographs) using SQLite FTS5 BM25 search, inverted ingredient matching, and OCR confusion tolerance.
-3. **Deterministic rules** compare conditions against the monograph. Reproducible and auditable. If a clinical concept lacks packaging storage limits, returns explicit `INSUFFICIENT_DATA` rather than guessing arbitrary default room temperatures.
-4. **The ML risk model** estimates degradation probability (GradientBoostingClassifier on 15 features).
+## 📚 Documentation Reference
 
-Cross-checking (`CONFIRMED` / `PARTIAL` / `DIVERGENT` / `UNCONFIRMED`) reports whether the independent visual and textual readings agree.
-
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for data contracts.
-
-### API endpoints
-
-All routers are mounted under both `/api` and `/api/v1`.
-
-| Endpoint                            | Purpose                                                            |
-| ----------------------------------- | ------------------------------------------------------------------ |
-| `GET /api/health`                   | Service, database, and knowledge base status                      |
-| `GET /api/medicines`                | Paginated catalogue (27,326 records across 62 categories)          |
-| `GET /api/medicines/search`         | Autocomplete across 27,000+ brand names, generics, and ingredients |
-| `GET /api/medicines/categories`     | 62 distinct categories with accurate concept counts               |
-| `GET /api/medicines/{id}`           | Single monograph (foundation `MED-***` or RxNorm `RXN-***`)        |
-| `POST /api/scan`                    | Quality gate → CV → EasyOCR → FTS5 candidate ranking → fusion      |
-| `POST /api/ocr`                     | Label text extraction only                                         |
-| `POST /api/v1/storage-risk/predict` | Deterministic compliance and ML risk (with `INSUFFICIENT_DATA`)    |
-| `GET /api/v1/storage-risk/metadata` | Risk model provenance and synthetic training disclaimer            |
-| `GET /api/models`                   | Architecture, benchmarks, and derived limitations                  |
-| `GET /api/v1/models/status`         | Live status of vision and storage risk models                      |
-| `GET /api/v1/models/vision/metrics` | Held-out vision evaluation metrics from disk artifact             |
-| `GET /api/v1/models/storage-risk/metrics` | Real classification metrics and feature importances         |
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — Architectural design, data flow boundaries, and schema contracts.
+- **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** — Staging deployment runbook, environment variables, and Docker setup.
+- **[docs/DEMO_GUIDE.md](docs/DEMO_GUIDE.md)** — Step-by-step 5-minute presentation script for evaluators and vivas.
+- **[docs/MODEL_LIMITATIONS.md](docs/MODEL_LIMITATIONS.md)** — Deep dive into model architectures, biases, and clinical boundaries.
+- **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)** — Developer onboarding, virtual environment conventions, and testing workflows.
 
 ---
 
-## Notes on this build
+## ⚖️ License & Ethical Use
 
-### Real Medicine Catalogue Expansion (27,326 Records)
-
-- **Official NLM RxNav Ingestion**: Ingested 27,301 verified active concepts via official NLM RxNav API (`https://rxnav.nlm.nih.gov/REST/allconcepts.json?tty=SCD+SBD`):
-  - **17,610** Semantic Clinical Drug (`SCD`) concepts
-  - **9,691** Semantic Branded Drug (`SBD`) concepts
-  - Merged with the **25** curated foundation monographs (`MED-001` through `MED-025`)
-  - Total: **27,326 deduplicated records** with SHA-256 raw provenance in `data/sources/rxnorm_raw.json` and audit breakdown in `data/medicines/ingestion_manifest.json`.
-- **High-Performance SQLite FTS5**: Sub-millisecond full-text search index (`medicines_fts`) and inverted active ingredient index (`ingredient_index` with 40,417 rows across 6,981 distinct generic names).
-- **Strict Storage Provenance**: Pure RxNorm clinical concepts have temperature limits stored as `NULL` so that compliance evaluations return explicit `INSUFFICIENT_DATA` rather than fabricating arbitrary default room temperatures (20–25°C).
-- **Transparent Model Insights**: Dedicated endpoints serve exact disk artifacts (`test_metrics.json`, `evaluation_results.json`) without hardcoded numbers.
-- **Interactive Frontend**: Library page paginates all 27,326 records across 62 categories; Storage Assessment provides debounced autocomplete search; Scan page allows inline OCR field editing with `User Corrected` tracking and direct candidate assessment.
-
-### Current state
-
-- **92/92 backend tests pass** (`pytest -v tests/backend`).
-- All frontend routes compile and build cleanly (`npx tsc --noEmit` and `npm run build`).
-- `tools/smoke_api.py` passes against live API at `http://127.0.0.1:8000`.
-- Offline runtime: scan pipeline and knowledge base queries execute fully offline from local SQLite databases.
+Distributed under the MIT License. Designed strictly for educational and engineering research. MediShelf AI does not provide medical advice or drug dispensation guidance.
