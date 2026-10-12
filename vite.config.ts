@@ -75,6 +75,7 @@ function autoStartBackendPlugin() {
 }
 
 export default defineConfig({
+  nitro: { preset: "node-server" },
   vite: {
     plugins: [autoStartBackendPlugin()],
     server: {
