@@ -111,7 +111,7 @@
   --forest: #123e32;
   --mint: #18b88a;
   --ivory: #f7f6f0;
-  --ink: #172720;
+  --ink: #102d26;
 
   --chart-1: #18b88a;
   --chart-2: #e7a441;
@@ -120,11 +120,11 @@
   --chart-5: #6b8f7f;
 
   --sidebar: #f7f6f0;
-  --sidebar-foreground: #172720;
+  --sidebar-foreground: #102d26;
   --sidebar-primary: #123e32;
   --sidebar-primary-foreground: #f7f6f0;
   --sidebar-accent: #ebebe3;
-  --sidebar-accent-foreground: #172720;
+  --sidebar-accent-foreground: #102d26;
   --sidebar-border: #e0ddd2;
   --sidebar-ring: #18b88a;
 }
@@ -341,3 +341,141 @@
     animation: none;
   }
 }
+
+.graticule {
+  background-image: radial-gradient(rgba(18, 62, 50, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.graticule-dark {
+  background-image: radial-gradient(rgba(221, 233, 223, 0.10) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.subtle-grid {
+  background-image: linear-gradient(to right, rgba(18, 62, 50, 0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(18, 62, 50, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.hairline-b {
+  border-bottom: 1px solid var(--border);
+}
+
+.hairline-t {
+  border-top: 1px solid var(--border);
+}
+
+.hairline-r {
+  border-right: 1px solid var(--border);
+}
+
+.hairline-l {
+  border-left: 1px solid var(--border);
+}
+
+/* Scientific Reticle and Optical Guides */
+.reticle-corner-tl {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+  pointer-events: none;
+}
+
+.reticle-corner-tr {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  pointer-events: none;
+}
+
+.reticle-corner-bl {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  width: 14px;
+  height: 14px;
+  border-bottom: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+  pointer-events: none;
+}
+
+.reticle-corner-br {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 14px;
+  height: 14px;
+  border-bottom: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  pointer-events: none;
+}
+
+@keyframes scan-beam {
+  0% {
+    top: 0%;
+    opacity: 0.8;
+  }
+  50% {
+    top: 96%;
+    opacity: 1;
+  }
+  100% {
+    top: 0%;
+    opacity: 0.8;
+  }
+}
+
+.scan-laser-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #18b88a 25%, #18b88a 75%, transparent);
+  box-shadow: 0 0 12px #18b88a;
+  animation: scan-beam 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 20;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-laser-line {
+    animation: none;
+    top: 50%;
+  }
+}
+
+.ink-canvas {
+  background-color: #102d26;
+  color: #f7f6f0;
+}
+
+.ink-card {
+  background-color: #123e32;
+  border: 1px solid rgba(221, 233, 223, 0.15);
+  color: #f7f6f0;
+}
+
+.editorial-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.editorial-divider::before,
+.editorial-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+

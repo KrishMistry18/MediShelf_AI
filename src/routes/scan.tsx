@@ -8,7 +8,9 @@ import {
   Check,
   CheckCircle2,
   Database,
+  Edit2,
   ExternalLink,
+  Eye,
   FileText,
   HelpCircle,
   ImagePlus,
@@ -16,9 +18,11 @@ import {
   Layers,
   Minus,
   Pill,
+  RefreshCw,
   RotateCcw,
   ScanLine,
   ShieldCheck,
+  Sliders,
   Sparkles,
   Thermometer,
   Upload,
@@ -27,8 +31,6 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/Button";
-import { PageIntro } from "@/components/PageIntro";
-import { EmptyState, ErrorState, LoadingState } from "@/components/States";
 import { recordScan } from "@/lib/activity";
 import {
   FUSION_LABELS,
@@ -37,6 +39,7 @@ import {
   formatPercent,
   humanizeClassName,
   scanMedicineImage,
+  type CandidateMatch,
   type IdentificationStatus,
   type ProductStatus,
   type ScanResponse,
@@ -47,19 +50,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/scan")({
   head: () => ({
     meta: [
-      { title: "Scan Medicine — MediShelf AI" },
+      { title: "Optical Packaging Scanner — MediShelf AI" },
       {
         name: "description",
         content:
-          "Run a real medicine package photo through the MobileNetV3 classifier and EasyOCR label reader.",
+          "Specialized packaging intelligence workspace: MobileNetV3 visual classification, EasyOCR text extraction, and pharmacopeial concept arbitration.",
       },
-      { property: "og:title", content: "Scan Medicine — MediShelf AI" },
-      {
-        property: "og:description",
-        content: "Capture packaging and review visual and label-text evidence side by side.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ScanPage,
@@ -68,19 +64,30 @@ export const Route = createFileRoute("/scan")({
 const MAX_BYTES = 15 * 1024 * 1024;
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp", "image/bmp"];
 
-/** Benchmark photos served from public/samples/. */
-const DEMO_SAMPLES = [
+const BENCHMARK_SPECIMENS = [
   {
     file: "paracetamol_sample.jpg",
     label: "Paracetamol 500 mg",
-    detail: "Carton · room temperature",
+    category: "Oral Solid • Room Temp",
+    classDesc: "Blister Pack Tablet",
   },
-  { file: "humulin_sample.jpg", label: "Humulin R 100 U/mL", detail: "Vial · cold chain 2–8°C" },
-  { file: "metformin_sample.jpg", label: "Metformin 500 mg", detail: "Blister · room temperature" },
+  {
+    file: "humulin_sample.jpg",
+    label: "Humulin R 100 U/mL",
+    category: "Biological • Cold Chain 2–8°C",
+    classDesc: "Vial",
+  },
+  {
+    file: "metformin_sample.jpg",
+    label: "Metformin HCl 500 mg",
+    category: "Oral Solid • Room Temp",
+    classDesc: "Blister Pack Tablet",
+  },
   {
     file: "atorvastatin_sample.jpg",
     label: "Atorvastatin 20 mg",
-    detail: "Blister · room temperature",
+    category: "Oral Solid • DailyMed",
+    classDesc: "Blister Pack Tablet",
   },
 ] as const;
 
@@ -94,14 +101,20 @@ function ScanPage() {
   const [localError, setLocalError] = useState<string | null>(null);
   const [threshold, setThreshold] = useState(0.6);
   const [dragging, setDragging] = useState(false);
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
+  const [editingField, setEditingField] = useState<string | null>(null);
 
   const scan = useMutation({
     mutationFn: (payload: { file: File; threshold: number }) =>
       scanMedicineImage(payload.file, payload.threshold),
-    onSuccess: (result, variables) => recordScan(variables.file.name, result),
+    onSuccess: (result, variables) => {
+      recordScan(variables.file.name, result);
+      if (result.medicine?.medicine_id) {
+        setSelectedCandidateId(result.medicine.medicine_id);
+      }
+    },
   });
 
-  // Object URLs leak until revoked, and a scan page invites repeated selection.
   useEffect(() => {
     if (!file) {
       setPreviewUrl(null);
@@ -123,11 +136,12 @@ function ScanPage() {
       }
       if (candidate.size > MAX_BYTES) {
         setLocalError(
-          `Image is ${(candidate.size / 1024 / 1024).toFixed(1)} MB. The limit is 15 MB.`,
+          `Image is ${(candidate.size / 1024 / 1024).toFixed(1)} MB. The maximum file size is 15 MB.`,
         );
         return;
       }
       setLocalError(null);
+      setSelectedCandidateId(null);
       scan.reset();
       setFile(candidate);
     },
@@ -143,1008 +157,683 @@ function ScanPage() {
         const blob = await response.blob();
         acceptFile(new File([blob], name, { type: blob.type || "image/jpeg" }));
       } catch {
-        setLocalError(`Could not load the demo image /samples/${name}.`);
+        setLocalError(`Could not load benchmark sample /samples/${name}.`);
       }
     },
     [acceptFile],
   );
 
-  const triggerCapture = useCallback(() => {
-    inputRef.current?.click();
-  }, []);
-
-  const scrollToOcr = useCallback(() => {
-    const el = document.getElementById("ocr-panel");
-    el?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
   const reset = () => {
     setFile(null);
     setLocalError(null);
+    setSelectedCandidateId(null);
     scan.reset();
   };
 
   const result = scan.data;
 
+  const activeCandidate = useMemo(() => {
+    if (!result) return null;
+    if (selectedCandidateId && result.ocr?.candidate_matches) {
+      const found = result.ocr.candidate_matches.find((c) => c.medicine_id === selectedCandidateId);
+      if (found) return found;
+    }
+    return result.ocr?.candidate_matches?.[0] ?? null;
+  }, [result, selectedCandidateId]);
+
   return (
     <AppShell>
-      <PageIntro
-        eyebrow="Multimodal verification"
-        title="Scan medicine"
-        description="One photo, two independent readings: a MobileNetV3 classifier judges the package visually while EasyOCR reads the printed label. They are reconciled only after both have run."
-        actions={
-          <Button
-            variant="outline"
-            icon={<RotateCcw className="size-3.5" />}
-            onClick={reset}
-            disabled={!file && !result}
-          >
-            Reset
-          </Button>
-        }
-      />
-
-      <div className="grid grid-cols-12 gap-4 lg:gap-5">
-        <section className="panel col-span-12 p-5 lg:col-span-7">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <h2 className="font-head text-base">Package capture</h2>
-            <span className="font-mono text-[10px] text-muted-foreground">
-              JPG · PNG · WEBP · BMP · max 15 MB
-            </span>
-          </div>
-
-          <input
-            ref={inputRef}
-            type="file"
-            accept={ACCEPTED.join(",")}
-            className="hidden"
-            onChange={(event) => acceptFile(event.target.files?.[0])}
-          />
-          <input
-            ref={cameraRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            onChange={(event) => acceptFile(event.target.files?.[0])}
-          />
-
-          <div
-            onDragOver={(event) => {
-              event.preventDefault();
-              setDragging(true);
-            }}
-            onDragLeave={() => setDragging(false)}
-            onDrop={(event) => {
-              event.preventDefault();
-              setDragging(false);
-              acceptFile(event.dataTransfer.files?.[0]);
-            }}
-            className={cn(
-              "relative grid min-h-[360px] place-items-center overflow-hidden rounded-[6px] border border-dashed bg-secondary/50 transition-colors",
-              dragging ? "border-accent bg-accent/5" : "border-foreground/20",
-            )}
-          >
-            {previewUrl ? (
-              <img
-                src={previewUrl}
-                alt="Selected medicine package awaiting verification"
-                className="absolute inset-0 size-full object-contain p-4"
-              />
-            ) : (
-              <div className="px-4 text-center">
-                <ImagePlus className="mx-auto size-8 text-accent" />
-                <p className="mt-3 text-sm font-medium">Place the medicine package in frame</p>
-                <p className="mt-1 text-[11px] text-muted-foreground">
-                  Sharp, evenly lit, label facing the camera. Drag an image here or pick one below.
-                </p>
-                <div className="mt-4 flex flex-wrap justify-center gap-2">
-                  <Button
-                    icon={<Camera className="size-4" />}
-                    onClick={() => cameraRef.current?.click()}
-                  >
-                    Use camera
-                  </Button>
-                  <Button
-                    variant="outline"
-                    icon={<Upload className="size-4" />}
-                    onClick={() => inputRef.current?.click()}
-                  >
-                    Upload file
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {scan.isPending && (
-              <div className="absolute inset-0 grid place-items-center bg-background/90">
-                <div className="px-6 text-center">
-                  <ScanLine className="mx-auto size-8 animate-pulse text-accent" />
-                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em]">
-                    Running classifier and label reader
-                  </p>
-                  <p className="mt-2 text-[11px] text-muted-foreground">
-                    Text recognition runs on CPU and usually takes 5–15 seconds.
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {file && (
-            <p className="mt-3 truncate font-mono text-[10px] text-muted-foreground">
-              {file.name} · {(file.size / 1024).toFixed(0)} KB
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* ── Analytical Studio Header ───────────────────────────────── */}
+        <div className="border-b border-border pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+              <span className="size-2 rounded-full bg-mint" />
+              <span>Multimodal Optical Laboratory</span>
+              <span>•</span>
+              <span>MobileNetV3 + EasyOCR + 27k RxNorm</span>
+            </div>
+            <h1 className="font-head text-3xl font-bold tracking-tight text-foreground">
+              Packaging Scanner Bay
+            </h1>
+            <p className="text-sm text-muted-foreground max-w-xl font-sans">
+              Reconcile physical package container geometry and printed label text against 27,326
+              curated pharmacopeial drug concepts.
             </p>
-          )}
+          </div>
 
-          <div className="mt-4 border-t border-border pt-4">
-            <label className="block">
-              <span className="mb-2 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-                <span>Confidence gate</span>
-                <span className="text-foreground">{threshold.toFixed(2)}</span>
-              </span>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Softmax Confidence Gate Control */}
+            <div className="flex items-center gap-2 rounded border border-border bg-card px-3 py-1.5 text-xs font-mono">
+              <Sliders className="size-3.5 text-muted-foreground" />
+              <span className="text-muted-foreground">Gate:</span>
+              <strong className="text-foreground">{threshold.toFixed(2)}</strong>
               <input
                 type="range"
                 min={0.1}
                 max={0.95}
                 step={0.05}
                 value={threshold}
-                onChange={(event) => setThreshold(Number(event.target.value))}
-                className="w-full accent-[var(--accent)]"
+                onChange={(e) => setThreshold(Number(e.target.value))}
+                className="w-16 accent-[var(--mint)] h-1 ml-1"
+                title="Softmax classification confidence threshold gate"
               />
-            </label>
-            <p className="mt-1.5 text-[10px] leading-relaxed text-muted-foreground">
-              A prediction is only treated as an identification above this softmax score. The
-              trained default is 0.60; raising it trades recall for fewer wrong identifications.
-            </p>
-          </div>
+            </div>
 
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-            {localError ? (
-              <p className="text-[11px] text-destructive">{localError}</p>
-            ) : (
-              <span className="text-[11px] text-muted-foreground">
-                Images are sent to the local API and are not stored.
-              </span>
-            )}
             <Button
-              variant="jade"
-              disabled={!file || scan.isPending}
-              onClick={() => file && scan.mutate({ file, threshold })}
+              variant="outline"
+              className="h-8.5 px-3 text-xs border-border bg-card hover:bg-secondary font-medium"
+              onClick={reset}
+              disabled={!file && !result}
             >
-              {scan.isPending ? "Analysing…" : "Run verification"}
+              <RotateCcw className="mr-1.5 size-3" />
+              <span>Reset Bay</span>
             </Button>
           </div>
-        </section>
+        </div>
 
-        <aside className="col-span-12 space-y-4 lg:col-span-5 lg:space-y-5">
-          <section className="panel p-5">
-            <h2 className="font-head text-base">Benchmark images</h2>
-            <p className="mt-1 text-[11px] text-muted-foreground">
-              Photos from the evaluation set. Useful for comparing behaviour on a class the model
-              handles well against one it struggles with.
-            </p>
-            <div className="mt-4 grid gap-2">
-              {DEMO_SAMPLES.map((sample) => (
-                <button
-                  key={sample.file}
-                  className="flex items-center gap-3 rounded-[6px] border border-border p-2.5 text-left transition-colors hover:bg-secondary"
-                  onClick={() => void loadSample(sample.file)}
-                >
-                  <img
-                    src={`/samples/${sample.file}`}
-                    alt=""
-                    className="size-12 shrink-0 rounded-[4px] object-cover ring-1 ring-border"
-                  />
-                  <span className="min-w-0">
-                    <strong className="block truncate text-[12px] font-medium">
-                      {sample.label}
-                    </strong>
-                    <span className="font-mono text-[9px] text-muted-foreground">
-                      {sample.detail}
-                    </span>
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <section className="panel p-5">
-            <div className="mb-1 flex items-center justify-between">
-              <h2 className="font-head text-base">Evidence</h2>
-              {result && (
-                <span className="font-mono text-[10px] text-muted-foreground">
-                  {result.inference_time_ms.toFixed(0)} ms
+        {/* ── Main Studio Grid ────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column (5 Cols): Optical Capture Surface & Benchmark Bay */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="rounded border border-border bg-card p-5 space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-muted-foreground uppercase tracking-wider">
+                  Optical Viewfinder
                 </span>
+                <span className="text-foreground">
+                  {file ? `${(file.size / 1024).toFixed(0)} KB • ${file.name}` : "Ready"}
+                </span>
+              </div>
+
+              {/* Hidden file and camera inputs */}
+              <input
+                ref={inputRef}
+                type="file"
+                accept={ACCEPTED.join(",")}
+                className="hidden"
+                onChange={(e) => acceptFile(e.target.files?.[0])}
+              />
+              <input
+                ref={cameraRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={(e) => acceptFile(e.target.files?.[0])}
+              />
+
+              {/* Capture Viewport with Reticle Overlay */}
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragging(true);
+                }}
+                onDragLeave={() => setDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragging(false);
+                  acceptFile(e.dataTransfer.files?.[0]);
+                }}
+                className={cn(
+                  "relative aspect-4/3 w-full rounded border border-dashed transition-all flex flex-col items-center justify-center p-4 overflow-hidden",
+                  dragging
+                    ? "border-mint bg-mint/5"
+                    : previewUrl
+                      ? "border-border bg-ink/5"
+                      : "border-border bg-background subtle-grid",
+                )}
+              >
+                {/* Precision Reticle Calipers */}
+                <div className="reticle-corner-tl" />
+                <div className="reticle-corner-tr" />
+                <div className="reticle-corner-bl" />
+                <div className="reticle-corner-br" />
+
+                {previewUrl ? (
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <img
+                      src={previewUrl}
+                      alt="Packaging preview"
+                      className="w-full h-full object-contain p-2"
+                    />
+                    {scan.isPending && <div className="scan-laser-line" />}
+                  </div>
+                ) : (
+                  <div className="text-center px-4 space-y-3">
+                    <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-secondary text-primary">
+                      <ImagePlus className="size-6 text-mint" />
+                    </div>
+                    <div>
+                      <p className="font-head text-sm font-semibold text-foreground">
+                        Position Medicine Package
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground max-w-xs leading-relaxed">
+                        Frame the primary packaging face. Ensure brand name, active ingredients, and
+                        strength are in clear focus.
+                      </p>
+                    </div>
+                    <div className="pt-2 flex flex-wrap justify-center gap-2">
+                      <Button
+                        variant="primary"
+                        className="h-8 text-xs bg-primary text-primary-foreground font-medium"
+                        onClick={() => cameraRef.current?.click()}
+                      >
+                        <Camera className="mr-1.5 size-3.5 text-mint" />
+                        <span>Camera</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="h-8 text-xs border-border bg-card hover:bg-secondary font-medium"
+                        onClick={() => inputRef.current?.click()}
+                      >
+                        <Upload className="mr-1.5 size-3.5" />
+                        <span>Select File</span>
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Progressive Real Processing Overlay */}
+                {scan.isPending && (
+                  <div className="absolute inset-0 bg-background/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center z-30">
+                    <div className="size-10 rounded-full border-2 border-mint border-t-transparent animate-spin mb-4" />
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-primary">
+                      Executing Multimodal Pipeline
+                    </span>
+                    <div className="mt-4 space-y-2 text-xs text-muted-foreground font-mono text-left max-w-xs">
+                      <div className="flex items-center gap-2">
+                        <Check className="size-3 text-mint" />
+                        <span>OpenCV Quality Assessment</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Check className="size-3 text-mint" />
+                        <span>MobileNetV3 Visual Inference</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="size-1.5 rounded-full bg-mint animate-pulse" />
+                        <span className="text-foreground">EasyOCR Character Extraction</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground/60">
+                        <Minus className="size-3" />
+                        <span>Catalogue Arbitration (27,326 Concepts)</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Strip below capture surface */}
+              <div className="pt-2 flex items-center justify-between border-t border-border">
+                {file ? (
+                  <Button
+                    variant="outline"
+                    className="h-8 text-xs border-border bg-background hover:bg-secondary"
+                    onClick={() => inputRef.current?.click()}
+                  >
+                    <span>Change Image</span>
+                  </Button>
+                ) : (
+                  <span className="text-[11px] font-mono text-muted-foreground">
+                    Accepts JPG, PNG, WEBP, BMP ≤ 15 MB
+                  </span>
+                )}
+
+                <Button
+                  variant="primary"
+                  className="h-8.5 px-4 text-xs bg-primary text-primary-foreground font-bold shadow-2xs hover:bg-primary/90"
+                  disabled={!file || scan.isPending}
+                  onClick={() => file && scan.mutate({ file, threshold })}
+                >
+                  {scan.isPending ? "Analysing…" : "Run Verification"}
+                  <ArrowRight className="ml-1.5 size-3.5" />
+                </Button>
+              </div>
+
+              {localError && (
+                <div className="rounded border border-coral/30 bg-coral/10 p-2.5 text-xs text-coral">
+                  {localError}
+                </div>
               )}
             </div>
 
-            {scan.isPending && <LoadingState label="Waiting on the inference API" />}
+            {/* Benchmark Specimen Bay */}
+            <div className="rounded border border-border bg-card p-5 space-y-3">
+              <span className="font-mono text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">
+                Validation Benchmark Specimens
+              </span>
+              <p className="text-xs text-muted-foreground">
+                Load authentic photographic test specimens to test visual classification and OCR
+                retrieval accuracy:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                {BENCHMARK_SPECIMENS.map((sample) => (
+                  <button
+                    key={sample.file}
+                    onClick={() => void loadSample(sample.file)}
+                    className="flex items-center gap-2.5 rounded border border-border p-2 text-left bg-background hover:border-primary/40 transition-colors"
+                  >
+                    <img
+                      src={`/samples/${sample.file}`}
+                      alt={sample.label}
+                      className="size-11 rounded object-cover border border-border shrink-0"
+                    />
+                    <div className="min-w-0">
+                      <strong className="block text-xs font-semibold text-foreground truncate">
+                        {sample.label}
+                      </strong>
+                      <span className="block text-[10px] font-mono text-muted-foreground truncate">
+                        {sample.classDesc}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
-            {scan.isError && !scan.isPending && (
-              <ErrorState
-                error={scan.error}
-                onRetry={() => file && scan.mutate({ file, threshold })}
-                className="mt-3"
-              />
+          {/* Right Column (7 Cols): Reconciled Evidence & Decision Workspace */}
+          <div className="lg:col-span-7 space-y-6">
+            {!result && !scan.isPending && (
+              <div className="rounded border border-border bg-card p-12 text-center space-y-3">
+                <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-secondary text-primary">
+                  <ScanLine className="size-6 text-mint" />
+                </div>
+                <h3 className="font-head text-lg font-bold text-foreground">
+                  Awaiting Packaging Ingestion
+                </h3>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                  Select a photo or choose an authentic benchmark specimen on the left. The engine
+                  will extract optical characters, classify packaging form, and query 27,326
+                  monographs.
+                </p>
+              </div>
             )}
 
-            {!scan.isPending && !scan.isError && !result && (
-              <EmptyState
-                icon={<ScanLine />}
-                title="No scan yet"
-                description="Choose an image and run verification. Results appear here with the confidence behind each one."
-              />
+            {scan.isError && (
+              <div className="rounded border border-coral/30 bg-coral/5 p-6 space-y-3">
+                <div className="flex items-center gap-2 text-coral">
+                  <AlertCircle className="size-5" />
+                  <h3 className="font-head text-base font-bold">Inference Error</h3>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  The backend inference service returned an error. Verify that the API is running at
+                  http://127.0.0.1:8000.
+                </p>
+                <Button
+                  variant="outline"
+                  className="h-8 text-xs border-border bg-card"
+                  onClick={() => file && scan.mutate({ file, threshold })}
+                >
+                  <RefreshCw className="mr-1.5 size-3" />
+                  <span>Retry Scan</span>
+                </Button>
+              </div>
             )}
 
             {result && !scan.isPending && (
-              <EvidencePanel
+              <ReconciledEvidenceCanvas
                 result={result}
-                onRetake={triggerCapture}
-                onScrollToOcr={scrollToOcr}
+                activeCandidate={activeCandidate}
+                selectedCandidateId={selectedCandidateId}
+                onSelectCandidate={setSelectedCandidateId}
+                onAssess={(medicineId) =>
+                  navigate({ to: "/assessment", search: { medicine: medicineId } })
+                }
               />
             )}
-          </section>
-        </aside>
-
-        {result && !scan.isPending && (
-          <ScanDetail
-            result={result}
-            onAssess={(id) => navigate({ to: "/assessment", search: { medicine: id } })}
-          />
-        )}
+          </div>
+        </div>
       </div>
     </AppShell>
   );
 }
 
-/* ----------------------------- result views ----------------------------- */
+/* ── Integrated Multi-Stream Evidence Canvas ────────────────────────── */
 
-function EvidencePanel({
+function ReconciledEvidenceCanvas({
   result,
-  onRetake,
-  onScrollToOcr,
-}: {
-  result: ScanResponse;
-  onRetake: () => void;
-  onScrollToOcr: () => void;
-}) {
-  const quality = result.quality;
-  const fusion = result.fusion;
-  const status: ProductStatus = result.product_status ?? "UNKNOWN";
-  const statusConfig = PRODUCT_STATUS_CONFIG[status];
-  const checklist = result.evidence_checklist;
-
-  return (
-    <div className="mt-4 space-y-4">
-      {/* 1. Image Quality Gate Alert (Section 32) */}
-      {quality && !quality.is_acceptable && (
-        <div className="rounded-[5px] border border-warning/30 bg-warning/10 p-3">
-          <p className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] text-warning">
-            <AlertTriangle className="size-3" /> Quality gate failed
-          </p>
-          <ul className="mt-1.5 space-y-1 text-[11px] leading-relaxed">
-            {quality.issues.map((issue) => (
-              <li key={issue}>{issue}</li>
-            ))}
-          </ul>
-          {quality.recommendations.length > 0 && (
-            <p className="mt-2 text-[10px] text-muted-foreground">
-              {quality.recommendations.join(" ")}
-            </p>
-          )}
-          <div className="mt-2.5">
-            <Button
-              variant="outline"
-              className="h-8 px-2.5 text-xs"
-              onClick={onRetake}
-              icon={<RotateCcw className="size-3" />}
-            >
-              Retake image
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* 2. Product Status Banner & Primary Identification (Section 15, 33) */}
-      <div className={cn("rounded-[6px] border p-3.5", statusConfig.badgeClass)}>
-        <div className="flex items-center justify-between gap-2">
-          <span className="font-mono text-[9px] uppercase tracking-[0.15em] font-semibold">
-            {statusConfig.label}
-          </span>
-          <span className="font-mono text-[10px]">
-            {result.product_status === "IDENTIFIED" &&
-            (result.retrieval_match_score ?? result.score_breakdown?.["text_identity_score"])
-              ? `${formatPercent(result.retrieval_match_score ?? result.score_breakdown?.["text_identity_score"] ?? 0, 0)} match score`
-              : `${formatPercent(result.confidence, 0)} confidence`}
-          </span>
-        </div>
-        <p className="mt-1 text-[11px] leading-relaxed opacity-90">{statusConfig.description}</p>
-      </div>
-
-      {/* 3. Conflict UI (Section 35) */}
-      {status === "CONFLICTING_EVIDENCE" && (
-        <div className="rounded-[6px] border border-rose-500/30 bg-rose-500/8 p-3.5">
-          <div className="flex items-center gap-2 text-rose-500">
-            <AlertCircle className="size-4 shrink-0" />
-            <strong className="font-head text-sm">Identification Conflict</strong>
-          </div>
-          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-            Visual classifier and printed label text point to different medicines. Physical
-            packaging must be verified manually.
-          </p>
-
-          <div className="mt-3 grid grid-cols-2 gap-2 text-left">
-            <div className="rounded-[4px] border border-border bg-background p-2">
-              <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground">
-                Visual Model (Closed-Set)
-              </span>
-              <p className="mt-0.5 truncate text-[11px] font-medium">
-                {humanizeClassName(result.predicted_class)}
-              </p>
-              <span className="font-mono text-[9px] text-warning">
-                {formatPercent(
-                  result.visual_model_score ?? result.recognition?.confidence ?? result.confidence,
-                  0,
-                )}
-              </span>
-            </div>
-            <div className="rounded-[4px] border border-border bg-background p-2">
-              <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground">
-                Label Evidence (Verified KB)
-              </span>
-              <p className="mt-0.5 truncate text-[11px] font-medium">
-                {result.ocr?.candidate_matches[0]?.medicine_name ??
-                  result.ocr?.fields.medicine_name.value ??
-                  "Text candidate"}
-              </p>
-              <span className="font-mono text-[9px] text-accent">
-                {formatPercent(
-                  result.retrieval_match_score ??
-                    result.ocr?.candidate_matches[0]?.similarity_score ??
-                    0.85,
-                  0,
-                )}{" "}
-                match score
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 4. Unknown Medicine Guidance (Section 34) */}
-      {status === "UNKNOWN" && (
-        <div className="rounded-[6px] border border-border bg-secondary/30 p-3.5">
-          <div className="flex items-center gap-2 text-foreground">
-            <HelpCircle className="size-4 shrink-0 text-muted-foreground" />
-            <strong className="font-head text-sm">Not Confidently Identified</strong>
-          </div>
-          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-            We extracted some packaging information, but there is not enough verifiable evidence to
-            confirm the exact product in the knowledge base.
-          </p>
-          {result.ocr?.raw_text && (
-            <div className="mt-2.5 rounded-[4px] border border-border bg-background/60 p-2 font-mono text-[10px] text-muted-foreground line-clamp-2">
-              Detected text: &ldquo;{result.ocr.raw_text.slice(0, 100)}&hellip;&rdquo;
-            </div>
-          )}
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Button
-              variant="outline"
-              className="h-8 px-2.5 text-xs"
-              onClick={onRetake}
-              icon={<RotateCcw className="size-3" />}
-            >
-              Retake image
-            </Button>
-            <Button
-              variant="ghost"
-              className="h-8 px-2.5 text-xs"
-              onClick={onScrollToOcr}
-              icon={<FileText className="size-3" />}
-            >
-              View extracted text
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* 5. Evidence Checklist (Section 33) */}
-      <div className="rounded-[6px] border border-border bg-secondary/20 p-3.5">
-        <div className="mb-2.5 flex items-center justify-between">
-          <h3 className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground font-semibold">
-            Evidence Checklist
-          </h3>
-          <span className="font-mono text-[9px] text-muted-foreground">Multimodal audit</span>
-        </div>
-
-        <div className="space-y-2">
-          <ChecklistRow
-            label="Label text"
-            matched={Boolean(checklist?.label_text ?? result.ocr_status === "completed")}
-            detail={
-              result.ocr_status === "completed"
-                ? `${result.ocr?.raw_text.length ?? 0} chars read`
-                : "No text read"
-            }
-          />
-          <ChecklistRow
-            label="Active ingredients"
-            matched={Boolean(checklist?.active_ingredients)}
-            detail={
-              result.medicine?.generic_name ??
-              result.ocr?.fields.generic_name.value ??
-              result.ocr?.candidate_matches[0]?.generic_name ??
-              "Unconfirmed"
-            }
-          />
-          <ChecklistRow
-            label="Strength"
-            matched={Boolean(checklist?.strength)}
-            detail={result.medicine?.strength ?? result.ocr?.fields.strength.value ?? "Unconfirmed"}
-          />
-          <ChecklistRow
-            label="Dosage form"
-            matched={Boolean(checklist?.dosage_form)}
-            detail={
-              result.medicine?.dosage_form ?? result.ocr?.fields.dosage_form.value ?? "Unconfirmed"
-            }
-          />
-          <ChecklistRow
-            label="Medicine database match"
-            matched={Boolean(checklist?.database_match ?? result.medicine)}
-            detail={
-              result.medicine
-                ? (result.provenance?.source_name ?? result.medicine.source)
-                : "No match"
-            }
-          />
-          <ChecklistRow
-            label="Visual classifier"
-            matched={Boolean(checklist?.visual_classifier ?? result.is_confident)}
-            detail={
-              status === "CONFLICTING_EVIDENCE"
-                ? `Disagrees (${formatPercent(result.confidence, 0)})`
-                : `${humanizeClassName(result.predicted_class)} (${formatPercent(result.confidence, 0)})`
-            }
-            tone={
-              status === "CONFLICTING_EVIDENCE"
-                ? "conflict"
-                : result.is_confident
-                  ? "positive"
-                  : "supporting"
-            }
-          />
-        </div>
-      </div>
-
-      {/* 6. Fusion Cross-Check Summary */}
-      {fusion && (
-        <div
-          className={cn(
-            "rounded-[5px] border p-3",
-            fusion.identification_status === "CONFIRMED"
-              ? "border-accent/30 bg-accent/8"
-              : fusion.identification_status === "DIVERGENT"
-                ? "border-destructive/25 bg-destructive/5"
-                : "border-warning/30 bg-warning/8",
-          )}
-        >
-          <div className="flex items-center justify-between gap-2">
-            <p
-              className={cn(
-                "font-mono text-[9px] uppercase tracking-[0.15em]",
-                fusion.identification_status === "CONFIRMED"
-                  ? "text-accent"
-                  : fusion.identification_status === "DIVERGENT"
-                    ? "text-destructive"
-                    : "text-warning",
-              )}
-            >
-              Cross-check · {fusion.identification_status}
-            </p>
-            <span className="font-mono text-[10px] text-muted-foreground">
-              agreement {formatPercent(fusion.agreement_score, 0)}
-            </span>
-          </div>
-          <p className="mt-1 text-[12px] font-medium">
-            {FUSION_LABELS[fusion.identification_status]}
-          </p>
-          {fusion.reasons[0] && (
-            <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-              {fusion.reasons[0]}
-            </p>
-          )}
-        </div>
-      )}
-
-      <p className="border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
-        {result.message}
-      </p>
-    </div>
-  );
-}
-
-function ChecklistRow({
-  label,
-  matched,
-  detail,
-  tone,
-}: {
-  label: string;
-  matched: boolean;
-  detail?: string;
-  tone?: "positive" | "supporting" | "conflict";
-}) {
-  const isConflict = tone === "conflict";
-  const isSupporting = tone === "supporting";
-
-  return (
-    <div className="flex items-center justify-between gap-2 text-[11px]">
-      <div className="flex items-center gap-1.5 min-w-0">
-        {isConflict ? (
-          <X className="size-3.5 text-rose-500 shrink-0" />
-        ) : matched ? (
-          <Check className="size-3.5 text-emerald-500 shrink-0" />
-        ) : isSupporting ? (
-          <AlertTriangle className="size-3.5 text-amber-500 shrink-0" />
-        ) : (
-          <Minus className="size-3.5 text-muted-foreground shrink-0" />
-        )}
-        <span
-          className={cn(
-            "truncate",
-            matched ? "text-foreground font-medium" : "text-muted-foreground",
-          )}
-        >
-          {label}
-        </span>
-      </div>
-      {detail && (
-        <span className="shrink-0 font-mono text-[10px] text-muted-foreground truncate max-w-[140px]">
-          {detail}
-        </span>
-      )}
-    </div>
-  );
-}
-
-function ScanDetail({
-  result,
+  activeCandidate,
+  selectedCandidateId,
+  onSelectCandidate,
   onAssess,
 }: {
   result: ScanResponse;
+  activeCandidate: CandidateMatch | null;
+  selectedCandidateId: string | null;
+  onSelectCandidate: (id: string) => void;
   onAssess: (medicineId: string) => void;
 }) {
   const medicine = result.medicine;
   const storage = result.storage_requirements;
+  const quality = result.quality;
+  const status: ProductStatus = result.product_status ?? "UNKNOWN";
+  const statusConfig = PRODUCT_STATUS_CONFIG[status];
   const kbCandidates = result.ocr?.candidate_matches ?? [];
   const visualPredictions = result.top_predictions ?? [];
   const provenance = result.provenance;
 
+  const handoffId = selectedCandidateId ?? medicine?.medicine_id ?? kbCandidates[0]?.medicine_id;
+
   return (
-    <>
-      <section className="panel col-span-12 p-5 lg:col-span-7">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-head text-base">Candidate ranking</h2>
-          <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground">
-            {kbCandidates.length > 0
-              ? `${kbCandidates.length} knowledge base matches`
-              : `${visualPredictions.length} visual classes`}
-          </span>
-        </div>
-
-        {/* Real Knowledge Base Candidates (Section 17, 20) */}
-        {kbCandidates.length > 0 ? (
-          <div className="space-y-3">
-            <ol className="space-y-2.5">
-              {kbCandidates.slice(0, 5).map((cand, index) => {
-                const isTop = index === 0;
-                return (
-                  <li key={cand.medicine_id} className="rounded-[5px] border border-border p-2.5">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <span className="min-w-0 truncate text-[12px]">
-                        <span className="mr-1.5 font-mono text-[10px] text-muted-foreground">
-                          {index + 1}
-                        </span>
-                        <strong
-                          className={cn(
-                            isTop
-                              ? "font-medium text-foreground"
-                              : "font-normal text-muted-foreground",
-                          )}
-                        >
-                          {cand.medicine_name}
-                        </strong>
-                        <span className="ml-1.5 font-mono text-[9px] text-muted-foreground">
-                          {cand.medicine_id}
-                        </span>
-                      </span>
-                      <span className="shrink-0 font-mono text-[11px] text-accent">
-                        {formatPercent(cand.similarity_score, 1)}
-                      </span>
-                    </div>
-
-                    <div className="mt-1 flex flex-wrap items-center gap-2 font-mono text-[9px] text-muted-foreground">
-                      {cand.generic_name && <span>{cand.generic_name}</span>}
-                      {cand.strength && <span>· {cand.strength}</span>}
-                      {cand.dosage_form && <span>· {cand.dosage_form}</span>}
-                      {cand.source_name && (
-                        <span className="rounded-[3px] bg-secondary px-1.5 py-0.5 text-foreground">
-                          {cand.source_name}
-                        </span>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => onAssess(cand.medicine_id)}
-                        className="ml-auto inline-flex items-center gap-1 rounded-[3px] border border-accent/40 bg-accent/10 px-2 py-0.5 font-medium text-accent hover:bg-accent hover:text-white transition-colors"
-                      >
-                        Assess storage <ArrowRight className="size-2.5" />
-                      </button>
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
-
-            {visualPredictions.length > 0 && (
-              <div className="mt-4 border-t border-border pt-3">
-                <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-                  Supporting Visual Signal (MobileNetV3)
-                </p>
-                <div className="grid gap-1.5 sm:grid-cols-2">
-                  {visualPredictions.slice(0, 2).map((pred) => (
-                    <div
-                      key={pred.class_name}
-                      className="flex items-center justify-between rounded-[4px] bg-secondary/30 px-2.5 py-1.5 text-[11px]"
-                    >
-                      <span className="truncate">
-                        {pred.medicine_name ?? humanizeClassName(pred.class_name)}
-                      </span>
-                      <span className="font-mono text-[10px] text-muted-foreground ml-2">
-                        {formatPercent(pred.confidence, 0)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <ol className="space-y-2.5">
-            {visualPredictions.map((prediction, index) => {
-              const isTop = index === 0;
-              const meetsGate = prediction.confidence >= result.confidence_threshold;
-              return (
-                <li key={prediction.class_name}>
-                  <div className="mb-1 flex items-baseline justify-between gap-3">
-                    <span className="min-w-0 truncate text-[12px]">
-                      <span className="mr-1.5 font-mono text-[10px] text-muted-foreground">
-                        {index + 1}
-                      </span>
-                      <strong className={cn(isTop ? "font-medium" : "font-normal")}>
-                        {prediction.medicine_name ?? humanizeClassName(prediction.class_name)}
-                      </strong>
-                      {prediction.medicine_id && (
-                        <span className="ml-1.5 font-mono text-[9px] text-muted-foreground">
-                          {prediction.medicine_id}
-                        </span>
-                      )}
-                    </span>
-                    <span className="shrink-0 font-mono text-[11px]">
-                      {formatPercent(prediction.confidence, 1)}
-                    </span>
-                  </div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
-                    <div
-                      className={cn(
-                        "h-full rounded-full transition-[width] duration-500",
-                        meetsGate ? "bg-accent" : "bg-warning",
-                      )}
-                      style={{ width: `${Math.max(prediction.confidence * 100, 1.5)}%` }}
-                    />
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
-        )}
-
-        <div className="mt-4 flex gap-2 rounded-[5px] border border-border bg-secondary/40 p-3 text-[10px] leading-relaxed text-muted-foreground">
-          <Info className="mt-0.5 size-3 shrink-0" />
-          <span>
-            Candidate retrieval combines OCR label reading, normalized RxNorm / DailyMed drug
-            knowledge, and MobileNetV3 visual evidence to identify medicines beyond the closed
-            classifier training set.
-          </span>
-        </div>
-      </section>
-
-      <section className="panel col-span-12 p-5 lg:col-span-5">
-        <h2 className="mb-3 font-head text-base">Verified monograph</h2>
-        {medicine && storage ? (
-          <div className="space-y-3">
-            <div>
-              <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-accent">
-                {medicine.medicine_id}
-              </p>
-              <p className="mt-0.5 text-[13px] font-medium">{medicine.medicine_name}</p>
-              <p className="text-[11px] text-muted-foreground">
-                {medicine.generic_name}
-                {medicine.brand_name ? ` · ${medicine.brand_name}` : ""}
-              </p>
-            </div>
-
-            <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-[5px] bg-border">
-              {[
-                ["Storage", `${storage.min_temperature}–${storage.max_temperature}°C`],
-                ["Form", medicine.dosage_form],
-                ["Strength", medicine.strength],
-                ["Expiry warning", `${medicine.expiry_warning_days} days`],
-              ].map(([key, value]) => (
-                <div key={key} className="bg-background p-2.5">
-                  <dt className="font-mono text-[9px] uppercase text-muted-foreground">{key}</dt>
-                  <dd className="mt-0.5 text-[12px] font-medium">{value}</dd>
-                </div>
-              ))}
-            </dl>
-
-            <Button
-              variant="jade"
-              className="w-full"
-              icon={<Thermometer className="size-3.5" />}
-              onClick={() => onAssess(medicine.medicine_id)}
-            >
-              Assess storage conditions
-            </Button>
-
-            {/* Provenance Metadata Card (Section 26) */}
-            <div className="rounded-[5px] border border-border bg-secondary/30 p-2.5 text-[10px]">
-              <div className="flex items-center justify-between gap-1 text-muted-foreground font-mono uppercase text-[8px] tracking-wider mb-1">
-                <span>Source Provenance</span>
-                <span>{provenance?.source_version ?? medicine.source_version ?? "Current"}</span>
-              </div>
-              <p className="font-medium text-[11px]">
-                {provenance?.source_name ?? medicine.source}
-              </p>
-              {(provenance?.source_identifier || medicine.source_id) && (
-                <p className="font-mono text-[9px] text-muted-foreground mt-0.5">
-                  ID: {provenance?.source_identifier ?? medicine.source_id}
-                </p>
+    <div className="space-y-6">
+      {/* 1. Primary Reconciled Decision Dossier */}
+      <div className="rounded border border-border bg-card p-6 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-border">
+          <div className="flex items-center gap-2.5">
+            <span
+              className={cn(
+                "rounded px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider",
+                statusConfig.badgeClass,
               )}
-              <a
-                href={provenance?.source_url ?? medicine.source_url}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-1.5 inline-flex items-center gap-1 font-medium text-accent hover:underline"
-              >
-                Inspect official record <ExternalLink className="size-2.5" />
-              </a>
+            >
+              {statusConfig.label}
+            </span>
+            <span className="font-mono text-xs text-muted-foreground">
+              Latency: {result.inference_time_ms.toFixed(0)} ms
+            </span>
+          </div>
+
+          <span className="font-mono text-xs font-semibold text-primary">
+            Retrieval Score:{" "}
+            {result.product_status === "IDENTIFIED" &&
+            (result.retrieval_match_score ?? result.score_breakdown?.["text_identity_score"])
+              ? formatPercent(
+                  result.retrieval_match_score ??
+                    result.score_breakdown?.["text_identity_score"] ??
+                    0,
+                  1,
+                )
+              : formatPercent(result.confidence, 1)}
+          </span>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          <div className="space-y-1">
+            <span className="font-mono text-[10px] text-primary uppercase font-bold tracking-wider">
+              {handoffId ?? "Unresolved Concept"}
+            </span>
+            <h2 className="font-head text-2xl font-bold text-foreground">
+              {activeCandidate?.medicine_name ??
+                medicine?.medicine_name ??
+                humanizeClassName(result.predicted_class)}
+            </h2>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground pt-1">
+              <span>
+                Active Entity:{" "}
+                <strong className="text-foreground">
+                  {activeCandidate?.generic_name ?? medicine?.generic_name ?? "Not extracted"}
+                </strong>
+              </span>
+              <span>•</span>
+              <span>
+                Strength:{" "}
+                <strong className="text-foreground">
+                  {activeCandidate?.strength ?? medicine?.strength ?? "Not specified"}
+                </strong>
+              </span>
+              <span>•</span>
+              <span>
+                Form:{" "}
+                <strong className="text-foreground">
+                  {activeCandidate?.dosage_form ?? medicine?.dosage_form ?? "Package form"}
+                </strong>
+              </span>
             </div>
           </div>
-        ) : (
-          <EmptyState
-            icon={<AlertTriangle />}
-            title="No monograph attached"
-            description={
-              result.is_confident
-                ? "The predicted candidate has no matching catalog record."
-                : `Confidence stayed below the ${formatPercent(result.confidence_threshold, 0)} gate, so no monograph was retrieved. Retake the photo or look the medicine up in the library.`
-            }
-          />
-        )}
-      </section>
 
-      <OcrPanel result={result} />
-    </>
-  );
-}
-
-const OCR_FIELD_LABELS: Array<[keyof StructuredFields, string]> = [
-  ["medicine_name", "Medicine"],
-  ["generic_name", "Generic name"],
-  ["strength", "Strength"],
-  ["dosage_form", "Dosage form"],
-  ["batch_number", "Batch / lot"],
-  ["expiry_date", "Expiry"],
-  ["manufacturing_date", "Manufactured"],
-  ["manufacturer", "Manufacturer"],
-];
-
-function OcrPanel({ result }: { result: ScanResponse }) {
-  const ocr = result.ocr;
-  const [showRaw, setShowRaw] = useState(false);
-  const [editingKey, setEditingKey] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState("");
-  const [userCorrections, setUserCorrections] = useState<Record<string, string>>({});
-
-  const populated = useMemo(
-    () =>
-      ocr ? OCR_FIELD_LABELS.filter(([key]) => ocr.fields[key].value || userCorrections[key]) : [],
-    [ocr, userCorrections],
-  );
-
-  return (
-    <section className="panel col-span-12 p-5" id="ocr-panel">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="font-head text-base">Label text extraction</h2>
-        <span
-          className={cn(
-            "status",
-            result.ocr_status === "completed" ? "status-success" : "status-warning",
+          {handoffId && (
+            <Button
+              variant="primary"
+              className="h-9 px-4 text-xs bg-primary text-primary-foreground font-bold shadow-2xs hover:bg-primary/90 shrink-0"
+              onClick={() => onAssess(handoffId)}
+            >
+              <Thermometer className="mr-1.5 size-3.5 text-mint" />
+              <span>Assess Storage</span>
+              <ArrowRight className="ml-1 size-3" />
+            </Button>
           )}
-        >
-          {OCR_STATUS_LABELS[result.ocr_status]}
-        </span>
+        </div>
+
+        {quality && !quality.is_acceptable && (
+          <div className="rounded border border-warning/30 bg-warning/10 p-3 text-xs text-warning flex items-start gap-2">
+            <AlertTriangle className="size-4 shrink-0 mt-0.5" />
+            <div>
+              <strong>Image Quality Notice:</strong> {quality.issues.join(". ")}
+            </div>
+          </div>
+        )}
       </div>
 
-      {result.ocr_status !== "completed" && (
-        <div className="mb-4 rounded-[5px] border border-border bg-secondary/40 p-3 text-[11px] leading-relaxed text-muted-foreground">
-          {result.ocr_status === "unavailable" ? (
-            <>
-              The OCR engine is not loaded in this environment, so this scan rests on the visual
-              model alone. Download the weights once with{" "}
-              <code className="font-mono text-[10px]">
-                python -c &quot;import easyocr; easyocr.Reader([&apos;en&apos;], gpu=False,
-                download_enabled=True)&quot;
-              </code>
-              .
-              {ocr?.error ? <span className="mt-1 block">Engine reported: {ocr.error}</span> : null}
-            </>
-          ) : (
-            <>
-              Text recognition was skipped because the image failed the quality gate. Reading a
-              blurred or underexposed label produces plausible-looking but wrong characters, so the
-              pipeline declines rather than guessing.
-            </>
+      {/* 2. Dual-Track Visual & OCR Evidence Streams */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* Stream A: Visual Classifier Output */}
+        <div className="rounded border border-border bg-card p-5 space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-border">
+            <div className="flex items-center gap-2">
+              <Eye className="size-3.5 text-mint" />
+              <span className="font-mono text-[10px] uppercase font-bold text-foreground">
+                Visual Form Model
+              </span>
+            </div>
+            <span className="font-mono text-[10px] text-muted-foreground">MobileNetV3</span>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex justify-between items-baseline text-xs">
+              <span className="font-semibold text-foreground">
+                {humanizeClassName(result.predicted_class)}
+              </span>
+              <span className="font-mono text-mint font-bold">
+                {formatPercent(result.confidence, 1)}
+              </span>
+            </div>
+            <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+              <div
+                className="h-full bg-mint rounded-full"
+                style={{ width: `${result.confidence * 100}%` }}
+              />
+            </div>
+          </div>
+
+          {visualPredictions.length > 1 && (
+            <div className="pt-2 border-t border-border/60 space-y-1">
+              <span className="font-mono text-[9px] uppercase text-muted-foreground block">
+                Top Visual Alternatives
+              </span>
+              {visualPredictions.slice(1, 3).map((pred) => (
+                <div
+                  key={pred.class_name}
+                  className="flex justify-between text-[11px] font-mono text-muted-foreground"
+                >
+                  <span>{humanizeClassName(pred.class_name)}</span>
+                  <span>{formatPercent(pred.confidence, 0)}</span>
+                </div>
+              ))}
+            </div>
           )}
         </div>
-      )}
 
-      {ocr && result.ocr_status === "completed" && (
-        <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
-          <div>
-            {populated.length > 0 ? (
-              <dl className="grid gap-px overflow-hidden rounded-[5px] bg-border sm:grid-cols-2">
-                {populated.map(([key, label]) => {
-                  const field = ocr.fields[key];
-                  const isEditing = editingKey === key;
-                  const isCorrected = Boolean(userCorrections[key]);
-                  const displayVal = userCorrections[key] ?? field.value;
-
-                  return (
-                    <div key={key} className="bg-background p-3 relative group">
-                      <div className="flex items-center justify-between">
-                        <dt className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-                          {label}
-                        </dt>
-                        <div className="flex items-center gap-1.5">
-                          {isCorrected && (
-                            <span className="rounded-[3px] bg-accent/15 px-1.5 py-0.5 font-mono text-[8px] text-accent font-semibold">
-                              User Corrected
-                            </span>
-                          )}
-                          {!isEditing && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEditingKey(key);
-                                setEditValue(displayVal ?? "");
-                              }}
-                              className="font-mono text-[9px] text-muted-foreground hover:text-accent opacity-60 group-hover:opacity-100 transition-opacity"
-                              aria-label={`Correct ${label}`}
-                            >
-                              Edit
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      {isEditing ? (
-                        <div className="mt-1 flex items-center gap-1.5">
-                          <input
-                            type="text"
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            className="field h-7 text-[11px] py-0 px-2 flex-1"
-                            autoFocus
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (editValue.trim()) {
-                                setUserCorrections((prev) => ({
-                                  ...prev,
-                                  [key]: editValue.trim(),
-                                }));
-                              }
-                              setEditingKey(null);
-                            }}
-                            className="rounded-[3px] bg-accent px-2 py-1 text-[10px] text-white hover:bg-accent/90"
-                          >
-                            Save
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setEditingKey(null)}
-                            className="rounded-[3px] bg-secondary px-2 py-1 text-[10px] text-muted-foreground hover:text-foreground"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <dd className="mt-0.5 text-[12px] font-medium">{displayVal}</dd>
-                      )}
-
-                      {field.raw_text && field.raw_text !== displayVal && !isEditing && (
-                        <p className="mt-0.5 truncate font-mono text-[9px] text-muted-foreground">
-                          read as “{field.raw_text}”
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
-              </dl>
-            ) : (
-              <EmptyState
-                icon={<FileText />}
-                title="No structured fields recognised"
-                description="Text was detected but none of it matched the expiry, batch, strength, or manufacturer patterns."
-              />
-            )}
-
-            <button
-              onClick={() => setShowRaw((value) => !value)}
-              className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-accent"
+        {/* Stream B: EasyOCR Label Reader */}
+        <div className="rounded border border-border bg-card p-5 space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-border">
+            <div className="flex items-center gap-2">
+              <ScanLine className="size-3.5 text-mint" />
+              <span className="font-mono text-[10px] uppercase font-bold text-foreground">
+                OCR Label Reader
+              </span>
+            </div>
+            <span
+              className={cn(
+                "rounded px-1.5 py-0.2 font-mono text-[9px] font-bold",
+                result.ocr_status === "completed"
+                  ? "bg-emerald-100 text-emerald-800"
+                  : "bg-amber-100 text-amber-800",
+              )}
             >
-              {showRaw ? "Hide" : "Show"} raw recognised text ({ocr.raw_text.length} chars)
-            </button>
-            {showRaw && (
-              <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap rounded-[5px] border border-border bg-secondary/40 p-3 font-mono text-[10px] leading-relaxed">
-                {ocr.raw_text || "(empty)"}
-              </pre>
+              {OCR_STATUS_LABELS[result.ocr_status]}
+            </span>
+          </div>
+
+          <div className="space-y-1.5 font-mono text-xs">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Tokens Read:</span>
+              <span className="text-foreground font-semibold">
+                {result.ocr?.raw_text ? result.ocr.raw_text.split(/\s+/).length : 0} tokens
+              </span>
+            </div>
+            {result.ocr?.fields.batch_number?.value && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Batch / Lot:</span>
+                <span className="text-foreground">{result.ocr.fields.batch_number.value}</span>
+              </div>
+            )}
+            {result.ocr?.fields.expiry_date?.value && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Expiry Label:</span>
+                <span className="text-foreground">{result.ocr.fields.expiry_date.value}</span>
+              </div>
             )}
           </div>
 
+          {result.ocr?.raw_text && (
+            <div className="pt-2 border-t border-border/60">
+              <span className="font-mono text-[9px] uppercase text-muted-foreground block mb-1">
+                Extracted Text Snippet
+              </span>
+              <p className="font-mono text-[10px] bg-background p-2 rounded border border-border text-muted-foreground truncate">
+                {result.ocr.raw_text}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 3. Actionable Candidate Ranking Ledger */}
+      <div className="rounded border border-border bg-card p-5 space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-border">
           <div>
-            <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-              Catalog matches from text
+            <h3 className="font-head text-base font-bold text-foreground">
+              Candidate Concept Ranking
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Inspect alternative pharmacopeial matches and switch target monograph
             </p>
-            {ocr.candidate_matches.length > 0 ? (
-              <ul className="space-y-2">
-                {ocr.candidate_matches.map((candidate) => (
-                  <li
-                    key={candidate.medicine_id}
-                    className="rounded-[5px] border border-border p-2.5"
-                  >
-                    <div className="flex items-baseline justify-between gap-2">
-                      <strong className="truncate text-[12px] font-medium">
-                        {candidate.medicine_name}
+          </div>
+          <span className="font-mono text-[10px] text-muted-foreground">
+            {kbCandidates.length} Matches Found
+          </span>
+        </div>
+
+        {kbCandidates.length > 0 ? (
+          <div className="space-y-2">
+            {kbCandidates.slice(0, 5).map((cand, idx) => {
+              const isSelected = cand.medicine_id === handoffId;
+              return (
+                <div
+                  key={cand.medicine_id}
+                  onClick={() => onSelectCandidate(cand.medicine_id)}
+                  className={cn(
+                    "rounded border p-3 cursor-pointer transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3",
+                    isSelected
+                      ? "border-mint bg-mint/5"
+                      : "border-border bg-background hover:border-primary/40",
+                  )}
+                >
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-[10px] text-muted-foreground">
+                        #{idx + 1}
+                      </span>
+                      <strong className="text-xs font-bold text-foreground truncate">
+                        {cand.medicine_name}
                       </strong>
-                      <span className="shrink-0 font-mono text-[10px] text-accent">
-                        {formatPercent(candidate.similarity_score, 0)}
+                      <span className="font-mono text-[9px] bg-secondary px-1.5 py-0.2 rounded text-muted-foreground">
+                        {cand.medicine_id}
                       </span>
                     </div>
-                    <p className="mt-0.5 font-mono text-[9px] text-muted-foreground">
-                      matched “{candidate.matched_token}”
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-[11px] text-muted-foreground">
-                No catalog entry was similar enough to the recognised text.
-              </p>
-            )}
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground font-mono">
+                      {cand.generic_name && <span>{cand.generic_name}</span>}
+                      {cand.strength && <span>• {cand.strength}</span>}
+                      {cand.dosage_form && <span>• {cand.dosage_form}</span>}
+                      {cand.source_name && <span>• {cand.source_name}</span>}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="font-mono text-xs font-bold text-primary">
+                      {formatPercent(cand.similarity_score, 1)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onAssess(cand.medicine_id);
+                      }}
+                      className="px-2.5 py-1 rounded bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
+                    >
+                      Audit
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="py-6 text-center text-xs text-muted-foreground">
+            No direct matches above threshold in the 27,326 knowledge base.
+          </div>
+        )}
+      </div>
+
+      {/* 4. Documented Storage Boundaries Ribbon */}
+      {medicine && storage && (
+        <div className="rounded border border-border bg-card p-5 space-y-3">
+          <div className="flex items-center justify-between pb-3 border-b border-border">
+            <div className="flex items-center gap-2">
+              <Thermometer className="size-4 text-warning" />
+              <h3 className="font-head text-base font-bold text-foreground">
+                Documented Pharmacopeial Storage Boundaries
+              </h3>
+            </div>
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {provenance?.source_name ?? medicine.source}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+            <div className="rounded border border-border bg-background p-2.5">
+              <span className="text-[10px] text-muted-foreground block">Permitted Temp</span>
+              <strong className="text-foreground text-sm">
+                {storage.min_temperature}°C to {storage.max_temperature}°C
+              </strong>
+            </div>
+            <div className="rounded border border-border bg-background p-2.5">
+              <span className="text-[10px] text-muted-foreground block">Humidity Limit</span>
+              <strong className="text-foreground text-sm">
+                {storage.max_humidity ? `≤${storage.max_humidity}%` : "Not specified"}
+              </strong>
+            </div>
+            <div className="rounded border border-border bg-background p-2.5">
+              <span className="text-[10px] text-muted-foreground block">Cold Chain</span>
+              <strong className="text-foreground text-sm">
+                {storage.max_temperature <= 8 ? "Yes (2°C–8°C)" : "No (Room Temp)"}
+              </strong>
+            </div>
+            <div className="rounded border border-border bg-background p-2.5">
+              <span className="text-[10px] text-muted-foreground block">Freeze Rule</span>
+              <strong
+                className={cn(
+                  "text-sm",
+                  storage.max_temperature <= 8 ? "text-coral font-bold" : "text-foreground",
+                )}
+              >
+                {storage.max_temperature <= 8 ? "Do Not Freeze" : "Non-critical"}
+              </strong>
+            </div>
           </div>
         </div>
       )}
-
-      <p className="mt-4 border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
-        Cross-checking reports whether two independent readings of the same package agree. It is not
-        a statement about product authenticity, potency, or safety. MediShelf AI is an educational
-        prototype — verify the physical packaging and consult a pharmacist.
-      </p>
-    </section>
+    </div>
   );
 }

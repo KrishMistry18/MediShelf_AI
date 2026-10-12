@@ -1,21 +1,25 @@
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
+  AlertTriangle,
+  ArrowRight,
   Brain,
   CheckCircle2,
   ExternalLink,
+  Flame,
   Info,
+  RotateCcw,
   Search,
+  ShieldAlert,
   ShieldCheck,
   Snowflake,
+  Sparkles,
   Thermometer,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/Button";
-import { PageIntro } from "@/components/PageIntro";
-import { EmptyState, ErrorState, LoadingState, Skeleton } from "@/components/States";
 import { recordAssessment } from "@/lib/activity";
 import {
   ApiError,
@@ -33,73 +37,107 @@ import { cn } from "@/lib/utils";
 type AssessmentSearch = { medicine: string | undefined };
 
 export const Route = createFileRoute("/assessment")({
-  // Lets the scan page hand off a recognised medicine via /assessment?medicine=MED-014.
   validateSearch: (search: Record<string, unknown>): AssessmentSearch => ({
     medicine: typeof search["medicine"] === "string" ? search["medicine"] : undefined,
   }),
   head: () => ({
     meta: [
-      { title: "Storage Assessment — MediShelf AI" },
+      { title: "Excursion Assessment — MediShelf AI" },
       {
         name: "description",
         content:
-          "Compare observed storage conditions against monograph limits and a trained degradation-risk model.",
+          "Dual-track storage excursion assessment: evaluate observed temperature exposures against pharmacopeial monograph bounds and kinetic degradation risk.",
       },
-      { property: "og:title", content: "Storage Assessment — MediShelf AI" },
-      {
-        property: "og:description",
-        content: "Deterministic compliance and model-estimated risk, reported separately.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "Excursion Assessment — MediShelf AI" },
     ],
   }),
   component: AssessmentPage,
 });
 
-/** Starting points that exercise different parts of the model's response surface. */
-const PRESETS = [
-  { label: "Room temp, in range", medicine: "MED-001", temp: 22, hours: 0, humidity: 45 },
-  { label: "Mild heat, 3 h", medicine: "MED-001", temp: 27, hours: 3, humidity: 55 },
-  { label: "Cold-chain breach, 3 h", medicine: "MED-014", temp: 9.2, hours: 3, humidity: 50 },
-  { label: "Insulin left in a car", medicine: "MED-014", temp: 35, hours: 24, humidity: 65 },
-  { label: "Insulin frozen", medicine: "MED-014", temp: -5, hours: 12, humidity: 50 },
+/** Authentic simulation scenario presets */
+const SIMULATION_SCENARIOS = [
+  {
+    label: "Paracetamol: Controlled Room Temp",
+    medicine: "MED-001",
+    temp: 22.0,
+    hours: 0,
+    humidity: 45,
+    tag: "Within Specification",
+  },
+  {
+    label: "Paracetamol: Summer Transit (28°C, 6h)",
+    medicine: "MED-001",
+    temp: 28.0,
+    hours: 6,
+    humidity: 55,
+    tag: "Permitted USP Excursion",
+  },
+  {
+    label: "Humulin Insulin: Refrigerated Cold Chain (4°C)",
+    medicine: "MED-014",
+    temp: 4.0,
+    hours: 0,
+    humidity: 50,
+    tag: "Within Cold Chain",
+  },
+  {
+    label: "Humulin Insulin: Cold-Chain Break (12°C, 3h)",
+    medicine: "MED-014",
+    temp: 12.0,
+    hours: 3,
+    humidity: 50,
+    tag: "Moderate Thermal Excursion",
+  },
+  {
+    label: "Humulin Insulin: Vehicle Heat Spike (35°C, 24h)",
+    medicine: "MED-014",
+    temp: 35.0,
+    hours: 24,
+    humidity: 65,
+    tag: "Severe Heat Breach",
+  },
+  {
+    label: "Humulin Insulin: Accidental Freezing (-4°C, 12h)",
+    medicine: "MED-014",
+    temp: -4.0,
+    hours: 12,
+    humidity: 50,
+    tag: "Critical Freezing Breach",
+  },
 ] as const;
 
-const RISK_TONE: Record<RiskLevel, { text: string; bg: string; border: string; bar: string }> = {
+const RISK_THEMES: Record<RiskLevel, { text: string; bg: string; border: string; pill: string }> = {
   LOW: {
-    text: "text-accent",
-    bg: "bg-accent/8",
-    border: "border-accent/30",
-    bar: "bg-accent",
+    text: "text-mint",
+    bg: "bg-mint/8",
+    border: "border-mint/30",
+    pill: "bg-emerald-100 text-emerald-800",
   },
   MODERATE: {
-    text: "text-warning",
-    bg: "bg-warning/10",
-    border: "border-warning/35",
-    bar: "bg-warning",
+    text: "text-amber",
+    bg: "bg-amber/10",
+    border: "border-amber/30",
+    pill: "bg-amber-100 text-amber-800",
   },
   HIGH: {
-    text: "text-destructive",
-    bg: "bg-destructive/8",
-    border: "border-destructive/30",
-    bar: "bg-destructive",
+    text: "text-coral",
+    bg: "bg-coral/10",
+    border: "border-coral/30",
+    pill: "bg-rose-100 text-rose-800",
   },
 };
 
 function AssessmentPage() {
   const search = Route.useSearch();
-
   const medicines = useAllMedicines();
   const metadata = useStorageRiskMetadata();
 
   const [medicineId, setMedicineId] = useState(search.medicine ?? "MED-014");
-  const [temperature, setTemperature] = useState(9.2);
-  const [hours, setHours] = useState(3);
-  const [humidity, setHumidity] = useState<number | "">(50);
+  const [temperature, setTemperature] = useState(12.0);
+  const [hours, setHours] = useState(4);
+  const [humidity, setHumidity] = useState<number | "">(55);
   const [daysToExpiry, setDaysToExpiry] = useState<number | "">("");
 
-  // Search across 27,000+ medicines
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Medicine[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -123,12 +161,10 @@ function AssessmentPage() {
     return () => window.clearTimeout(timer);
   }, [searchQuery]);
 
-  // A medicine handed over from the scan page should replace the default selection.
   useEffect(() => {
     if (search.medicine) setMedicineId(search.medicine);
   }, [search.medicine]);
 
-  // If the medicineId is outside the 25 curated catalog items, resolve it individually
   const isCatalogMedicine = Boolean(
     medicines.data?.some((item) => item.medicine_id.toLowerCase() === medicineId.toLowerCase()),
   );
@@ -165,13 +201,12 @@ function AssessmentPage() {
       current_temperature: temperature,
       excursion_duration_hours: hours,
     };
-    // exactOptionalPropertyTypes: only attach optional keys when they hold a real value.
     if (humidity !== "") payload.current_humidity = humidity;
     if (daysToExpiry !== "") payload.days_to_expiry = daysToExpiry;
     assess.mutate(payload);
   };
 
-  const applyPreset = (preset: (typeof PRESETS)[number]) => {
+  const applyPreset = (preset: (typeof SIMULATION_SCENARIOS)[number]) => {
     setMedicineId(preset.medicine);
     setTemperature(preset.temp);
     setHours(preset.hours);
@@ -181,79 +216,87 @@ function AssessmentPage() {
 
   const result = assess.data;
 
+  const minLimit = selected?.storage_min_temperature ?? 20;
+  const maxLimit = selected?.storage_max_temperature ?? 25;
+  const isColdChain = maxLimit <= 8;
+
   return (
     <AppShell>
-      <PageIntro
-        eyebrow="Environment verification"
-        title="Storage assessment"
-        description="Two answers to two different questions: whether the conditions broke the documented limit, and how much degradation a trained model expects. They are computed independently and reported separately."
-      />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* ── Workbench Header ─────────────────────────────────────────── */}
+        <div className="border-b border-border pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+              <span className="size-2 rounded-full bg-mint" />
+              <span>Thermal Kinetic Workbench</span>
+              <span>•</span>
+              <span>Deterministic USP Rules + GBDT Kinetics</span>
+            </div>
+            <h1 className="font-head text-3xl font-bold tracking-tight text-foreground">
+              Storage Excursion Analytical Studio
+            </h1>
+            <p className="text-sm text-muted-foreground max-w-2xl font-sans">
+              Evaluate ambient temperature exposures against official pharmacopeial specifications.
+              Strict boundary compliance and simulation-trained kinetic degradation are verified
+              independently.
+            </p>
+          </div>
 
-      <section className="panel p-5">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Field label="Medicine">
-            {medicines.isLoading || (customMedicine.isLoading && !selected) ? (
-              <Skeleton className="h-9 w-full" />
-            ) : customMedicine.isError && !selected ? (
-              <div className="rounded-[4px] border border-destructive/30 bg-destructive/10 p-2 text-[11px] text-destructive">
-                {customMedicine.error instanceof ApiError && customMedicine.error.status === 404 ? (
-                  <>
-                    Medicine &apos;{medicineId}&apos; not found in verified catalog or knowledge
-                    base.
-                    <button
-                      type="button"
-                      onClick={() => setMedicineId("MED-001")}
-                      className="ml-2 font-medium underline hover:text-foreground"
-                    >
-                      Reset to catalog
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    Unable to reach medicine service.
-                    <button
-                      type="button"
-                      onClick={() => void customMedicine.refetch()}
-                      className="ml-2 font-medium underline hover:text-foreground"
-                    >
-                      Retry
-                    </button>
-                  </>
-                )}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              className="h-8.5 px-3 text-xs border-border bg-card hover:bg-secondary font-medium"
+              onClick={() => assess.reset()}
+              disabled={!result && !assess.isPending}
+            >
+              <RotateCcw className="mr-1.5 size-3" />
+              <span>Reset Parameters</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* ── 4-Stage Analytical Workflow ─────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column (5 Cols): Target Medicine Context & Exposure Form */}
+          <div className="lg:col-span-5 space-y-6">
+            {/* Stage 1: Medicine Selection & Documented Specification */}
+            <div className="rounded border border-border bg-card p-5 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border text-xs font-mono">
+                <span className="font-bold uppercase tracking-wider text-primary">
+                  Stage 01 • Target Medicine Context
+                </span>
+                <span className="text-muted-foreground">
+                  {selected?.source ?? "Knowledge Base"}
+                </span>
               </div>
-            ) : (
-              <div>
-                <div className="relative mb-2">
-                  <div className="flex items-center gap-2 rounded-[4px] border border-border bg-secondary/30 px-2.5 py-1.5 focus-within:border-accent">
-                    <Search className="size-3.5 text-muted-foreground shrink-0" />
-                    <input
-                      type="text"
-                      placeholder="Search 27,000+ medicines (e.g. Azithromycin, Amlodipine, Metformin)..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-transparent text-[11px] outline-none placeholder:text-muted-foreground"
-                    />
-                    {isSearching && (
-                      <span className="font-mono text-[9px] text-muted-foreground animate-pulse">
-                        …
-                      </span>
-                    )}
-                    {searchQuery && !isSearching && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSearchQuery("");
-                          setSearchResults([]);
-                        }}
-                        className="text-muted-foreground hover:text-foreground"
-                        aria-label="Clear medicine search"
-                      >
-                        <X className="size-3" />
-                      </button>
-                    )}
-                  </div>
+
+              {/* Medicine Concept Lookup */}
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-foreground">
+                  Select Medicine Concept
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Search 27,326 clinical concepts (e.g. Insulin, Paracetamol)..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full h-9 rounded border border-border bg-background pl-9 pr-8 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery("");
+                        setSearchResults([]);
+                      }}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  )}
                   {searchResults.length > 0 && (
-                    <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-56 overflow-y-auto rounded-[5px] border border-border bg-card p-1 shadow-lg ring-1 ring-border">
+                    <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-56 overflow-y-auto rounded border border-border bg-card p-1 shadow-lg">
                       {searchResults.map((med) => (
                         <button
                           key={med.medicine_id}
@@ -264,20 +307,11 @@ function AssessmentPage() {
                             setSearchResults([]);
                             assess.reset();
                           }}
-                          className="flex w-full flex-col items-start rounded-[3px] p-2 text-left text-[11px] hover:bg-secondary/60 transition-colors"
+                          className="flex w-full flex-col items-start rounded p-2 text-left text-xs hover:bg-secondary transition-colors"
                         >
-                          <div className="flex w-full items-baseline justify-between gap-2">
-                            <strong className="truncate font-medium text-foreground">
-                              {med.medicine_name}
-                            </strong>
-                            <span className="font-mono text-[9px] text-accent shrink-0">
-                              {med.medicine_id}
-                            </span>
-                          </div>
-                          <span className="text-[10px] text-muted-foreground">
-                            {med.generic_name}{" "}
-                            {med.strength && med.strength !== "Standard" ? `· ${med.strength}` : ""}{" "}
-                            · {med.dosage_form}
+                          <strong className="text-foreground">{med.medicine_name}</strong>
+                          <span className="text-[10px] text-muted-foreground font-mono">
+                            {med.generic_name} • {med.medicine_id}
                           </span>
                         </button>
                       ))}
@@ -287,189 +321,264 @@ function AssessmentPage() {
 
                 <select
                   value={selected?.medicine_id ?? medicineId}
-                  onChange={(event) => {
-                    setMedicineId(event.target.value);
+                  onChange={(e) => {
+                    setMedicineId(e.target.value);
                     assess.reset();
                   }}
-                  className="field"
-                  disabled={!medicines.isSuccess && !customMedicine.isSuccess}
+                  className="w-full h-9 rounded border border-border bg-background px-3 text-xs text-foreground focus:outline-none focus:border-primary font-mono"
                 >
-                  {/* If medicine is externally resolved, render it as the selected option */}
                   {selected &&
                     !medicines.data?.some((item) => item.medicine_id === selected.medicine_id) && (
                       <option key={selected.medicine_id} value={selected.medicine_id}>
-                        {selected.medicine_name}
-                        {selected.storage_min_temperature !== null &&
-                        selected.storage_max_temperature !== null
-                          ? ` · ${selected.storage_min_temperature}–${selected.storage_max_temperature}°C`
-                          : " · (Monograph advisory)"}
-                        {` [${selected.source}]`}
+                        {selected.medicine_name} [{selected.source}]
                       </option>
                     )}
                   {medicines.data?.map((item) => (
                     <option key={item.medicine_id} value={item.medicine_id}>
-                      {item.medicine_name}
-                      {item.storage_min_temperature !== null &&
-                      item.storage_max_temperature !== null
-                        ? ` · ${item.storage_min_temperature}–${item.storage_max_temperature}°C`
-                        : " · (Monograph advisory)"}
+                      {item.medicine_name} ({item.medicine_id})
                     </option>
                   ))}
                 </select>
-                {selected && !isCatalogMedicine && (
-                  <p className="mt-1 font-mono text-[9px] text-accent">
-                    Monograph source: {selected.source} · {selected.medicine_id}
-                  </p>
-                )}
               </div>
-            )}
-          </Field>
 
-          <Field
-            label="Temperature °C"
-            hint={
-              selected
-                ? selected.storage_min_temperature !== null &&
-                  selected.storage_max_temperature !== null
-                  ? `Permitted ${selected.storage_min_temperature}–${selected.storage_max_temperature}°C`
-                  : "Monograph advisory"
-                : undefined
-            }
-          >
-            <input
-              type="number"
-              step="0.5"
-              min={-50}
-              max={100}
-              value={temperature}
-              onChange={(event) => setTemperature(Number(event.target.value))}
-              className="field font-mono"
-            />
-          </Field>
+              {/* Documented Specification Ribbon */}
+              {selected && (
+                <div className="rounded border border-border bg-background p-3.5 space-y-1.5 text-xs font-mono">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Documented Standard:</span>
+                    <strong className="text-foreground">
+                      {selected.storage_min_temperature !== null &&
+                      selected.storage_max_temperature !== null
+                        ? `${selected.storage_min_temperature}°C to ${selected.storage_max_temperature}°C`
+                        : "Advisory Monograph"}
+                    </strong>
+                  </div>
+                  {isColdChain && (
+                    <div className="flex justify-between text-coral font-bold text-[11px] pt-1 border-t border-border/60">
+                      <span>Freezing Rule:</span>
+                      <span>DO NOT FREEZE (Denatures)</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
-          <Field label="Exposure hours" hint="How long the condition held">
-            <input
-              type="number"
-              min={0}
-              max={1000}
-              step="0.5"
-              value={hours}
-              onChange={(event) => setHours(Number(event.target.value))}
-              className="field font-mono"
-            />
-          </Field>
+            {/* Stage 2: Environmental Exposure Studio */}
+            <div className="rounded border border-border bg-card p-5 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border text-xs font-mono">
+                <span className="font-bold uppercase tracking-wider text-primary">
+                  Stage 02 • Environmental Exposure
+                </span>
+                <span className="text-muted-foreground">Observed Field Readings</span>
+              </div>
 
-          <Field label="Relative humidity %" hint="Optional">
-            <input
-              type="number"
-              min={0}
-              max={100}
-              value={humidity}
-              onChange={(event) =>
-                setHumidity(event.target.value === "" ? "" : Number(event.target.value))
-              }
-              className="field font-mono"
-            />
-          </Field>
-        </div>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Temperature */}
+                <div>
+                  <label className="block text-xs font-medium text-foreground mb-1">
+                    Temperature (°C)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    min={-50}
+                    max={80}
+                    value={temperature}
+                    onChange={(e) => setTemperature(Number(e.target.value))}
+                    className="w-full h-9 rounded border border-border bg-background px-3 font-mono text-xs text-foreground focus:outline-none focus:border-primary"
+                  />
+                  <span className="font-mono text-[10px] text-muted-foreground mt-0.5 block">
+                    Observed reading
+                  </span>
+                </div>
 
-        <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Field label="Days to expiry" hint="Optional — blank assumes 365">
-            <input
-              type="number"
-              min={-3650}
-              max={3650}
-              value={daysToExpiry}
-              onChange={(event) =>
-                setDaysToExpiry(event.target.value === "" ? "" : Number(event.target.value))
-              }
-              className="field font-mono"
-              placeholder="365"
-            />
-          </Field>
+                {/* Duration */}
+                <div>
+                  <label className="block text-xs font-medium text-foreground mb-1">
+                    Duration (Hours)
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={1000}
+                    step="0.5"
+                    value={hours}
+                    onChange={(e) => setHours(Number(e.target.value))}
+                    className="w-full h-9 rounded border border-border bg-background px-3 font-mono text-xs text-foreground focus:outline-none focus:border-primary"
+                  />
+                  <span className="font-mono text-[10px] text-muted-foreground mt-0.5 block">
+                    Cumulative time
+                  </span>
+                </div>
 
-          <div className="lg:col-span-3">
-            <span className="mb-1.5 block font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-              Scenario presets
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {PRESETS.map((preset) => (
-                <button
-                  key={preset.label}
-                  onClick={() => applyPreset(preset)}
-                  className="rounded-[4px] border border-border px-2.5 py-1.5 text-[11px] transition-colors hover:border-accent hover:bg-secondary"
+                {/* Humidity */}
+                <div>
+                  <label className="block text-xs font-medium text-foreground mb-1">
+                    Relative Humidity (%RH)
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={humidity}
+                    onChange={(e) =>
+                      setHumidity(e.target.value === "" ? "" : Number(e.target.value))
+                    }
+                    className="w-full h-9 rounded border border-border bg-background px-3 font-mono text-xs text-foreground focus:outline-none focus:border-primary"
+                  />
+                  <span className="font-mono text-[10px] text-muted-foreground mt-0.5 block">
+                    Optional
+                  </span>
+                </div>
+
+                {/* Days to Expiry */}
+                <div>
+                  <label className="block text-xs font-medium text-foreground mb-1">
+                    Days to Expiry
+                  </label>
+                  <input
+                    type="number"
+                    value={daysToExpiry}
+                    placeholder="365"
+                    onChange={(e) =>
+                      setDaysToExpiry(e.target.value === "" ? "" : Number(e.target.value))
+                    }
+                    className="w-full h-9 rounded border border-border bg-background px-3 font-mono text-xs text-foreground focus:outline-none focus:border-primary"
+                  />
+                  <span className="font-mono text-[10px] text-muted-foreground mt-0.5 block">
+                    Shelf-life factor
+                  </span>
+                </div>
+              </div>
+
+              {/* Simulation Scenario Presets */}
+              <div className="pt-3 border-t border-border space-y-2">
+                <span className="font-mono text-[10px] uppercase text-muted-foreground font-semibold block">
+                  Simulation Scenario Presets
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {SIMULATION_SCENARIOS.map((preset) => (
+                    <button
+                      key={preset.label}
+                      onClick={() => applyPreset(preset)}
+                      className="px-2 py-1 rounded border border-border bg-background text-[11px] text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+                      title={preset.tag}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Submit Trigger */}
+              <div className="pt-3 border-t border-border flex items-center justify-between">
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  Dual-Track Evaluation
+                </span>
+                <Button
+                  variant="primary"
+                  className="h-9 px-5 text-xs bg-primary text-primary-foreground font-bold shadow-2xs hover:bg-primary/90"
+                  onClick={runAssessment}
+                  disabled={assess.isPending || !medicineId}
                 >
-                  {preset.label}
-                </button>
-              ))}
+                  {assess.isPending ? "Evaluating…" : "Evaluate Excursion"}
+                  <ArrowRight className="ml-1.5 size-3.5 text-mint" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
-          <p className="max-w-xl text-[11px] leading-relaxed text-muted-foreground">
-            Values are entered by hand. This prototype has no sensor integration, so nothing here is
-            live telemetry from a real storage location.
-          </p>
-          <Button variant="jade" onClick={runAssessment} disabled={assess.isPending || !medicineId}>
-            {assess.isPending ? "Evaluating…" : "Run assessment"}
-          </Button>
-        </div>
-      </section>
+          {/* Right Column (7 Cols): Calibrated Spectrum Gauge & Results */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* Stage 3: Calibrated Temperature Spectrum Gauge */}
+            <div className="rounded border border-border bg-card p-5 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border text-xs font-mono">
+                <span className="font-bold uppercase tracking-wider text-primary">
+                  Stage 03 • Calibrated Temperature Spectrum
+                </span>
+                <span className="text-foreground font-semibold">
+                  Observed: <strong className="text-primary">{temperature}°C</strong>
+                </span>
+              </div>
 
-      {medicines.isError && (
-        <ErrorState
-          error={medicines.error}
-          className="mt-5"
-          onRetry={() => void medicines.refetch()}
-        />
-      )}
+              <div className="px-2 pt-2 space-y-2">
+                <div className="flex justify-between font-mono text-[10px] text-muted-foreground">
+                  <span>-10°C</span>
+                  <span className="text-sky-800 font-bold">2°C</span>
+                  <span className="text-primary font-bold">20°C–25°C</span>
+                  <span>40°C</span>
+                  <span>50°C</span>
+                </div>
 
-      {assess.isPending && (
-        <section className="panel mt-5">
-          <LoadingState label="Scoring conditions against the monograph and the model" />
-        </section>
-      )}
+                {/* Calibrated Temperature Spectrum Bar */}
+                <div className="relative h-6 w-full rounded bg-secondary overflow-hidden border border-border">
+                  <div className="absolute left-0 top-0 bottom-0 w-[16.6%] bg-blue-100 border-r border-blue-200" />
+                  <div className="absolute left-[20%] top-0 bottom-0 w-[10%] bg-sky-200/80 border-x border-sky-300" />
+                  <div className="absolute left-[50%] top-0 bottom-0 w-[8.3%] bg-emerald-200/80 border-x border-emerald-300" />
 
-      {assess.isError && !assess.isPending && (
-        <ErrorState error={assess.error} className="mt-5" onRetry={runAssessment} />
-      )}
+                  {/* Observed Cursor Marker */}
+                  <div
+                    className="absolute top-0 bottom-0 w-1 bg-coral shadow-md transition-all duration-300 z-10"
+                    style={{
+                      left: `${Math.min(Math.max(((temperature + 10) / 60) * 100, 2), 98)}%`,
+                    }}
+                  >
+                    <div className="absolute -top-1 -translate-x-1/2 size-3 rounded-full bg-coral border-2 border-white shadow-xs" />
+                  </div>
+                </div>
 
-      {!assess.isPending && !assess.isError && !result && (
-        <section className="panel mt-5">
-          <EmptyState
-            icon={<Thermometer />}
-            title="No assessment yet"
-            description="Pick a medicine and conditions, or start from a preset, then run the assessment."
-          />
-        </section>
-      )}
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono text-muted-foreground pt-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="size-2 rounded-full bg-blue-300" />
+                    <span>Freeze Risk (&lt;0°C)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="size-2 rounded-full bg-sky-300" />
+                    <span>Cold Chain (2°C–8°C)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="size-2 rounded-full bg-emerald-300" />
+                    <span>Controlled Room Temp (20°C–25°C)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-      {result && !assess.isPending && assess.variables && (
-        <AssessmentResult result={result} submitted={assess.variables} />
-      )}
+            {/* Stage 4: Authoritative Dual-Track Evaluation Canvas */}
+            {!result && !assess.isPending && (
+              <div className="rounded border border-border bg-card p-12 text-center space-y-3">
+                <Thermometer className="mx-auto size-10 text-muted-foreground" />
+                <h3 className="font-head text-lg font-bold text-foreground">
+                  Ready to Evaluate Excursion
+                </h3>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                  Configure exposure parameters or select a scenario preset on the left, then click
+                  &ldquo;Evaluate Excursion&rdquo; to test against monograph limits and the kinetic
+                  GBDT model.
+                </p>
+              </div>
+            )}
 
-      {metadata.isSuccess && (
-        <section className="panel mt-5 p-5">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="font-head text-[15px]">Model provenance</h2>
-            <span className="status">{metadata.data.model_version}</span>
+            {assess.isPending && (
+              <div className="rounded border border-border bg-card p-12 text-center space-y-3">
+                <div className="size-8 rounded-full border-2 border-mint border-t-transparent animate-spin mx-auto" />
+                <p className="font-mono text-xs uppercase tracking-wider text-primary font-bold">
+                  Evaluating Monograph Rules & GBDT Kinetic Model...
+                </p>
+              </div>
+            )}
+
+            {result && !assess.isPending && (
+              <DualTrackResultsCanvas result={result} submitted={assess.variables!} />
+            )}
           </div>
-          <div className="mt-3 grid gap-px overflow-hidden rounded-[5px] bg-border sm:grid-cols-3">
-            <Cell label="Algorithm" value={metadata.data.algorithm} />
-            <Cell label="Input features" value={String(metadata.data.features.length)} />
-            <Cell label="Risk classes" value={metadata.data.target_classes.join(" · ")} />
-          </div>
-          <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
-            {metadata.data.disclaimer}
-          </p>
-        </section>
-      )}
+        </div>
+      </div>
     </AppShell>
   );
 }
 
-function AssessmentResult({
+function DualTrackResultsCanvas({
   result,
   submitted,
 }: {
@@ -479,310 +588,168 @@ function AssessmentResult({
   const compliance = result.deterministic_compliance;
   const risk = result.ml_risk;
   const storage = result.storage_requirements;
-  const tone = risk.level
-    ? RISK_TONE[risk.level]
-    : {
-        badge: "status",
-        border: "border-border",
-        text: "text-muted-foreground",
-        bg: "bg-secondary/40",
-        bar: "bg-muted",
-      };
+  const riskTheme = risk.level ? RISK_THEMES[risk.level] : RISK_THEMES.LOW;
 
-  // The two verdicts answer different questions and routinely disagree: a brief excursion
-  // breaches the documented limit while accumulating too little thermal stress to matter.
-  // Saying so explicitly is the difference between a usable result and a confusing one.
   const divergent = compliance.is_compliant === false && risk.level === "LOW";
-  const belowMinimum =
-    storage.min_temperature !== null
-      ? submitted.current_temperature < storage.min_temperature
-      : false;
 
   return (
-    <>
+    <div className="space-y-6">
+      {/* Divergence Notification Callout */}
       {divergent && (
-        <div className="mt-5 flex gap-3 rounded-[6px] border border-border bg-secondary/50 p-4">
-          <Info className="mt-0.5 size-4 shrink-0 text-accent" />
-          <div className="text-[11px] leading-relaxed">
-            <p className="text-[12px] font-medium text-foreground">
-              The two verdicts disagree, and that is expected here.
-            </p>
-            <p className="mt-1 text-muted-foreground">
-              Conditions fell outside the documented range, so compliance fails — that is a hard
-              rule and not negotiable. The model still estimates LOW degradation risk because it
-              weighs deviation multiplied by duration, and {compliance.temp_deviation ?? 0}°C held
-              for {submitted.excursion_duration_hours} h accumulates little thermal stress. Treat
-              the compliance result as the binding one.
-            </p>
+        <div className="rounded border border-warning/30 bg-warning/10 p-4 text-xs space-y-1.5">
+          <div className="flex items-center gap-2 text-warning font-bold">
+            <Info className="size-4 shrink-0" />
+            <span>Dual-Track Divergence Detected</span>
           </div>
+          <p className="text-muted-foreground leading-relaxed">
+            The observed conditions breached the documented USP boundary, causing deterministic
+            compliance to FAIL. However, because exposure was short, the kinetic degradation model
+            estimated LOW degradation. Deterministic compliance remains the binding release rule.
+          </p>
         </div>
       )}
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-3 lg:gap-5">
-        <ResultCard
-          icon={<Thermometer />}
-          number="01"
-          title="Documented limits"
-          badge="Official monograph"
-        >
-          <Row
-            label="Permitted range"
-            value={
-              storage.min_temperature !== null && storage.max_temperature !== null
-                ? `${storage.min_temperature}–${storage.max_temperature}°C`
-                : storage.qualitative_instructions || "Monograph advisory"
-            }
-          />
-          <Row label="Observed" value={`${submitted.current_temperature}°C`} />
-          <Row label="Held for" value={`${submitted.excursion_duration_hours} h`} />
-          <Row
-            label="Humidity limits"
-            value={
-              storage.has_quantified_humidity
-                ? `${storage.min_humidity ?? 0}–${storage.max_humidity}% RH`
-                : "Not quantified"
-            }
-          />
-          <Row label="Dosage form" value={result.medicine.dosage_form} />
-
-          {!storage.has_quantified_humidity && (
-            <p className="mt-3 text-[10px] leading-relaxed text-muted-foreground">
-              {storage.humidity_monograph_notice}
-            </p>
-          )}
-
-          <a
-            href={storage.source_url}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-medium text-accent"
-          >
-            {storage.regulatory_source} <ExternalLink className="size-3" />
-          </a>
-        </ResultCard>
-
-        <ResultCard
-          icon={<ShieldCheck />}
-          number="02"
-          title="Boundary compliance"
-          badge="Rule-based"
-        >
-          <div className={compliance.is_compliant ? "result-pass" : "result-warn"}>
-            {compliance.is_compliant ? (
-              <CheckCircle2 className="size-4 shrink-0" />
-            ) : belowMinimum ? (
-              <Snowflake className="size-4 shrink-0" />
-            ) : (
-              <Thermometer className="size-4 shrink-0" />
-            )}
-            <strong>
-              {compliance.is_compliant
-                ? "Within range"
-                : belowMinimum
-                  ? "Below minimum temperature"
-                  : "Above maximum temperature"}
-            </strong>
-          </div>
-
-          <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
-            {compliance.summary}
-          </p>
-
-          {!compliance.temp_compliant && (
-            <div className="mt-3 flex items-baseline justify-between rounded-[4px] bg-secondary/60 px-2.5 py-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-                Deviation
-              </span>
-              <span className="font-mono text-[13px] font-medium">
-                {compliance.temp_deviation}°C
+      {/* Dual Results Comparison */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* Track A: Deterministic Rule Verdict */}
+        <div className="rounded border border-border bg-card p-5 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-border">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="size-4 text-primary" />
+              <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground">
+                Track A: Monograph Rules
               </span>
             </div>
-          )}
-
-          <p className="mt-3 text-[10px] leading-relaxed text-muted-foreground">
-            {compliance.humidity_status_text}
-          </p>
-          <p className="mt-2 text-[10px] leading-relaxed text-muted-foreground">
-            This check is a direct comparison against the monograph. No model is involved, so the
-            answer is reproducible and auditable.
-          </p>
-        </ResultCard>
-
-        <ResultCard
-          icon={<Brain />}
-          number="03"
-          title="Degradation risk"
-          badge="ML estimate"
-          className={cn(tone.border, tone.bg)}
-        >
-          <div className="flex items-end justify-between gap-2">
-            <span className={cn("font-head text-3xl leading-none", tone.text)}>
-              {risk.level ?? "UNAVAILABLE"}
-            </span>
-            <span className="font-mono text-[10px] text-muted-foreground">
-              {risk.confidence !== null
-                ? `${formatPercent(risk.confidence, 1)} confidence`
-                : "No estimate"}
-            </span>
+            <span className="font-mono text-[10px] text-muted-foreground">USP & DailyMed</span>
           </div>
 
-          {risk.probabilities ? (
-            <div className="mt-4 space-y-2">
-              {(["LOW", "MODERATE", "HIGH"] as const).map((level) => {
-                const probability = risk.probabilities ? (risk.probabilities[level] ?? 0) : 0;
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-xs text-muted-foreground">Compliance:</span>
+              <span
+                className={cn(
+                  "rounded px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase",
+                  compliance.is_compliant
+                    ? "bg-emerald-100 text-emerald-800"
+                    : "bg-rose-100 text-rose-800",
+                )}
+              >
+                {compliance.is_compliant ? "Compliant (PASS)" : "Breached (FAIL)"}
+              </span>
+            </div>
+            <h3 className="font-head text-base font-bold text-foreground mt-2">
+              {compliance.summary}
+            </h3>
+          </div>
+
+          <div className="rounded border border-border bg-background p-3 space-y-1.5 text-xs font-mono">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Documented Limits:</span>
+              <strong className="text-foreground">
+                {storage.min_temperature !== null && storage.max_temperature !== null
+                  ? `${storage.min_temperature}°C to ${storage.max_temperature}°C`
+                  : "Advisory"}
+              </strong>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Temperature Deviation:</span>
+              <span
+                className={
+                  compliance.temp_deviation ? "text-coral font-bold" : "text-foreground font-medium"
+                }
+              >
+                {compliance.temp_deviation ? `${compliance.temp_deviation}°C` : "0.0°C"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Track B: Machine-Learning Kinetic Risk */}
+        <div className={cn("rounded border p-5 space-y-4", riskTheme.border, riskTheme.bg)}>
+          <div className="flex items-center justify-between pb-3 border-b border-border/60">
+            <div className="flex items-center gap-2">
+              <Brain className="size-4 text-primary" />
+              <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground">
+                Track B: Kinetic ML Risk
+              </span>
+            </div>
+            <span className="font-mono text-[10px] text-muted-foreground">GradientBoosting</span>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-xs text-muted-foreground">Degradation Risk:</span>
+              <span
+                className={cn(
+                  "rounded px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase",
+                  riskTheme.pill,
+                )}
+              >
+                {risk.level ?? "UNAVAILABLE"}
+              </span>
+            </div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className={cn("font-head text-2xl font-bold", riskTheme.text)}>
+                {risk.level} RISK
+              </span>
+              <span className="font-mono text-xs text-muted-foreground">
+                {risk.confidence !== null
+                  ? `${formatPercent(risk.confidence, 1)} Confidence`
+                  : "No estimate"}
+              </span>
+            </div>
+          </div>
+
+          {risk.probabilities && (
+            <div className="space-y-1.5 pt-2 border-t border-border/60">
+              {(["LOW", "MODERATE", "HIGH"] as const).map((lvl) => {
+                const prob = risk.probabilities ? (risk.probabilities[lvl] ?? 0) : 0;
                 return (
-                  <div key={level}>
-                    <div className="mb-1 flex justify-between font-mono text-[9px] uppercase tracking-[0.14em]">
-                      <span
-                        className={
-                          level === risk.level ? RISK_TONE[level].text : "text-muted-foreground"
-                        }
-                      >
-                        {level}
-                      </span>
-                      <span className="text-muted-foreground">{formatPercent(probability, 1)}</span>
+                  <div key={lvl} className="font-mono text-[10px]">
+                    <div className="flex justify-between mb-0.5">
+                      <span className="text-muted-foreground">{lvl}</span>
+                      <span className="text-foreground">{formatPercent(prob, 1)}</span>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-background">
+                    <div className="h-1 w-full bg-secondary rounded-full overflow-hidden">
                       <div
-                        className={cn(
-                          "h-full rounded-full transition-[width] duration-500",
-                          RISK_TONE[level].bar,
-                        )}
-                        style={{ width: `${Math.max(probability * 100, 0.5)}%` }}
+                        className={cn("h-full rounded-full", RISK_THEMES[lvl].pill)}
+                        style={{ width: `${prob * 100}%` }}
                       />
                     </div>
                   </div>
                 );
               })}
             </div>
-          ) : (
-            <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-              {risk.unavailable_reason ||
-                "AI storage-risk estimation unavailable for this medicine."}
-            </p>
           )}
-
-          <p className="mt-3 font-mono text-[9px] text-muted-foreground">
-            {risk.model_name} · {risk.training_dataset_type}
-          </p>
-        </ResultCard>
+        </div>
       </div>
 
-      {risk.top_factors && risk.top_factors.length > 0 ? (
-        <section className="panel mt-4 p-5 lg:mt-5">
-          <h2 className="mb-1 font-head text-[15px]">What drove this estimate</h2>
-          <p className="mb-4 text-[11px] text-muted-foreground">
-            The model&apos;s five highest-weighted inputs, with the value each one took for this
-            scenario. Weights are global to the trained model, not recomputed per prediction.
-          </p>
-
-          <div className="grid gap-px overflow-hidden rounded-[5px] bg-border">
-            {risk.top_factors.map((factor) => (
-              <div key={factor.feature} className="bg-background p-3">
-                <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                  <p className="text-[12px] font-medium">{factor.feature_label}</p>
-                  <span className="font-mono text-[10px] text-muted-foreground">
-                    weight {formatPercent(factor.importance_weight, 1)}
+      {/* Top Feature Importance Weights */}
+      {risk.top_factors && risk.top_factors.length > 0 && (
+        <div className="rounded border border-border bg-card p-5 space-y-3">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+            Top Driving Features in Degradation Estimation
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            {risk.top_factors.slice(0, 4).map((factor) => (
+              <div
+                key={factor.feature}
+                className="rounded border border-border bg-background p-2.5 space-y-1"
+              >
+                <div className="flex justify-between font-mono text-[10px]">
+                  <strong className="text-foreground">{factor.feature_label}</strong>
+                  <span className="text-primary font-bold">
+                    {formatPercent(factor.importance_weight, 1)} weight
                   </span>
                 </div>
-                <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-secondary">
-                  <div
-                    className="h-full rounded-full bg-accent/70"
-                    style={{ width: `${Math.max(factor.importance_weight * 100, 0.5)}%` }}
-                  />
-                </div>
-                <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
                   {factor.interpretation}
                 </p>
               </div>
             ))}
           </div>
-
-          <p className="mt-4 border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
-            {result.disclaimer}
-          </p>
-        </section>
-      ) : (
-        <section className="panel mt-4 p-5 lg:mt-5">
-          <p className="text-[11px] leading-relaxed text-muted-foreground">{result.disclaimer}</p>
-        </section>
-      )}
-    </>
-  );
-}
-
-/* ------------------------------ primitives ------------------------------ */
-
-function Field({
-  label,
-  hint,
-  children,
-}: {
-  label: string;
-  hint?: string | undefined;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block text-[11px] font-medium">
-      <span className="mb-1.5 block font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-        {label}
-      </span>
-      {children}
-      {hint && (
-        <span className="mt-1 block font-mono text-[9px] text-muted-foreground">{hint}</span>
-      )}
-    </label>
-  );
-}
-
-function ResultCard({
-  icon,
-  number,
-  title,
-  badge,
-  children,
-  className,
-}: {
-  icon: React.ReactNode;
-  number: string;
-  title: string;
-  badge: string;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <section className={cn("panel p-5", className)}>
-      <div className="mb-4 flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2 text-accent [&_svg]:size-4">
-          {icon}
-          <div>
-            <p className="font-mono text-[9px] text-muted-foreground">{number}</p>
-            <h2 className="font-head text-[15px] text-foreground">{title}</h2>
-          </div>
         </div>
-        <span className="status shrink-0">{badge}</span>
-      </div>
-      {children}
-    </section>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between gap-3 border-b border-border py-2 text-[11px] last:border-0">
-      <span className="text-muted-foreground">{label}</span>
-      <strong className="text-right font-mono font-medium">{value}</strong>
-    </div>
-  );
-}
-
-function Cell({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-background p-3">
-      <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-        {label}
-      </p>
-      <p className="mt-0.5 text-[12px] font-medium">{value}</p>
+      )}
     </div>
   );
 }
