@@ -125,7 +125,9 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
                 {formatPercent(vision.test_metrics.top1_accuracy, 1)}
               </strong>
               <span className="font-mono text-[10px] text-muted-foreground">
-                19 of 30 test images
+                {vision.test_metrics.top1_accuracy != null && vision.test_metrics.sample_count
+                  ? `${Math.round(vision.test_metrics.top1_accuracy * vision.test_metrics.sample_count)} of ${vision.test_metrics.sample_count} test images`
+                  : "Held-out test images"}
               </span>
             </div>
 
@@ -137,7 +139,9 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
                 {formatPercent(vision.test_metrics.top3_accuracy, 1)}
               </strong>
               <span className="font-mono text-[10px] text-muted-foreground">
-                22 of 30 test images
+                {vision.test_metrics.top3_accuracy != null && vision.test_metrics.sample_count
+                  ? `${Math.round(vision.test_metrics.top3_accuracy * vision.test_metrics.sample_count)} of ${vision.test_metrics.sample_count} test images`
+                  : "Held-out test images"}
               </span>
             </div>
 
@@ -155,7 +159,11 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
           <div className="rounded border border-border bg-background p-3.5 text-xs font-mono space-y-1.5 text-muted-foreground">
             <div className="flex justify-between">
               <span>Precision / Recall:</span>
-              <span className="text-foreground">0.6500 Macro Prec • 0.6333 Macro Recall</span>
+              <span className="text-foreground">
+                {vision.test_metrics.macro_precision != null && vision.test_metrics.macro_recall != null
+                  ? `${vision.test_metrics.macro_precision.toFixed(4)} Macro Prec • ${vision.test_metrics.macro_recall.toFixed(4)} Macro Recall`
+                  : "Balanced evaluation"}
+              </span>
             </div>
             <div className="flex justify-between">
               <span>Test Set Protocol:</span>
@@ -166,7 +174,7 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
             <div className="flex justify-between">
               <span>Finetune Epochs:</span>
               <span className="text-foreground">
-                {String(vision.hyperparameters["finetune_epochs"] ?? "20")} epochs
+                {String(vision.hyperparameters["finetune_epochs"] ?? "30")} epochs
               </span>
             </div>
           </div>

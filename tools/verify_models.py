@@ -131,10 +131,10 @@ def verify_vision() -> dict:
     print(f"  threshold  : {clf.threshold}")
 
     results = {
-        "test": evaluate_split(clf, TEST_DIR, "test split (held out, 1 img/class)"),
-        "val": evaluate_split(clf, VAL_DIR, "val split (2 img/class)"),
-        "train": evaluate_split(clf, TRAIN_DIR, "train split (seen during fitting)"),
-        "raw": evaluate_split(clf, RAW_DIR, "full raw dataset (all 100 images)"),
+        "test": evaluate_split(clf, TEST_DIR, "test split (held out, 3 img/class, n=30)"),
+        "val": evaluate_split(clf, VAL_DIR, "val split (held out for tuning, 3 img/class, n=30)"),
+        "train": evaluate_split(clf, TRAIN_DIR, "train split (seen during fitting, 14 img/class, n=140)"),
+        "raw": evaluate_split(clf, RAW_DIR, "full raw dataset (all-dataset descriptive, includes train, n=200)"),
     }
 
     raw = results.get("raw") or {}
@@ -310,7 +310,7 @@ def main() -> int:
     )
     raw = vision.get("raw", {})
     if raw:
-        print(f"    top-1 over all 100 raw images: {raw['top1_accuracy']:.4f}")
+        print(f"    top-1 over all 200 raw images (all-dataset descriptive, includes train): {raw['top1_accuracy']:.4f}")
 
     print("\n  Storage-risk classifier, held-out test split")
     print(

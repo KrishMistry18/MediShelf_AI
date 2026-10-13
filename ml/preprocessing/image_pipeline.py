@@ -48,17 +48,17 @@ def validate_image(image_input: Union[bytes, Image.Image, Path, str]) -> Image.I
 
 def get_train_transforms(image_size: int = 224) -> transforms.Compose:
     """
-    Returns realistic augmentation transforms for medicine packaging:
-    - Slight rotations and affine scaling
-    - Moderate lighting / contrast adjustments
-    - Strictly avoids heavy distortions or blurring that destroys label readability
+    Returns realistic, packaging-safe augmentation transforms:
+    - Direct dimension resize (preserves outer edge packaging text and dosage badges)
+    - Strictly avoids horizontal flipping (text/logos must never be mirrored)
+    - Conservative rotation (-7 to 7 degrees)
+    - Moderate lighting and contrast jitter (indoor ambient/fluorescent variations)
+    - Standard ImageNet normalization
     """
     return transforms.Compose([
-        transforms.Resize((int(image_size * 1.15), int(image_size * 1.15))),
-        transforms.RandomCrop(image_size),
-        transforms.RandomHorizontalFlip(p=0.3),
-        transforms.RandomRotation(degrees=10),
-        transforms.ColorJitter(brightness=0.15, contrast=0.15, saturation=0.1),
+        transforms.Resize((image_size, image_size)),
+        transforms.RandomRotation(degrees=(-7, 7)),
+        transforms.ColorJitter(brightness=0.15, contrast=0.15, saturation=0.10),
         transforms.ToTensor(),
         transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
     ])
@@ -67,13 +67,11 @@ def get_train_transforms(image_size: int = 224) -> transforms.Compose:
 def get_eval_transforms(image_size: int = 224) -> transforms.Compose:
     """
     Deterministic evaluation and inference transform:
-    - Uniform aspect-preserving resize
-    - Center crop
+    - Direct dimension resize (preserves entire packaging without border cropping)
     - Tensor normalization
     """
     return transforms.Compose([
-        transforms.Resize((int(image_size * 1.15), int(image_size * 1.15))),
-        transforms.CenterCrop(image_size),
+        transforms.Resize((image_size, image_size)),
         transforms.ToTensor(),
         transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
     ])

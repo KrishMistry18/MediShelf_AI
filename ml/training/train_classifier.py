@@ -110,9 +110,9 @@ def train_model(args):
     # Initialize model
     model = build_model(num_classes, args.model_arch).to(device)
 
-    # Loss with class weights
+    # Loss with class weights and label smoothing
     class_weights = compute_class_weights(train_dataset).to(device)
-    criterion = nn.CrossEntropyLoss(weight=class_weights)
+    criterion = nn.CrossEntropyLoss(weight=class_weights, label_smoothing=args.label_smoothing)
 
     history: List[Dict[str, Any]] = []
     best_val_acc = -1.0
@@ -132,7 +132,7 @@ def train_model(args):
     for p in model.classifier.parameters():
         p.requires_grad = True
 
-    warmup_optimizer = torch.optim.AdamW(model.classifier.parameters(), lr=args.lr_head, weight_decay=1e-4)
+    warmup_optimizer = torch.optim.AdamW(model.classifier.parameters(), lr=args.lr_head, weight_decay=args.weight_decay)
 
     for ep in range(1, args.warmup_epochs + 1):
         global_epoch += 1
@@ -202,8 +202,8 @@ def train_model(args):
         {"params": [p for p in model.features[7:].parameters() if p.requires_grad], "lr": args.lr_backbone},
         {"params": model.classifier.parameters(), "lr": args.lr_head},
     ]
-    finetune_optimizer = torch.optim.AdamW(finetune_params, weight_decay=1e-4)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(finetune_optimizer, T_max=args.finetune_epochs, eta_min=1e-5)
+    finetune_optimizer = torch.optim.AdamW(finetune_params, weight_decay=args.weight_decay)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(finetune_optimizer, T_max=args.finetune_epochs, eta_min=1e-6)
 
     for ep in range(1, args.finetune_epochs + 1):
         global_epoch += 1
@@ -333,13 +333,15 @@ def train_model(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train MobileNetV3 Medicine Package Classifier")
-    parser.add_argument("--warmup-epochs", type=int, default=4, help="Number of warmup epochs for classification head")
-    parser.add_argument("--finetune-epochs", type=int, default=20, help="Number of progressive fine-tuning epochs")
+    parser.add_argument("--warmup-epochs", type=int, default=5, help="Number of warmup epochs for classification head")
+    parser.add_argument("--finetune-epochs", type=int, default=30, help="Number of progressive fine-tuning epochs")
     parser.add_argument("--batch-size", type=int, default=8, help="Mini-batch size")
-    parser.add_argument("--lr-head", type=float, default=5e-4, help="Classification head learning rate")
-    parser.add_argument("--lr-backbone", type=float, default=8e-5, help="Backbone feature learning rate")
+    parser.add_argument("--lr-head", type=float, default=4e-4, help="Classification head learning rate")
+    parser.add_argument("--lr-backbone", type=float, default=6e-5, help="Backbone feature learning rate")
+    parser.add_argument("--weight-decay", type=float, default=1e-2, help="L2 regularization weight decay")
+    parser.add_argument("--label-smoothing", type=float, default=0.05, help="Label smoothing epsilon")
     parser.add_argument("--image-size", type=int, default=224, help="Input image dimension")
-    parser.add_argument("--patience", type=int, default=8, help="Early stopping patience")
+    parser.add_argument("--patience", type=int, default=12, help="Early stopping patience")
     parser.add_argument("--seed", type=int, default=101, help="Random seed")
     parser.add_argument("--model-arch", type=str, default="mobilenet_v3_small", help="Model architecture")
     parser.add_argument("--dataset-dir", type=str, default=str(PROJECT_ROOT / "ml" / "datasets"))
