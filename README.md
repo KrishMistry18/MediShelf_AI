@@ -236,3 +236,5 @@ python tools/smoke_api.py
 ## ⚖️ License & Ethical Use
 
 Distributed under the MIT License. Designed strictly for educational and engineering research. MediShelf AI does not provide medical advice or drug dispensation guidance.
+#   M e d i S h e l f _ A I  
+ 
