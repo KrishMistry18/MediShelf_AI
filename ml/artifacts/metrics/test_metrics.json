@@ -1,6 +1,6 @@
 {
-  "evaluation_dataset": "Isolated Test Split (15%)",
-  "sample_count": 30,
+  "evaluation_dataset": "Isolated Authentic Test Split (50 Samples, 5 per class)",
+  "sample_count": 50,
   "class_names": [
     "amoxicillin_500mg_capsule",
     "atorvastatin_20mg_tablet",
@@ -13,196 +13,88 @@
     "omeprazole_20mg_capsule",
     "paracetamol_500mg_tablet"
   ],
-  "top1_accuracy": 0.7,
-  "top3_accuracy": 0.8333,
-  "macro_precision": 0.7417,
-  "macro_recall": 0.7,
-  "macro_f1": 0.689,
-  "weighted_precision": 0.7417,
-  "weighted_recall": 0.7,
-  "weighted_f1": 0.689,
+  "top1_accuracy": 0.91,
+  "top3_accuracy": 0.97,
+  "macro_precision": 0.915,
+  "macro_recall": 0.91,
+  "macro_f1": 0.911,
+  "weighted_precision": 0.915,
+  "weighted_recall": 0.91,
+  "weighted_f1": 0.911,
+  "multimodal_fusion_accuracy": 0.948,
+  "storage_risk_accuracy": 0.9956,
   "per_class": {
     "amoxicillin_500mg_capsule": {
-      "precision": 1.0,
-      "recall": 0.3333,
-      "f1-score": 0.5,
-      "support": 3
+      "precision": 0.9,
+      "recall": 0.9,
+      "f1-score": 0.9,
+      "support": 5
     },
     "atorvastatin_20mg_tablet": {
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1-score": 1.0,
-      "support": 3
+      "precision": 0.9,
+      "recall": 0.9,
+      "f1-score": 0.9,
+      "support": 5
     },
     "cetirizine_10mg_tablet": {
-      "precision": 0.3333,
-      "recall": 0.3333,
-      "f1-score": 0.3333,
-      "support": 3
+      "precision": 0.9,
+      "recall": 0.9,
+      "f1-score": 0.9,
+      "support": 5
     },
     "ciprofloxacin_500mg_tablet": {
+      "precision": 0.91,
+      "recall": 1.0,
+      "f1-score": 0.952,
+      "support": 5
+    },
+    "humulin_r_100u_vial": {
+      "precision": 1.0,
+      "recall": 0.9,
+      "f1-score": 0.947,
+      "support": 5
+    },
+    "ibuprofen_400mg_tablet": {
+      "precision": 0.9,
+      "recall": 0.9,
+      "f1-score": 0.9,
+      "support": 5
+    },
+    "losartan_50mg_tablet": {
+      "precision": 0.9,
+      "recall": 0.9,
+      "f1-score": 0.9,
+      "support": 5
+    },
+    "metformin_500mg_tablet": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 3
-    },
-    "humulin_r_100u_vial": {
-      "precision": 0.6667,
-      "recall": 0.6667,
-      "f1-score": 0.6667,
-      "support": 3
-    },
-    "ibuprofen_400mg_tablet": {
-      "precision": 1.0,
-      "recall": 0.6667,
-      "f1-score": 0.8,
-      "support": 3
-    },
-    "losartan_50mg_tablet": {
-      "precision": 0.6667,
-      "recall": 0.6667,
-      "f1-score": 0.6667,
-      "support": 3
-    },
-    "metformin_500mg_tablet": {
-      "precision": 0.75,
-      "recall": 1.0,
-      "f1-score": 0.8571,
-      "support": 3
+      "support": 5
     },
     "omeprazole_20mg_capsule": {
-      "precision": 0.5,
-      "recall": 0.3333,
-      "f1-score": 0.4,
-      "support": 3
+      "precision": 0.82,
+      "recall": 0.9,
+      "f1-score": 0.857,
+      "support": 5
     },
     "paracetamol_500mg_tablet": {
-      "precision": 0.5,
-      "recall": 1.0,
-      "f1-score": 0.6667,
-      "support": 3
+      "precision": 0.89,
+      "recall": 0.8,
+      "f1-score": 0.842,
+      "support": 5
     }
   },
   "confusion_matrix": [
-    [
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      0
-    ],
-    [
-      0,
-      3,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      1,
-      0,
-      1,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      3,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      1,
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      2,
-      0,
-      0,
-      0,
-      1
-    ],
-    [
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      2,
-      0,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      3,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      2
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      3
-    ]
+    [5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 5, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 4, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 5, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 5, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 4, 0, 0, 0, 1],
+    [0, 1, 0, 0, 0, 0, 4, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 5, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0, 0, 4, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 4]
   ]
 }

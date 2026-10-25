@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Exp 1: MobileNetV3-Small (Direct Resize 224x224)",
+    "arch": "mobilenet_v3_small",
+    "val_top1": 0.38,
+    "val_top3": 0.52,
+    "val_f1": 0.3875058275058275,
+    "latency_ms": 15.90900999920753,
+    "best_epoch": 10
+  },
+  {
+    "name": "Exp 2: MobileNetV3-Small (Letterbox Resize 224x224)",
+    "arch": "mobilenet_v3_small",
+    "val_top1": 0.36,
+    "val_top3": 0.54,
+    "val_f1": 0.3145687645687646,
+    "latency_ms": 14.354419999290258,
+    "best_epoch": 9
+  },
+  {
+    "name": "Exp 3: MobileNetV3-Small (Deep Tuning Layers 4+)",
+    "arch": "mobilenet_v3_small",
+    "val_top1": 0.44,
+    "val_top3": 0.56,
+    "val_f1": 0.4214718614718615,
+    "latency_ms": 24.214110001533605,
+    "best_epoch": 14
+  },
+  {
+    "name": "Exp 4: MobileNetV3-Large (High-Capacity Mobile)",
+    "arch": "mobilenet_v3_large",
+    "val_top1": 0.46,
+    "val_top3": 0.66,
+    "val_f1": 0.46093739593739586,
+    "latency_ms": 49.260509999779366,
+    "best_epoch": 11
+  },
+  {
+    "name": "Exp 5: ResNet-18 (Residual Architecture)",
+    "arch": "resnet18",
+    "val_top1": 0.46,
+    "val_top3": 0.54,
+    "val_f1": 0.43106060606060603,
+    "latency_ms": 97.00750666670501,
+    "best_epoch": 12
+  }
+]

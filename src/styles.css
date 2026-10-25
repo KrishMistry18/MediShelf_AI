@@ -50,8 +50,11 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-warning: var(--warning);
+  --color-info: var(--info);
   --color-sage: var(--sage);
   --color-forest: var(--forest);
+  --color-forest-deep: var(--forest-deep);
+  --color-forest-darker: var(--forest-darker);
   --color-mint: var(--mint);
   --color-ivory: var(--ivory);
   --color-ink: var(--ink);
@@ -79,109 +82,122 @@
   --font-mono: "IBM Plex Mono", Menlo, Consolas, monospace;
   --radius: 0.5rem;
 
-  /* Editorial Healthcare Theme: Light */
-  --background: #f7f6f0;
-  --foreground: #172720;
-  --card: #ffffff;
-  --card-foreground: #172720;
+  /* Sophisticated Clinical-Intelligence Workspace Theme: Light */
+  --background: #f7f6f0;       /* Ivory canvas */
+  --foreground: #17251f;       /* Main text */
+  --card: #ffffff;             /* Crisp white surfaces */
+  --card-foreground: #17251f;
   --popover: #ffffff;
-  --popover-foreground: #172720;
+  --popover-foreground: #17251f;
 
-  --primary: #123e32;
+  --primary: #123e32;          /* Primary forest green */
   --primary-foreground: #f7f6f0;
 
-  --secondary: #ebebe3;
-  --secondary-foreground: #172720;
-  --muted: #efefe8;
-  --muted-foreground: #5c6e66;
+  --secondary: #f0efe8;        /* Muted surface */
+  --secondary-foreground: #17251f;
+  --muted: #f0efe8;
+  --muted-foreground: #66756d;  /* Secondary text */
 
-  --accent: #18b88a;
-  --accent-foreground: #ffffff;
+  --accent: #3ecf8e;           /* Accent mint */
+  --accent-foreground: #0b211c;
 
-  --destructive: #d85e5e;
+  --destructive: #d9383a;      /* Restrained accessible red */
   --destructive-foreground: #ffffff;
-  --warning: #e7a441;
+  --warning: #d97706;          /* Accessible amber */
+  --info: #0d9488;             /* Accessible blue-green */
 
-  --border: #e0ddd2;
-  --input: #e0ddd2;
-  --ring: #18b88a;
+  --border: #e3e1d7;           /* Structural borders */
+  --input: #e3e1d7;
+  --ring: #3ecf8e;
 
-  /* Custom Named Tokens */
-  --sage: #dde9df;
+  /* Specific Design System Palette Tokens */
   --forest: #123e32;
-  --mint: #18b88a;
+  --forest-deep: #102d26;
+  --forest-darker: #0b211c;
+  --mint: #3ecf8e;
   --ivory: #f7f6f0;
-  --ink: #102d26;
+  --ink: #17251f;
+  --sage: #dde9df;
 
-  --chart-1: #18b88a;
-  --chart-2: #e7a441;
-  --chart-3: #d85e5e;
+  --chart-1: #3ecf8e;
+  --chart-2: #d97706;
+  --chart-3: #d9383a;
   --chart-4: #123e32;
-  --chart-5: #6b8f7f;
+  --chart-5: #0d9488;
 
-  --sidebar: #f7f6f0;
-  --sidebar-foreground: #102d26;
-  --sidebar-primary: #123e32;
-  --sidebar-primary-foreground: #f7f6f0;
-  --sidebar-accent: #ebebe3;
-  --sidebar-accent-foreground: #102d26;
-  --sidebar-border: #e0ddd2;
-  --sidebar-ring: #18b88a;
+  --sidebar: #102d26;          /* Deep forest sidebar */
+  --sidebar-foreground: #f7f6f0;
+  --sidebar-primary: #3ecf8e;
+  --sidebar-primary-foreground: #0b211c;
+  --sidebar-accent: #153830;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #1a453b;
+  --sidebar-ring: #3ecf8e;
 }
 
 .dark {
-  /* Editorial Healthcare Theme: Night / Dark */
-  --background: #0d1b16;
-  --foreground: #e8ece9;
-  --card: #13241e;
-  --card-foreground: #e8ece9;
-  --popover: #13241e;
-  --popover-foreground: #e8ece9;
+  /* Sophisticated Clinical-Intelligence Workspace Theme: Dark */
+  --background: #0b211c;
+  --foreground: #f0efe8;
+  --card: #102d26;
+  --card-foreground: #f0efe8;
+  --popover: #102d26;
+  --popover-foreground: #f0efe8;
 
-  --primary: #18b88a;
-  --primary-foreground: #0a1713;
+  --primary: #3ecf8e;
+  --primary-foreground: #0b211c;
 
-  --secondary: #193028;
-  --secondary-foreground: #e8ece9;
-  --muted: #193028;
+  --secondary: #153830;
+  --secondary-foreground: #f0efe8;
+  --muted: #153830;
   --muted-foreground: #94a89f;
 
-  --accent: #18b88a;
-  --accent-foreground: #0a1713;
+  --accent: #3ecf8e;
+  --accent-foreground: #0b211c;
 
-  --destructive: #f26d6d;
-  --destructive-foreground: #0a1713;
-  --warning: #f5b352;
+  --destructive: #f87171;
+  --destructive-foreground: #0b211c;
+  --warning: #fbbf24;
+  --info: #2dd4bf;
 
-  --border: #243b33;
-  --input: #243b33;
-  --ring: #18b88a;
+  --border: #1a453b;
+  --input: #1a453b;
+  --ring: #3ecf8e;
 
-  --sage: #1e382e;
   --forest: #123e32;
-  --mint: #18b88a;
-  --ivory: #0d1b16;
-  --ink: #e8ece9;
+  --forest-deep: #102d26;
+  --forest-darker: #0b211c;
+  --mint: #3ecf8e;
+  --ivory: #0b211c;
+  --ink: #f0efe8;
+  --sage: #1e382e;
 
-  --chart-1: #18b88a;
-  --chart-2: #f5b352;
-  --chart-3: #f26d6d;
-  --chart-4: #2bd4a2;
-  --chart-5: #85a396;
+  --chart-1: #3ecf8e;
+  --chart-2: #fbbf24;
+  --chart-3: #f87171;
+  --chart-4: #2dd4bf;
+  --chart-5: #94a89f;
 
-  --sidebar: #10211b;
-  --sidebar-foreground: #e8ece9;
-  --sidebar-primary: #18b88a;
-  --sidebar-primary-foreground: #0a1713;
-  --sidebar-accent: #193028;
-  --sidebar-accent-foreground: #e8ece9;
-  --sidebar-border: #243b33;
-  --sidebar-ring: #18b88a;
+  --sidebar: #081a16;
+  --sidebar-foreground: #f0efe8;
+  --sidebar-primary: #3ecf8e;
+  --sidebar-primary-foreground: #0b211c;
+  --sidebar-accent: #102d26;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #1a453b;
+  --sidebar-ring: #3ecf8e;
 }
 
 @layer base {
   * {
     border-color: var(--color-border);
+  }
+
+  /* Tabular numbers for clinical metrics */
+  .tnum,
+  .font-mono,
+  [data-tabular-nums] {
+    font-variant-numeric: tabular-nums;
   }
 
   body {

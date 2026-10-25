@@ -34,7 +34,7 @@ import {
 import { useAllMedicines, useMedicine, useStorageRiskMetadata } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 
-type AssessmentSearch = { medicine: string | undefined };
+type AssessmentSearch = { medicine?: string | undefined };
 
 export const Route = createFileRoute("/assessment")({
   validateSearch: (search: Record<string, unknown>): AssessmentSearch => ({
@@ -42,13 +42,13 @@ export const Route = createFileRoute("/assessment")({
   }),
   head: () => ({
     meta: [
-      { title: "Excursion Assessment — MediShelf AI" },
+      { title: "Storage Assessment — MediShelf AI" },
       {
         name: "description",
         content:
           "Dual-track storage excursion assessment: evaluate observed temperature exposures against pharmacopeial monograph bounds and kinetic degradation risk.",
       },
-      { property: "og:title", content: "Excursion Assessment — MediShelf AI" },
+      { property: "og:title", content: "Storage Assessment — MediShelf AI" },
     ],
   }),
   component: AssessmentPage,
@@ -57,7 +57,7 @@ export const Route = createFileRoute("/assessment")({
 /** Authentic simulation scenario presets */
 const SIMULATION_SCENARIOS = [
   {
-    label: "Paracetamol: Controlled Room Temp",
+    label: "Paracetamol: Controlled Room Temp (22°C)",
     medicine: "MED-001",
     temp: 22.0,
     hours: 0,
@@ -65,7 +65,7 @@ const SIMULATION_SCENARIOS = [
     tag: "Within Specification",
   },
   {
-    label: "Paracetamol: Summer Transit (28°C, 6h)",
+    label: "Paracetamol: Transit Warmth (28°C, 6h)",
     medicine: "MED-001",
     temp: 28.0,
     hours: 6,
@@ -73,7 +73,7 @@ const SIMULATION_SCENARIOS = [
     tag: "Permitted USP Excursion",
   },
   {
-    label: "Humulin Insulin: Refrigerated Cold Chain (4°C)",
+    label: "Humulin Insulin: Cold Chain (4°C)",
     medicine: "MED-014",
     temp: 4.0,
     hours: 0,
@@ -81,7 +81,7 @@ const SIMULATION_SCENARIOS = [
     tag: "Within Cold Chain",
   },
   {
-    label: "Humulin Insulin: Cold-Chain Break (12°C, 3h)",
+    label: "Humulin Insulin: Transit Excursion (12°C, 3h)",
     medicine: "MED-014",
     temp: 12.0,
     hours: 3,
@@ -109,21 +109,21 @@ const SIMULATION_SCENARIOS = [
 const RISK_THEMES: Record<RiskLevel, { text: string; bg: string; border: string; pill: string }> = {
   LOW: {
     text: "text-mint",
-    bg: "bg-mint/8",
+    bg: "bg-mint/10",
     border: "border-mint/30",
-    pill: "bg-emerald-100 text-emerald-800",
+    pill: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
   },
   MODERATE: {
-    text: "text-amber",
-    bg: "bg-amber/10",
-    border: "border-amber/30",
-    pill: "bg-amber-100 text-amber-800",
+    text: "text-warning",
+    bg: "bg-warning/10",
+    border: "border-warning/30",
+    pill: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
   },
   HIGH: {
-    text: "text-coral",
-    bg: "bg-coral/10",
-    border: "border-coral/30",
-    pill: "bg-rose-100 text-rose-800",
+    text: "text-destructive",
+    bg: "bg-destructive/10",
+    border: "border-destructive/30",
+    pill: "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300",
   },
 };
 
@@ -223,22 +223,24 @@ function AssessmentPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* ── Workbench Header ─────────────────────────────────────────── */}
+        {/* =========================================================================
+            HEADER & DUAL-TRACK ARCHITECTURE DISCLOSURE
+           ========================================================================= */}
         <div className="border-b border-border pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
               <span className="size-2 rounded-full bg-mint" />
-              <span>Thermal Kinetic Workbench</span>
+              <span>Thermal Kinetic Compliance Workbench</span>
               <span>•</span>
-              <span>Deterministic USP Rules + GBDT Kinetics</span>
+              <span>Deterministic USP Monograph Rules + GBDT Kinetics</span>
             </div>
-            <h1 className="font-head text-3xl font-bold tracking-tight text-foreground">
-              Storage Excursion Analytical Studio
+            <h1 className="font-head text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+              Storage Excursion & Kinetic Risk Studio
             </h1>
             <p className="text-sm text-muted-foreground max-w-2xl font-sans">
-              Evaluate ambient temperature exposures against official pharmacopeial specifications.
-              Strict boundary compliance and simulation-trained kinetic degradation are verified
-              independently.
+              Evaluate temperature excursions against official USP and DailyMed storage boundaries.
+              Deterministic compliance rules and mathematical kinetic risk degradation are reported
+              separately.
             </p>
           </div>
 
@@ -249,219 +251,237 @@ function AssessmentPage() {
               onClick={() => assess.reset()}
               disabled={!result && !assess.isPending}
             >
-              <RotateCcw className="mr-1.5 size-3" />
-              <span>Reset Parameters</span>
+              <RotateCcw className="mr-1.5 size-3.5 text-muted-foreground" />
+              <span>Reset Assessment</span>
             </Button>
           </div>
         </div>
 
-        {/* ── 4-Stage Analytical Workflow ─────────────────────────────── */}
+        {/* =========================================================================
+            MAIN WORKSPACE GRID (Left: Inputs & Presets, Right: Spectrum Gauge & Verdict)
+           ========================================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Column (5 Cols): Target Medicine Context & Exposure Form */}
+          {/* ── Left Column (5 Cols): Excursion Scenario Parameters ── */}
           <div className="lg:col-span-5 space-y-6">
-            {/* Stage 1: Medicine Selection & Documented Specification */}
-            <div className="rounded border border-border bg-card p-5 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-border text-xs font-mono">
-                <span className="font-bold uppercase tracking-wider text-primary">
-                  Stage 01 • Target Medicine Context
+            <div className="rounded-xl border border-border bg-card p-5 sm:p-6 space-y-5 shadow-xs">
+              <div className="pb-3 border-b border-border">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-primary block">
+                  Stage 01 • Target Medicine Specification
                 </span>
-                <span className="text-muted-foreground">
-                  {selected?.source ?? "Knowledge Base"}
-                </span>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Select a medicine monograph to retrieve calibrated storage limits.
+                </p>
               </div>
 
-              {/* Medicine Concept Lookup */}
+              {/* Medicine Autocomplete / Selector */}
               <div className="space-y-2">
-                <label className="block text-xs font-medium text-foreground">
-                  Select Medicine Concept
+                <label htmlFor="med-search" className="text-xs font-semibold text-foreground block">
+                  Search Monograph
                 </label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
                   <input
-                    type="text"
-                    placeholder="Search 27,326 clinical concepts (e.g. Insulin, Paracetamol)..."
+                    id="med-search"
+                    type="search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-9 rounded border border-border bg-background pl-9 pr-8 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
+                    placeholder="Search 27k medicines (e.g. Insulin, Paracetamol)..."
+                    className="w-full h-9 rounded-lg border border-border bg-background pl-8.5 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                   />
-                  {searchQuery && (
-                    <button
-                      onClick={() => {
-                        setSearchQuery("");
-                        setSearchResults([]);
-                      }}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    >
-                      <X className="size-3" />
-                    </button>
-                  )}
-                  {searchResults.length > 0 && (
-                    <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-56 overflow-y-auto rounded border border-border bg-card p-1 shadow-lg">
-                      {searchResults.map((med) => (
-                        <button
-                          key={med.medicine_id}
-                          type="button"
-                          onClick={() => {
-                            setMedicineId(med.medicine_id);
-                            setSearchQuery("");
-                            setSearchResults([]);
-                            assess.reset();
-                          }}
-                          className="flex w-full flex-col items-start rounded p-2 text-left text-xs hover:bg-secondary transition-colors"
-                        >
-                          <strong className="text-foreground">{med.medicine_name}</strong>
-                          <span className="text-[10px] text-muted-foreground font-mono">
-                            {med.generic_name} • {med.medicine_id}
+                </div>
+
+                {/* Live Autocomplete Dropdown */}
+                {searchResults.length > 0 && (
+                  <div className="rounded-lg border border-border bg-card p-1 shadow-lg max-h-48 overflow-y-auto space-y-0.5 z-20 relative">
+                    {searchResults.map((med) => (
+                      <button
+                        key={med.medicine_id}
+                        type="button"
+                        onClick={() => {
+                          setMedicineId(med.medicine_id);
+                          setSearchQuery("");
+                          setSearchResults([]);
+                        }}
+                        className="w-full text-left p-2 rounded-md hover:bg-secondary flex items-center justify-between text-xs"
+                      >
+                        <div className="truncate">
+                          <strong className="text-foreground block truncate">{med.medicine_name}</strong>
+                          <span className="font-mono text-[10px] text-muted-foreground">
+                            {med.medicine_id} • {med.dosage_form}
                           </span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <select
-                  value={selected?.medicine_id ?? medicineId}
-                  onChange={(e) => {
-                    setMedicineId(e.target.value);
-                    assess.reset();
-                  }}
-                  className="w-full h-9 rounded border border-border bg-background px-3 text-xs text-foreground focus:outline-none focus:border-primary font-mono"
-                >
-                  {selected &&
-                    !medicines.data?.some((item) => item.medicine_id === selected.medicine_id) && (
-                      <option key={selected.medicine_id} value={selected.medicine_id}>
-                        {selected.medicine_name} [{selected.source}]
-                      </option>
-                    )}
-                  {medicines.data?.map((item) => (
-                    <option key={item.medicine_id} value={item.medicine_id}>
-                      {item.medicine_name} ({item.medicine_id})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Documented Specification Ribbon */}
-              {selected && (
-                <div className="rounded border border-border bg-background p-3.5 space-y-1.5 text-xs font-mono">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Documented Standard:</span>
-                    <strong className="text-foreground">
-                      {selected.storage_min_temperature !== null &&
-                      selected.storage_max_temperature !== null
-                        ? `${selected.storage_min_temperature}°C to ${selected.storage_max_temperature}°C`
-                        : "Advisory Monograph"}
-                    </strong>
+                        </div>
+                        <span className="font-mono text-[10px] text-primary shrink-0 ml-2">
+                          {med.storage_min_temperature != null
+                            ? `${med.storage_min_temperature}–${med.storage_max_temperature}°C`
+                            : "CRT"}
+                        </span>
+                      </button>
+                    ))}
                   </div>
-                  {isColdChain && (
-                    <div className="flex justify-between text-coral font-bold text-[11px] pt-1 border-t border-border/60">
-                      <span>Freezing Rule:</span>
-                      <span>DO NOT FREEZE (Denatures)</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+                )}
 
-            {/* Stage 2: Environmental Exposure Studio */}
-            <div className="rounded border border-border bg-card p-5 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-border text-xs font-mono">
-                <span className="font-bold uppercase tracking-wider text-primary">
-                  Stage 02 • Environmental Exposure
-                </span>
-                <span className="text-muted-foreground">Observed Field Readings</span>
+                {/* Primary Curated Medicine Selector */}
+                <div className="pt-1">
+                  <select
+                    value={medicineId}
+                    onChange={(e) => {
+                      setMedicineId(e.target.value);
+                      assess.reset();
+                    }}
+                    aria-label="Select target medicine monograph"
+                    className="w-full h-9 rounded-lg border border-border bg-background px-3 text-xs font-mono text-foreground focus:outline-none focus:border-primary"
+                  >
+                    {medicines.data?.map((med) => (
+                      <option key={med.medicine_id} value={med.medicine_id}>
+                        {med.medicine_id}: {med.medicine_name} (
+                        {med.storage_min_temperature !== null && med.storage_max_temperature !== null
+                          ? `${med.storage_min_temperature}°C to ${med.storage_max_temperature}°C`
+                          : "CRT"}
+                        )
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Active Monograph Reference Card */}
+                {selected && (
+                  <div className="rounded-lg border border-border bg-background p-3 text-xs space-y-1">
+                    <div className="flex items-center justify-between font-mono text-[10px]">
+                      <strong className="text-foreground">{selected.medicine_name}</strong>
+                      <span className={cn("font-bold", isColdChain ? "text-sky-700 dark:text-sky-300" : "text-primary")}>
+                        {isColdChain ? "Strict Cold Chain" : "Controlled Room Temp"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1">
+                      <span>Monograph Limits:</span>
+                      <strong className="text-foreground font-mono tnum">
+                        {selected.storage_min_temperature !== null && selected.storage_max_temperature !== null
+                          ? `${selected.storage_min_temperature}°C to ${selected.storage_max_temperature}°C`
+                          : "20°C to 25°C"}
+                      </strong>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                {/* Temperature */}
-                <div>
-                  <label className="block text-xs font-medium text-foreground mb-1">
-                    Temperature (°C)
-                  </label>
+              {/* Exposure Parameters (Temperature & Duration) */}
+              <div className="space-y-4 pt-2 border-t border-border">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-primary block">
+                  Stage 02 • Observed Excursion Parameters
+                </span>
+
+                {/* Temperature Slider & Input */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="temp-input" className="text-xs font-medium text-foreground">
+                      Observed Temperature (°C)
+                    </label>
+                    <div className="flex items-center gap-1">
+                      <input
+                        id="temp-input"
+                        type="number"
+                        step={0.5}
+                        value={temperature}
+                        onChange={(e) => setTemperature(Number(e.target.value))}
+                        className="w-16 h-7 rounded border border-border bg-background px-2 text-xs font-mono font-bold text-right text-foreground focus:outline-none focus:border-primary tnum"
+                      />
+                      <span className="font-mono text-xs text-muted-foreground">°C</span>
+                    </div>
+                  </div>
                   <input
-                    type="number"
-                    step="0.5"
-                    min={-50}
-                    max={80}
+                    type="range"
+                    min={-10}
+                    max={50}
+                    step={0.5}
                     value={temperature}
                     onChange={(e) => setTemperature(Number(e.target.value))}
-                    className="w-full h-9 rounded border border-border bg-background px-3 font-mono text-xs text-foreground focus:outline-none focus:border-primary"
+                    className="w-full accent-primary cursor-pointer"
                   />
-                  <span className="font-mono text-[10px] text-muted-foreground mt-0.5 block">
-                    Observed reading
-                  </span>
+                  <div className="flex justify-between text-[10px] font-mono text-muted-foreground">
+                    <span>-10°C (Freezing)</span>
+                    <span>20°C (CRT)</span>
+                    <span>50°C (Heat Breach)</span>
+                  </div>
                 </div>
 
-                {/* Duration */}
-                <div>
-                  <label className="block text-xs font-medium text-foreground mb-1">
-                    Duration (Hours)
-                  </label>
+                {/* Duration Slider & Input */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="hours-input" className="text-xs font-medium text-foreground">
+                      Excursion Duration (Hours)
+                    </label>
+                    <div className="flex items-center gap-1">
+                      <input
+                        id="hours-input"
+                        type="number"
+                        min={0}
+                        max={168}
+                        step={1}
+                        value={hours}
+                        onChange={(e) => setHours(Math.max(0, Number(e.target.value)))}
+                        className="w-16 h-7 rounded border border-border bg-background px-2 text-xs font-mono font-bold text-right text-foreground focus:outline-none focus:border-primary tnum"
+                      />
+                      <span className="font-mono text-xs text-muted-foreground">hrs</span>
+                    </div>
+                  </div>
                   <input
-                    type="number"
+                    type="range"
                     min={0}
-                    max={1000}
-                    step="0.5"
+                    max={72}
+                    step={1}
                     value={hours}
                     onChange={(e) => setHours(Number(e.target.value))}
-                    className="w-full h-9 rounded border border-border bg-background px-3 font-mono text-xs text-foreground focus:outline-none focus:border-primary"
+                    className="w-full accent-primary cursor-pointer"
                   />
-                  <span className="font-mono text-[10px] text-muted-foreground mt-0.5 block">
-                    Cumulative time
-                  </span>
                 </div>
 
-                {/* Humidity */}
-                <div>
-                  <label className="block text-xs font-medium text-foreground mb-1">
-                    Relative Humidity (%RH)
-                  </label>
-                  <input
-                    type="number"
-                    min={0}
-                    max={100}
-                    value={humidity}
-                    onChange={(e) =>
-                      setHumidity(e.target.value === "" ? "" : Number(e.target.value))
-                    }
-                    className="w-full h-9 rounded border border-border bg-background px-3 font-mono text-xs text-foreground focus:outline-none focus:border-primary"
-                  />
-                  <span className="font-mono text-[10px] text-muted-foreground mt-0.5 block">
-                    Optional
-                  </span>
-                </div>
+                {/* Optional Environmental Parameters */}
+                <div className="grid grid-cols-2 gap-3 pt-1">
+                  <div className="space-y-1">
+                    <label htmlFor="humidity-input" className="text-[11px] text-muted-foreground block">
+                      Relative Humidity (%)
+                    </label>
+                    <input
+                      id="humidity-input"
+                      type="number"
+                      min={0}
+                      max={100}
+                      placeholder="Optional"
+                      value={humidity}
+                      onChange={(e) => setHumidity(e.target.value === "" ? "" : Number(e.target.value))}
+                      className="w-full h-8 rounded-lg border border-border bg-background px-2.5 text-xs text-foreground focus:outline-none focus:border-primary tnum"
+                    />
+                  </div>
 
-                {/* Days to Expiry */}
-                <div>
-                  <label className="block text-xs font-medium text-foreground mb-1">
-                    Days to Expiry
-                  </label>
-                  <input
-                    type="number"
-                    value={daysToExpiry}
-                    placeholder="365"
-                    onChange={(e) =>
-                      setDaysToExpiry(e.target.value === "" ? "" : Number(e.target.value))
-                    }
-                    className="w-full h-9 rounded border border-border bg-background px-3 font-mono text-xs text-foreground focus:outline-none focus:border-primary"
-                  />
-                  <span className="font-mono text-[10px] text-muted-foreground mt-0.5 block">
-                    Shelf-life factor
-                  </span>
+                  <div className="space-y-1">
+                    <label htmlFor="expiry-input" className="text-[11px] text-muted-foreground block">
+                      Days to Expiry
+                    </label>
+                    <input
+                      id="expiry-input"
+                      type="number"
+                      min={1}
+                      placeholder="Optional"
+                      value={daysToExpiry}
+                      onChange={(e) => setDaysToExpiry(e.target.value === "" ? "" : Number(e.target.value))}
+                      className="w-full h-8 rounded-lg border border-border bg-background px-2.5 text-xs text-foreground focus:outline-none focus:border-primary tnum"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Simulation Scenario Presets */}
               <div className="pt-3 border-t border-border space-y-2">
                 <span className="font-mono text-[10px] uppercase text-muted-foreground font-semibold block">
-                  Simulation Scenario Presets
+                  Pre-Configured Scenario Presets
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {SIMULATION_SCENARIOS.map((preset) => (
                     <button
                       key={preset.label}
+                      type="button"
                       onClick={() => applyPreset(preset)}
-                      className="px-2 py-1 rounded border border-border bg-background text-[11px] text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+                      className="px-2.5 py-1 rounded-md border border-border bg-background text-[11px] text-muted-foreground hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint transition-colors"
                       title={preset.tag}
                     >
                       {preset.label}
@@ -477,7 +497,7 @@ function AssessmentPage() {
                 </span>
                 <Button
                   variant="primary"
-                  className="h-9 px-5 text-xs bg-primary text-primary-foreground font-bold shadow-2xs hover:bg-primary/90"
+                  className="h-9 px-5 text-xs bg-primary text-primary-foreground font-semibold shadow-xs hover:bg-primary/90"
                   onClick={runAssessment}
                   disabled={assess.isPending || !medicineId}
                 >
@@ -488,82 +508,97 @@ function AssessmentPage() {
             </div>
           </div>
 
-          {/* Right Column (7 Cols): Calibrated Spectrum Gauge & Results */}
+          {/* ── Right Column (7 Cols): Spectrum Gauge & Reconciled Verdict ── */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Stage 3: Calibrated Temperature Spectrum Gauge */}
-            <div className="rounded border border-border bg-card p-5 space-y-4">
+            {/* Dynamic Calibrated Temperature Spectrum Gauge */}
+            <div className="rounded-xl border border-border bg-card p-5 sm:p-6 space-y-4 shadow-xs">
               <div className="flex items-center justify-between pb-3 border-b border-border text-xs font-mono">
                 <span className="font-bold uppercase tracking-wider text-primary">
-                  Stage 03 • Calibrated Temperature Spectrum
+                  Calibrated Temperature Spectrum Gauge
                 </span>
                 <span className="text-foreground font-semibold">
-                  Observed: <strong className="text-primary">{temperature}°C</strong>
+                  Observed: <strong className="text-primary tnum">{temperature}°C</strong>
                 </span>
               </div>
 
-              <div className="px-2 pt-2 space-y-2">
-                <div className="flex justify-between font-mono text-[10px] text-muted-foreground">
+              <div className="px-1 pt-1 space-y-3">
+                <div className="flex justify-between font-mono text-[10px] text-muted-foreground tnum">
                   <span>-10°C</span>
-                  <span className="text-sky-800 font-bold">2°C</span>
-                  <span className="text-primary font-bold">20°C–25°C</span>
+                  <span className={cn(isColdChain ? "text-sky-700 dark:text-sky-300 font-bold" : "")}>
+                    {isColdChain ? "2°C–8°C (Cold Chain)" : "2°C"}
+                  </span>
+                  <span className={cn(!isColdChain ? "text-primary font-bold" : "")}>
+                    {!isColdChain ? "20°C–25°C (CRT)" : "25°C"}
+                  </span>
                   <span>40°C</span>
                   <span>50°C</span>
                 </div>
 
-                {/* Calibrated Temperature Spectrum Bar */}
-                <div className="relative h-6 w-full rounded bg-secondary overflow-hidden border border-border">
-                  <div className="absolute left-0 top-0 bottom-0 w-[16.6%] bg-blue-100 border-r border-blue-200" />
-                  <div className="absolute left-[20%] top-0 bottom-0 w-[10%] bg-sky-200/80 border-x border-sky-300" />
-                  <div className="absolute left-[50%] top-0 bottom-0 w-[8.3%] bg-emerald-200/80 border-x border-emerald-300" />
+                {/* Calibrated Spectrum Bar */}
+                <div className="relative h-6 w-full rounded-md bg-secondary overflow-hidden border border-border">
+                  {/* Freezing zone (-10 to 0) -> 0 to 16.6% */}
+                  <div className="absolute left-0 top-0 bottom-0 w-[16.6%] bg-blue-100 dark:bg-blue-950/60 border-r border-blue-200 dark:border-blue-900" />
+                  
+                  {/* Cold chain zone (2 to 8) -> 20% to 30% */}
+                  {isColdChain ? (
+                    <div className="absolute left-[20%] top-0 bottom-0 w-[10%] bg-sky-200 dark:bg-sky-900/60 border-x border-sky-400" />
+                  ) : (
+                    /* Controlled room temperature zone (20 to 25) -> 50% to 58.3% */
+                    <div className="absolute left-[50%] top-0 bottom-0 w-[8.3%] bg-emerald-200 dark:bg-emerald-900/60 border-x border-emerald-400" />
+                  )}
 
-                  {/* Observed Cursor Marker */}
+                  {/* Observed Cursor Needle */}
                   <div
-                    className="absolute top-0 bottom-0 w-1 bg-coral shadow-md transition-all duration-300 z-10"
+                    className="absolute top-0 bottom-0 w-1 bg-destructive shadow-md transition-all duration-300 z-10"
                     style={{
                       left: `${Math.min(Math.max(((temperature + 10) / 60) * 100, 2), 98)}%`,
                     }}
                   >
-                    <div className="absolute -top-1 -translate-x-1/2 size-3 rounded-full bg-coral border-2 border-white shadow-xs" />
+                    <div className="absolute -top-1.5 -translate-x-1/2 size-3.5 rounded-full bg-destructive border-2 border-white shadow-xs" />
                   </div>
                 </div>
 
                 <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono text-muted-foreground pt-1">
                   <div className="flex items-center gap-1.5">
-                    <span className="size-2 rounded-full bg-blue-300" />
+                    <span className="size-2 rounded-full bg-blue-300 dark:bg-blue-600" />
                     <span>Freeze Risk (&lt;0°C)</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="size-2 rounded-full bg-sky-300" />
-                    <span>Cold Chain (2°C–8°C)</span>
+                    <span className="size-2 rounded-full bg-sky-300 dark:bg-sky-600" />
+                    <span>Cold Chain (2–8°C)</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="size-2 rounded-full bg-emerald-300" />
-                    <span>Controlled Room Temp (20°C–25°C)</span>
+                    <span className="size-2 rounded-full bg-emerald-300 dark:bg-emerald-600" />
+                    <span>Room Temp (20–25°C)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="size-2 rounded-full bg-destructive" />
+                    <span>Observed Marker</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Stage 4: Authoritative Dual-Track Evaluation Canvas */}
+            {/* Assessment Verdict Canvas */}
             {!result && !assess.isPending && (
-              <div className="rounded border border-border bg-card p-12 text-center space-y-3">
+              <div className="rounded-xl border border-border bg-card p-10 text-center space-y-3 shadow-xs">
                 <Thermometer className="mx-auto size-10 text-muted-foreground" />
-                <h3 className="font-head text-lg font-bold text-foreground">
-                  Ready to Evaluate Excursion
+                <h3 className="font-head text-base font-bold text-foreground">
+                  Ready to Evaluate Storage Excursion
                 </h3>
                 <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
-                  Configure exposure parameters or select a scenario preset on the left, then click
-                  &ldquo;Evaluate Excursion&rdquo; to test against monograph limits and the kinetic
-                  GBDT model.
+                  Select a medicine monograph, set the observed exposure temperature and duration,
+                  and click &ldquo;Evaluate Excursion&rdquo; to test against monograph limits and the
+                  kinetic GBDT model.
                 </p>
               </div>
             )}
 
             {assess.isPending && (
-              <div className="rounded border border-border bg-card p-12 text-center space-y-3">
+              <div className="rounded-xl border border-border bg-card p-12 text-center space-y-3 shadow-xs">
                 <div className="size-8 rounded-full border-2 border-mint border-t-transparent animate-spin mx-auto" />
                 <p className="font-mono text-xs uppercase tracking-wider text-primary font-bold">
-                  Evaluating Monograph Rules & GBDT Kinetic Model...
+                  Evaluating Monograph Compliance & GBDT Kinetic Model...
                 </p>
               </div>
             )}
@@ -590,21 +625,22 @@ function DualTrackResultsCanvas({
   const storage = result.storage_requirements;
   const riskTheme = risk.level ? RISK_THEMES[risk.level] : RISK_THEMES.LOW;
 
-  const divergent = compliance.is_compliant === false && risk.level === "LOW";
+  const isDivergent = compliance.is_compliant === false && risk.level === "LOW";
 
   return (
     <div className="space-y-6">
       {/* Divergence Notification Callout */}
-      {divergent && (
-        <div className="rounded border border-warning/30 bg-warning/10 p-4 text-xs space-y-1.5">
+      {isDivergent && (
+        <div className="rounded-xl border border-warning/40 bg-warning/10 p-4 text-xs space-y-1.5 shadow-xs">
           <div className="flex items-center gap-2 text-warning font-bold">
             <Info className="size-4 shrink-0" />
             <span>Dual-Track Divergence Detected</span>
           </div>
           <p className="text-muted-foreground leading-relaxed">
             The observed conditions breached the documented USP boundary, causing deterministic
-            compliance to FAIL. However, because exposure was short, the kinetic degradation model
-            estimated LOW degradation. Deterministic compliance remains the binding release rule.
+            compliance to <strong>FAIL</strong>. However, because exposure was brief, the kinetic
+            degradation model predicted LOW degradation probability. Deterministic USP compliance
+            remains the binding release rule: <strong>an ML model estimate must never override a documented storage boundary violation</strong>.
           </p>
         </div>
       )}
@@ -612,7 +648,7 @@ function DualTrackResultsCanvas({
       {/* Dual Results Comparison */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Track A: Deterministic Rule Verdict */}
-        <div className="rounded border border-border bg-card p-5 space-y-4">
+        <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-xs">
           <div className="flex items-center justify-between pb-3 border-b border-border">
             <div className="flex items-center gap-2">
               <ShieldCheck className="size-4 text-primary" />
@@ -625,13 +661,13 @@ function DualTrackResultsCanvas({
 
           <div>
             <div className="flex items-center justify-between">
-              <span className="font-mono text-xs text-muted-foreground">Compliance:</span>
+              <span className="font-mono text-xs text-muted-foreground">Compliance Verdict:</span>
               <span
                 className={cn(
                   "rounded px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase",
                   compliance.is_compliant
-                    ? "bg-emerald-100 text-emerald-800"
-                    : "bg-rose-100 text-rose-800",
+                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                    : "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300",
                 )}
               >
                 {compliance.is_compliant ? "Compliant (PASS)" : "Breached (FAIL)"}
@@ -642,21 +678,22 @@ function DualTrackResultsCanvas({
             </h3>
           </div>
 
-          <div className="rounded border border-border bg-background p-3 space-y-1.5 text-xs font-mono">
+          <div className="rounded-lg border border-border bg-background p-3 space-y-1.5 text-xs font-mono">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Documented Limits:</span>
-              <strong className="text-foreground">
+              <strong className="text-foreground tnum">
                 {storage.min_temperature !== null && storage.max_temperature !== null
                   ? `${storage.min_temperature}°C to ${storage.max_temperature}°C`
-                  : "Advisory"}
+                  : "Standard Monograph CRT"}
               </strong>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Temperature Deviation:</span>
               <span
-                className={
-                  compliance.temp_deviation ? "text-coral font-bold" : "text-foreground font-medium"
-                }
+                className={cn(
+                  "font-bold tnum",
+                  compliance.temp_deviation ? "text-destructive" : "text-foreground font-medium",
+                )}
               >
                 {compliance.temp_deviation ? `${compliance.temp_deviation}°C` : "0.0°C"}
               </span>
@@ -665,7 +702,7 @@ function DualTrackResultsCanvas({
         </div>
 
         {/* Track B: Machine-Learning Kinetic Risk */}
-        <div className={cn("rounded border p-5 space-y-4", riskTheme.border, riskTheme.bg)}>
+        <div className={cn("rounded-xl border p-5 space-y-4 shadow-xs", riskTheme.border, riskTheme.bg)}>
           <div className="flex items-center justify-between pb-3 border-b border-border/60">
             <div className="flex items-center gap-2">
               <Brain className="size-4 text-primary" />
@@ -673,12 +710,12 @@ function DualTrackResultsCanvas({
                 Track B: Kinetic ML Risk
               </span>
             </div>
-            <span className="font-mono text-[10px] text-muted-foreground">GradientBoosting</span>
+            <span className="font-mono text-[10px] text-muted-foreground">GBDT Model</span>
           </div>
 
           <div>
             <div className="flex items-center justify-between">
-              <span className="font-mono text-xs text-muted-foreground">Degradation Risk:</span>
+              <span className="font-mono text-xs text-muted-foreground">Degradation Estimate:</span>
               <span
                 className={cn(
                   "rounded px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase",
@@ -692,7 +729,7 @@ function DualTrackResultsCanvas({
               <span className={cn("font-head text-2xl font-bold", riskTheme.text)}>
                 {risk.level} RISK
               </span>
-              <span className="font-mono text-xs text-muted-foreground">
+              <span className="font-mono text-xs text-muted-foreground tnum">
                 {risk.confidence !== null
                   ? `${formatPercent(risk.confidence, 1)} Confidence`
                   : "No estimate"}
@@ -708,9 +745,9 @@ function DualTrackResultsCanvas({
                   <div key={lvl} className="font-mono text-[10px]">
                     <div className="flex justify-between mb-0.5">
                       <span className="text-muted-foreground">{lvl}</span>
-                      <span className="text-foreground">{formatPercent(prob, 1)}</span>
+                      <span className="text-foreground tnum">{formatPercent(prob, 1)}</span>
                     </div>
-                    <div className="h-1 w-full bg-secondary rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
                       <div
                         className={cn("h-full rounded-full", RISK_THEMES[lvl].pill)}
                         style={{ width: `${prob * 100}%` }}
@@ -724,22 +761,28 @@ function DualTrackResultsCanvas({
         </div>
       </div>
 
-      {/* Top Feature Importance Weights */}
-      {risk.top_factors && risk.top_factors.length > 0 && (
-        <div className="rounded border border-border bg-card p-5 space-y-3">
+      {/* Top Feature Importance Weights & Arrhenius Caveat */}
+      <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-xs">
+        <div className="flex items-center justify-between pb-2 border-b border-border">
           <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
             Top Driving Features in Degradation Estimation
           </span>
+          <span className="font-mono text-[10px] text-muted-foreground">
+            Feature Weights (15 Inputs)
+          </span>
+        </div>
+
+        {risk.top_factors && risk.top_factors.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             {risk.top_factors.slice(0, 4).map((factor) => (
               <div
                 key={factor.feature}
-                className="rounded border border-border bg-background p-2.5 space-y-1"
+                className="rounded-lg border border-border bg-background p-3 space-y-1"
               >
                 <div className="flex justify-between font-mono text-[10px]">
                   <strong className="text-foreground">{factor.feature_label}</strong>
-                  <span className="text-primary font-bold">
-                    {formatPercent(factor.importance_weight, 1)} weight
+                  <span className="text-primary font-bold tnum">
+                    {formatPercent(factor.importance_weight, 1)}
                   </span>
                 </div>
                 <p className="text-[11px] text-muted-foreground leading-relaxed">
@@ -748,8 +791,16 @@ function DualTrackResultsCanvas({
               </div>
             ))}
           </div>
+        )}
+
+        {/* Scientific Honesty Disclosure */}
+        <div className="rounded-lg bg-secondary/50 p-3 text-[11px] text-muted-foreground leading-relaxed font-sans">
+          <strong>Scientific Provenance Disclosure:</strong> Training labels for this degradation
+          model were computed from simulated Arrhenius kinetics formulas across 6,000 scenario permutations.
+          The reported 99.56% model accuracy reflects mathematical compliance with synthetic kinetics
+          simulations, <em>not measured empirical physical stability trial outcomes</em>.
         </div>
-      )}
+      </div>
     </div>
   );
 }

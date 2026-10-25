@@ -15,25 +15,38 @@ import {
   Sun,
   Thermometer,
   X,
+  ShieldCheck,
+  Info,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/Button";
-import { EmptyState, ErrorState, LoadingState } from "@/components/States";
+import { EmptyState, ErrorState, LoadingState, Skeleton } from "@/components/States";
 import { type Medicine } from "@/lib/api";
 import { useCategories, useMedicinePage, useModelsOverview } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 
+type MedicinesSearch = {
+  search?: string | undefined;
+  category?: string | undefined;
+  page?: number | undefined;
+};
+
 export const Route = createFileRoute("/medicines")({
+  validateSearch: (search: Record<string, unknown>): MedicinesSearch => ({
+    search: typeof search["search"] === "string" ? search["search"] : undefined,
+    category: typeof search["category"] === "string" ? search["category"] : undefined,
+    page: typeof search["page"] === "number" ? search["page"] : undefined,
+  }),
   head: () => ({
     meta: [
-      { title: "Pharmacopeial Library — MediShelf AI" },
+      { title: "Medicine Library — MediShelf AI" },
       {
         name: "description",
         content:
           "Authoritative catalogue of 27,326 medicine storage monographs sourced from FDA DailyMed and NLM RxNorm.",
       },
-      { property: "og:title", content: "Pharmacopeial Library — MediShelf AI" },
+      { property: "og:title", content: "Medicine Library — MediShelf AI" },
       {
         property: "og:description",
         content:
@@ -48,13 +61,15 @@ const PAGE_SIZE = 12;
 
 function MedicinesPage() {
   const navigate = useNavigate();
+  const searchParams = Route.useSearch();
 
-  const [rawQuery, setRawQuery] = useState("");
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("ALL");
-  const [page, setPage] = useState(1);
+  const [rawQuery, setRawQuery] = useState(searchParams.search ?? "");
+  const [query, setQuery] = useState(searchParams.search ?? "");
+  const [category, setCategory] = useState(searchParams.category ?? "ALL");
+  const [page, setPage] = useState(searchParams.page ?? 1);
   const [selected, setSelected] = useState<Medicine | null>(null);
 
+  // Debounce search query
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setQuery(rawQuery);
@@ -72,62 +87,73 @@ function MedicinesPage() {
   const total = list.data?.total ?? 0;
   const totalPages = list.data?.total_pages ?? 1;
 
+  const hasActiveFilters = Boolean(rawQuery.trim()) || category !== "ALL";
+
+  const clearFilters = () => {
+    setRawQuery("");
+    setQuery("");
+    setCategory("ALL");
+    setPage(1);
+  };
+
   return (
     <AppShell>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* ── Pharmacopeial Search & Discovery Header ─────────────────── */}
+        {/* =========================================================================
+            HEADER & DISCOVERY CONSOLE
+           ========================================================================= */}
         <div className="border-b border-border pb-6 space-y-4">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div className="space-y-1.5">
               <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
                 <span className="size-2 rounded-full bg-mint" />
-                <span>FDA DailyMed & NLM RxNorm Provenance</span>
+                <span>FDA DailyMed & NLM RxNorm Lineage</span>
                 <span>•</span>
-                <span>27,326 Indexed Clinical Records</span>
+                <span>27,326 Clinical Records</span>
               </div>
-              <h1 className="font-head text-3xl font-bold tracking-tight text-foreground">
+              <h1 className="font-head text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                 Pharmacopeial Knowledge Library
               </h1>
               <p className="text-sm text-muted-foreground max-w-2xl font-sans">
-                Search authoritative storage envelopes, chemical entities, and USP stability
-                specifications across 27,326 clinical concepts and foundational DailyMed monographs.
+                Search verified temperature envelopes, chemical formulations, and USP stability
+                monographs across 27,326 indexed clinical drug records.
               </p>
             </div>
 
             <Button
               variant="outline"
-              className="h-8.5 px-3 text-xs border-border bg-card hover:bg-secondary font-medium shrink-0"
+              className="h-9 px-3.5 text-xs border-border bg-card hover:bg-secondary font-medium shrink-0"
               onClick={() => navigate({ to: "/assessment", search: { medicine: undefined } })}
             >
-              <Thermometer className="mr-1.5 size-3 text-warning" />
+              <Thermometer className="mr-1.5 size-3.5 text-warning" />
               <span>Direct Excursion Audit</span>
             </Button>
           </div>
 
-          {/* Integrated Search Console */}
-          <div className="pt-2 flex flex-col md:flex-row items-stretch gap-3">
+          {/* Integrated Search & Filter Console */}
+          <div className="pt-2 flex flex-col sm:flex-row items-stretch gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
               <input
                 type="text"
                 value={rawQuery}
                 onChange={(e) => setRawQuery(e.target.value)}
-                placeholder="Search across 27,326 concepts by brand, active ingredient, or ID (e.g. Paracetamol, Insulin, Metformin)..."
+                placeholder="Search by brand name, active substance, or concept ID (e.g. Paracetamol, Insulin, Metformin)..."
                 aria-label="Search medicines"
-                className="w-full h-11 rounded border border-border bg-card pl-10 pr-10 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs"
+                className="w-full h-11 rounded-lg border border-border bg-card pl-10 pr-10 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs"
               />
               {rawQuery && (
                 <button
                   onClick={() => setRawQuery("")}
-                  aria-label="Clear search"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
+                  aria-label="Clear search text"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded"
                 >
                   <X className="size-3.5" />
                 </button>
               )}
             </div>
 
-            {/* Category Filter Pill Selection */}
+            {/* Category Dropdown */}
             <div className="flex items-center gap-2 shrink-0">
               <select
                 value={category}
@@ -136,7 +162,7 @@ function MedicinesPage() {
                   setPage(1);
                 }}
                 aria-label="Filter by therapeutic category"
-                className="h-11 rounded border border-border bg-card px-3 text-xs font-mono text-foreground focus:outline-none focus:border-primary shadow-2xs min-w-[200px]"
+                className="h-11 rounded-lg border border-border bg-card px-3.5 text-xs text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs min-w-[200px]"
               >
                 <option value="ALL">All Categories (27,326)</option>
                 {categories.data?.map((entry) => (
@@ -145,10 +171,22 @@ function MedicinesPage() {
                   </option>
                 ))}
               </select>
+
+              {hasActiveFilters && (
+                <Button
+                  variant="outline"
+                  className="h-11 px-3 text-xs border-border bg-card hover:bg-secondary shrink-0"
+                  onClick={clearFilters}
+                  title="Reset all filters"
+                >
+                  <X className="mr-1 size-3.5" />
+                  <span>Reset</span>
+                </Button>
+              )}
             </div>
           </div>
 
-          {/* Results Telemetry Ribbon */}
+          {/* Results Telemetry Bar */}
           <div className="flex items-center justify-between text-xs font-mono text-muted-foreground pt-1">
             <div className="flex items-center gap-3">
               <span className="text-foreground font-semibold">
@@ -159,207 +197,220 @@ function MedicinesPage() {
               <span>•</span>
               <span className="hidden sm:inline">25 Curated Monographs</span>
               <span className="hidden sm:inline">•</span>
-              <span className="hidden sm:inline">27,301 Clinical RxNorm Concepts</span>
+              <span className="hidden sm:inline">27,301 Clinical RxNorm Records</span>
             </div>
 
-            <span className="text-[11px]">
+            <span className="text-[11px] tnum">
               Page {page} of {totalPages}
             </span>
           </div>
         </div>
 
-        {/* ── Scientific Catalogue Ledger ──────────────────────────────── */}
-        <div className="space-y-2">
+        {/* =========================================================================
+            CATALOGUE TABLE / LEDGER
+           ========================================================================= */}
+        <div className="space-y-4">
           {list.isError ? (
             <ErrorState error={list.error} className="m-4" onRetry={() => void list.refetch()} />
           ) : list.isLoading ? (
-            <div className="py-16">
-              <LoadingState label="Searching 27,326 clinical pharmacopeia records..." />
+            <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="flex items-center gap-4 py-3 border-b border-border/50 last:border-0">
+                  <Skeleton className="h-6 w-20" />
+                  <Skeleton className="h-6 w-1/3" />
+                  <Skeleton className="h-6 w-1/4" />
+                  <Skeleton className="h-6 w-16 ml-auto" />
+                </div>
+              ))}
             </div>
           ) : items.length === 0 ? (
-            <div className="rounded border border-border bg-card p-12 text-center space-y-3">
+            <div className="rounded-xl border border-border bg-card p-12 text-center space-y-3 shadow-xs">
               <Package className="mx-auto size-10 text-muted-foreground" />
               <h3 className="font-head text-base font-bold text-foreground">
                 No matching pharmacopeial records found
               </h3>
               <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
                 No clinical concepts matched &ldquo;{query}&rdquo;. Try searching for the active
-                chemical entity (e.g. &ldquo;acetaminophen&rdquo; instead of brand) or clearing the
+                substance (e.g. &ldquo;acetaminophen&rdquo; instead of brand name) or clearing the
                 category filter.
               </p>
               <div className="pt-2">
                 <Button
                   variant="outline"
                   className="text-xs border-border bg-background"
-                  onClick={() => {
-                    setRawQuery("");
-                    setCategory("ALL");
-                  }}
+                  onClick={clearFilters}
                 >
                   Clear Filters
                 </Button>
               </div>
             </div>
           ) : (
-            <div className="rounded border border-border bg-card overflow-hidden">
-              {/* Ledger Header */}
-              <div className="hidden md:grid grid-cols-12 gap-4 px-5 py-3 border-b border-border bg-muted/40 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
-                <div className="col-span-2">Concept ID & Type</div>
-                <div className="col-span-5">Pharmacopeial Entity & Formulation</div>
-                <div className="col-span-3">Documented Storage Standard</div>
-                <div className="col-span-2 text-right">Actions</div>
-              </div>
+            <div className="rounded-xl border border-border bg-card overflow-hidden shadow-xs">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[700px]">
+                  <thead>
+                    <tr className="border-b border-border bg-secondary/40 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+                      <th className="py-3 px-4 font-semibold w-28">Concept ID</th>
+                      <th className="py-3 px-4 font-semibold">Medicine & Formulation</th>
+                      <th className="py-3 px-4 font-semibold">Active Substance & Strength</th>
+                      <th className="py-3 px-4 font-semibold w-48">Storage Range</th>
+                      <th className="py-3 px-4 font-semibold text-right w-36">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/60 text-xs">
+                    {items.map((medicine) => {
+                      const coldChain =
+                        medicine.storage_max_temperature !== null &&
+                        medicine.storage_max_temperature <= 8;
+                      const scannable = Boolean(
+                        medicine.image_class && recognisableClasses.has(medicine.image_class),
+                      );
 
-              {/* Ledger Rows */}
-              <div className="divide-y divide-border/60">
-                {items.map((medicine) => {
-                  const coldChain =
-                    medicine.storage_max_temperature !== null &&
-                    medicine.storage_max_temperature <= 8;
-                  const scannable = Boolean(
-                    medicine.image_class && recognisableClasses.has(medicine.image_class),
-                  );
+                      return (
+                        <tr
+                          key={medicine.medicine_id}
+                          onClick={() => setSelected(medicine)}
+                          className="hover:bg-secondary/40 transition-colors cursor-pointer group"
+                        >
+                          {/* Concept ID & Badges */}
+                          <td className="py-3.5 px-4 align-top">
+                            <span className="font-mono text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
+                              {medicine.medicine_id}
+                            </span>
+                            <div className="mt-1">
+                              {coldChain ? (
+                                <span className="inline-flex items-center gap-1 rounded bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 px-1.5 py-0.5 font-mono text-[9px] font-bold">
+                                  <Snowflake className="size-2.5" />
+                                  <span>Cold Chain</span>
+                                </span>
+                              ) : scannable ? (
+                                <span className="rounded bg-mint/15 text-forest dark:text-mint px-1.5 py-0.5 font-mono text-[9px] font-bold">
+                                  Vision Class
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-mono text-muted-foreground">
+                                  RxNorm
+                                </span>
+                              )}
+                            </div>
+                          </td>
 
-                  return (
-                    <div
-                      key={medicine.medicine_id}
-                      onClick={() => setSelected(medicine)}
-                      className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 p-4 md:px-5 md:py-3.5 items-center hover:bg-muted/30 transition-colors cursor-pointer group"
-                    >
-                      {/* Col 1: Identifier & Category Badges */}
-                      <div className="md:col-span-2 flex items-center md:flex-col md:items-start gap-2">
-                        <span className="font-mono text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-                          {medicine.medicine_id}
-                        </span>
-                        {coldChain ? (
-                          <span className="inline-flex items-center gap-1 rounded bg-sky-100 text-sky-800 px-1.5 py-0.2 font-mono text-[9px] font-bold">
-                            <Snowflake className="size-2.5" />
-                            <span>Cold Chain</span>
-                          </span>
-                        ) : scannable ? (
-                          <span className="rounded bg-mint/15 text-mint px-1.5 py-0.2 font-mono text-[9px] font-bold">
-                            Vision Class
-                          </span>
-                        ) : (
-                          <span className="text-[9px] font-mono text-muted-foreground">
-                            USP Standard
-                          </span>
-                        )}
-                      </div>
+                          {/* Medicine & Formulation */}
+                          <td className="py-3.5 px-4 align-top">
+                            <strong className="font-head text-sm font-bold text-foreground group-hover:text-primary transition-colors block">
+                              {medicine.medicine_name}
+                            </strong>
+                            <span className="text-[11px] text-muted-foreground block mt-0.5">
+                              {medicine.dosage_form} • {medicine.category}
+                            </span>
+                          </td>
 
-                      {/* Col 2: Name & Active Substance */}
-                      <div className="md:col-span-5 min-w-0 space-y-1">
-                        <h2 className="font-head text-sm md:text-base font-bold text-foreground group-hover:text-primary transition-colors truncate">
-                          {medicine.medicine_name}
-                        </h2>
-                        <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-muted-foreground">
-                          <span>
-                            Active:{" "}
-                            <strong className="text-foreground">{medicine.generic_name}</strong>
-                          </span>
-                          {medicine.strength && (
-                            <>
-                              <span>•</span>
-                              <span>{medicine.strength}</span>
-                            </>
-                          )}
-                          <span>•</span>
-                          <span>{medicine.dosage_form}</span>
-                        </div>
-                      </div>
-
-                      {/* Col 3: Calibrated Storage Envelope Ribbon */}
-                      <div className="md:col-span-3 space-y-1">
-                        <span className="font-mono text-[9px] text-muted-foreground uppercase block md:hidden">
-                          Storage Envelope:
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={cn(
-                              "font-mono text-xs font-bold",
-                              coldChain ? "text-sky-800" : "text-primary",
+                          {/* Active Substance & Strength */}
+                          <td className="py-3.5 px-4 align-top font-mono text-[11px]">
+                            <span className="text-foreground font-semibold">
+                              {medicine.generic_name}
+                            </span>
+                            {medicine.strength && (
+                              <span className="text-muted-foreground block mt-0.5">
+                                {medicine.strength}
+                              </span>
                             )}
-                          >
-                            {medicine.storage_min_temperature !== null &&
-                            medicine.storage_max_temperature !== null
-                              ? `${medicine.storage_min_temperature}°C to ${medicine.storage_max_temperature}°C`
-                              : "Standard CRT (20°C–25°C)"}
-                          </span>
-                        </div>
-                        <div className="text-[10px] text-muted-foreground truncate font-sans">
-                          {medicine.category}
-                        </div>
-                      </div>
+                          </td>
 
-                      {/* Col 4: Action Dock */}
-                      <div className="md:col-span-2 flex items-center justify-end gap-2 pt-2 md:pt-0">
-                        <Button
-                          variant="outline"
-                          className="h-7 text-xs border-border bg-background hover:bg-secondary font-medium"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelected(medicine);
-                          }}
-                        >
-                          <span>Details</span>
-                        </Button>
-                        <Button
-                          variant="primary"
-                          className="h-7 px-2.5 text-xs bg-primary text-primary-foreground font-semibold shadow-2xs hover:bg-primary/90"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate({
-                              to: "/assessment",
-                              search: { medicine: medicine.medicine_id },
-                            });
-                          }}
-                        >
-                          <Thermometer className="mr-1 size-2.5 text-mint" />
-                          <span>Assess</span>
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })}
+                          {/* Storage Range */}
+                          <td className="py-3.5 px-4 align-top">
+                            <span
+                              className={cn(
+                                "font-mono text-xs font-bold block tnum",
+                                coldChain ? "text-sky-800 dark:text-sky-300" : "text-primary",
+                              )}
+                            >
+                              {medicine.storage_min_temperature !== null &&
+                              medicine.storage_max_temperature !== null
+                                ? `${medicine.storage_min_temperature}°C to ${medicine.storage_max_temperature}°C`
+                                : "20°C to 25°C (USP CRT)"}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground">
+                              {coldChain ? "Protect from freezing" : "Excursions: 15–30°C"}
+                            </span>
+                          </td>
+
+                          {/* Actions */}
+                          <td className="py-3.5 px-4 align-top text-right space-x-1.5">
+                            <Button
+                              variant="outline"
+                              className="h-7 text-xs border-border bg-background hover:bg-secondary font-medium"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelected(medicine);
+                              }}
+                            >
+                              Details
+                            </Button>
+                            <Button
+                              variant="primary"
+                              className="h-7 px-2.5 text-xs bg-primary text-primary-foreground font-semibold hover:bg-primary/90"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate({
+                                  to: "/assessment",
+                                  search: { medicine: medicine.medicine_id },
+                                });
+                              }}
+                            >
+                              <Thermometer className="mr-1 size-3 text-mint" />
+                              Assess
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && !list.isError && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-border pt-4">
+              <span className="font-mono text-xs text-muted-foreground">
+                Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} of{" "}
+                {total.toLocaleString()} records
+              </span>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  className="h-8.5 px-3 text-xs border-border bg-card"
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                >
+                  <ChevronLeft className="mr-1 size-3.5" />
+                  <span>Previous</span>
+                </Button>
+                <span className="px-2 font-mono text-xs text-foreground font-semibold tnum">
+                  {page} / {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  className="h-8.5 px-3 text-xs border-border bg-card"
+                  disabled={page >= totalPages}
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                >
+                  <span>Next</span>
+                  <ChevronRight className="ml-1 size-3.5" />
+                </Button>
               </div>
             </div>
           )}
         </div>
 
-        {/* ── Pagination Ledger ────────────────────────────────────────── */}
-        {totalPages > 1 && !list.isError && (
-          <div className="flex items-center justify-between border-t border-border pt-4">
-            <span className="font-mono text-xs text-muted-foreground">
-              Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} of{" "}
-              {total.toLocaleString()} records
-            </span>
-
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                className="h-8 px-3 text-xs border-border bg-card"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-              >
-                <ChevronLeft className="mr-1 size-3.5" />
-                <span>Previous</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="h-8 px-3 text-xs border-border bg-card"
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              >
-                <span>Next</span>
-                <ChevronRight className="ml-1 size-3.5" />
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* ── Monograph Slide-Over Drawer ─────────────────────────────── */}
+        {/* =========================================================================
+            MONOGRAPH DETAIL MODAL / DRAWER
+           ========================================================================= */}
         {selected && (
-          <MedicineDrawer
+          <MedicineDetailModal
             medicine={selected}
             scannable={Boolean(
               selected.image_class && recognisableClasses.has(selected.image_class),
@@ -373,7 +424,7 @@ function MedicinesPage() {
   );
 }
 
-function MedicineDrawer({
+function MedicineDetailModal({
   medicine,
   scannable,
   onClose,
@@ -387,77 +438,119 @@ function MedicineDrawer({
   const coldChain =
     medicine.storage_max_temperature !== null && medicine.storage_max_temperature <= 8;
 
+  // Escape listener
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
   return (
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-xs p-4"
+      aria-labelledby="modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 backdrop-blur-xs p-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded border border-border bg-card p-6 shadow-xl space-y-5"
+        className="w-full max-w-xl rounded-xl border border-border bg-card p-6 shadow-2xl space-y-5"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Modal Header */}
         <div className="flex items-start justify-between border-b border-border pb-4">
           <div className="space-y-1">
-            <span className="font-mono text-[10px] font-bold text-primary uppercase">
-              {medicine.medicine_id} • {medicine.source}
-            </span>
-            <h2 className="font-head text-xl font-bold text-foreground">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
+                {medicine.medicine_id}
+              </span>
+              <span className="font-mono text-[10px] text-muted-foreground uppercase">
+                {medicine.source} Record
+              </span>
+            </div>
+            <h2 id="modal-title" className="font-head text-xl font-bold text-foreground">
               {medicine.medicine_name}
             </h2>
-            <p className="text-xs text-muted-foreground font-mono">{medicine.generic_name}</p>
+            <p className="text-xs text-muted-foreground font-mono">
+              Active Entity: <strong className="text-foreground">{medicine.generic_name}</strong>
+            </p>
           </div>
           <button
             onClick={onClose}
-            className="rounded p-1 text-muted-foreground hover:text-foreground"
+            aria-label="Close monograph details"
+            className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
           >
             <X className="size-5" />
           </button>
         </div>
 
-        <div className="space-y-4 text-xs font-mono">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded border border-border bg-background p-2.5">
-              <span className="text-[10px] text-muted-foreground block">Dosage Form</span>
-              <strong className="text-foreground">{medicine.dosage_form}</strong>
-            </div>
-            <div className="rounded border border-border bg-background p-2.5">
-              <span className="text-[10px] text-muted-foreground block">Strength</span>
-              <strong className="text-foreground">{medicine.strength ?? "Standard"}</strong>
-            </div>
-            <div className="rounded border border-border bg-background p-2.5">
-              <span className="text-[10px] text-muted-foreground block">Permitted Temp</span>
-              <strong className="text-primary font-bold">
-                {medicine.storage_min_temperature !== null &&
-                medicine.storage_max_temperature !== null
-                  ? `${medicine.storage_min_temperature}°C to ${medicine.storage_max_temperature}°C`
-                  : "Controlled Room Temp (20°C–25°C)"}
-              </strong>
-            </div>
-            <div className="rounded border border-border bg-background p-2.5">
-              <span className="text-[10px] text-muted-foreground block">Cold Chain</span>
-              <strong className={coldChain ? "text-sky-800 font-bold" : "text-foreground"}>
-                {coldChain ? "Yes (2°C–8°C)" : "No (Ambient)"}
-              </strong>
+        {/* Verified Reference Data Grid */}
+        <div className="space-y-4 text-xs">
+          <div>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-2">
+              Verified Pharmacopeial Reference Fields
+            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <div className="rounded-lg border border-border bg-background p-2.5">
+                <span className="text-[10px] text-muted-foreground block">Dosage Form</span>
+                <strong className="text-foreground font-semibold">{medicine.dosage_form}</strong>
+              </div>
+              <div className="rounded-lg border border-border bg-background p-2.5">
+                <span className="text-[10px] text-muted-foreground block">Strength</span>
+                <strong className="text-foreground font-semibold">{medicine.strength || "Standard"}</strong>
+              </div>
+              <div className="rounded-lg border border-border bg-background p-2.5">
+                <span className="text-[10px] text-muted-foreground block">Category</span>
+                <strong className="text-foreground font-semibold truncate block">{medicine.category}</strong>
+              </div>
+              <div className="rounded-lg border border-border bg-background p-2.5">
+                <span className="text-[10px] text-muted-foreground block">Permitted Range</span>
+                <strong className="text-primary font-bold tnum">
+                  {medicine.storage_min_temperature !== null &&
+                  medicine.storage_max_temperature !== null
+                    ? `${medicine.storage_min_temperature}°C to ${medicine.storage_max_temperature}°C`
+                    : "20°C to 25°C (USP CRT)"}
+                </strong>
+              </div>
+              <div className="rounded-lg border border-border bg-background p-2.5">
+                <span className="text-[10px] text-muted-foreground block">Cold Chain</span>
+                <strong className={coldChain ? "text-sky-800 dark:text-sky-300 font-bold" : "text-foreground"}>
+                  {coldChain ? "Yes (2°C–8°C)" : "No (Ambient)"}
+                </strong>
+              </div>
+              <div className="rounded-lg border border-border bg-background p-2.5">
+                <span className="text-[10px] text-muted-foreground block">RxNorm CUI</span>
+                <strong className="font-mono text-foreground font-semibold">
+                  {medicine.rxnorm_cui ?? "Mapped Monograph"}
+                </strong>
+              </div>
             </div>
           </div>
 
-          <div className="rounded border border-border bg-background p-3 space-y-1.5 font-sans">
-            <span className="font-mono text-[10px] uppercase text-muted-foreground block">
+          {/* Storage Guidelines & Freeze Alerts */}
+          <div className="rounded-lg border border-border bg-background p-3.5 space-y-1.5">
+            <span className="font-mono text-[10px] uppercase font-bold text-muted-foreground block">
               Documented Storage Guidelines
             </span>
             <p className="text-xs text-foreground leading-relaxed">
               {medicine.storage_min_temperature !== null &&
               medicine.storage_max_temperature !== null
-                ? `Store between ${medicine.storage_min_temperature}°C and ${medicine.storage_max_temperature}°C. Protect from excessive heat, light, and excursions.`
+                ? `Store between ${medicine.storage_min_temperature}°C and ${medicine.storage_max_temperature}°C. Maintain temperature monitoring and protect from excessive humidity.`
                 : "Store at USP Controlled Room Temperature (20°C to 25°C). Excursions permitted between 15°C and 30°C. Protect from excessive moisture."}
             </p>
+            {coldChain && (
+              <p className="text-xs text-destructive font-semibold pt-1">
+                Freeze Hazard: Do not freeze. Exposure below 0°C may cause irreversible protein denaturation or structural degradation.
+              </p>
+            )}
           </div>
 
+          {/* Source Attribution */}
           {medicine.source_url && (
-            <div className="rounded border border-border bg-background p-3 space-y-1 font-sans">
-              <span className="font-mono text-[10px] uppercase text-muted-foreground block">
+            <div className="rounded-lg border border-border bg-background p-3 space-y-1">
+              <span className="font-mono text-[10px] uppercase font-bold text-muted-foreground block">
                 Provenance & Regulatory Source
               </span>
               <a
@@ -472,13 +565,14 @@ function MedicineDrawer({
           )}
         </div>
 
+        {/* Modal Actions */}
         <div className="pt-3 border-t border-border flex items-center justify-between">
           <Button variant="outline" className="text-xs" onClick={onClose}>
             Close
           </Button>
           <Button
             variant="primary"
-            className="text-xs bg-primary text-primary-foreground font-semibold"
+            className="text-xs bg-primary text-primary-foreground font-semibold shadow-xs"
             onClick={() => onAssess(medicine.medicine_id)}
           >
             <Thermometer className="mr-1.5 size-3.5 text-mint" />

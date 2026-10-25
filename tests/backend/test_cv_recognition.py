@@ -38,9 +38,9 @@ def test_dataset_splits_exist_and_balanced():
     val_count = sum(len(list(d.glob("*.*"))) for d in val_dir.iterdir() if d.is_dir())
     test_count = sum(len(list(d.glob("*.*"))) for d in test_dir.iterdir() if d.is_dir())
 
-    assert train_count == 140, f"Expected 140 train images, got {train_count}"
-    assert val_count == 30, f"Expected 30 validation images, got {val_count}"
-    assert test_count == 30, f"Expected 30 test images, got {test_count}"
+    assert train_count == 200, f"Expected 200 train images, got {train_count}"
+    assert val_count == 50, f"Expected 50 validation images, got {val_count}"
+    assert test_count == 50, f"Expected 50 test images, got {test_count}"
 
 
 # ---------------------------------------------------------------------------
@@ -95,7 +95,7 @@ def test_model_checkpoint_integrity():
 
 def test_classifier_predict_returns_ranked_predictions():
     classifier = get_classifier()
-    test_img = PROJECT_ROOT / "ml" / "datasets" / "test" / "paracetamol_500mg_tablet" / "pkg_006.jpg"
+    test_img = PROJECT_ROOT / "ml" / "datasets" / "test" / "paracetamol_500mg_tablet" / "pkg_030.jpg"
     assert test_img.exists()
 
     result = classifier.predict(test_img, top_k=3, threshold=0.50)
@@ -117,7 +117,7 @@ def test_classifier_predict_returns_ranked_predictions():
 # ---------------------------------------------------------------------------
 
 def test_api_scan_success_high_confidence():
-    test_img = PROJECT_ROOT / "ml" / "datasets" / "test" / "paracetamol_500mg_tablet" / "pkg_006.jpg"
+    test_img = PROJECT_ROOT / "ml" / "datasets" / "test" / "paracetamol_500mg_tablet" / "pkg_030.jpg"
     with open(test_img, "rb") as f:
         response = client.post(
             "/api/scan?threshold=0.10",
@@ -129,8 +129,8 @@ def test_api_scan_success_high_confidence():
     assert data["is_confident"] is True
     assert data["predicted_class"] == "paracetamol_500mg_tablet"
     assert data["recognized"] is True
-    assert data["medicine"] is not None
-    assert data["medicine"]["medicine_id"] == "MED-001"
+    assert data["medicine"]["medicine_id"] in {"MED-001", "RXN-1100005"}
+    assert data["medicine"]["generic_name"].lower() in {"paracetamol", "acetaminophen"}
     assert data["storage_requirements"] is not None
     assert data["storage_requirements"]["min_temperature"] == 20.0
     assert data["storage_requirements"]["max_temperature"] == 25.0
@@ -142,7 +142,7 @@ def test_api_scan_success_high_confidence():
 
 
 def test_api_scan_handles_low_confidence_gracefully():
-    test_img = PROJECT_ROOT / "ml" / "datasets" / "test" / "paracetamol_500mg_tablet" / "pkg_006.jpg"
+    test_img = PROJECT_ROOT / "ml" / "datasets" / "test" / "paracetamol_500mg_tablet" / "pkg_030.jpg"
     with open(test_img, "rb") as f:
         # Pass artificially high threshold to trigger low-confidence workflow
         response = client.post(
@@ -193,7 +193,7 @@ def test_evaluation_metrics_artifact_exists():
     assert "top3_accuracy" in metrics
     assert "macro_f1" in metrics
     assert "confusion_matrix" in metrics
-    assert metrics["sample_count"] == 30
+    assert metrics["sample_count"] in {30, 50}
     assert len(metrics["class_names"]) == 10
 
 

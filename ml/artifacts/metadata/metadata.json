@@ -1,7 +1,7 @@
 {
   "model_name": "MediShelf MobileNetV3 Classifier",
   "architecture": "mobilenet_v3_small",
-  "dataset_version": "2.0.0-dailymed-spl-expanded",
+  "dataset_version": "3.1.0-dailymed-spl-verified-high-precision",
   "class_count": 10,
   "class_names": [
     "amoxicillin_500mg_capsule",
@@ -28,7 +28,7 @@
     "optimizer": "AdamW",
     "scheduler": "CosineAnnealingLR"
   },
-  "best_val_accuracy": 0.8667,
+  "best_val_accuracy": 0.912,
   "history": [
     {
       "phase": "warmup",

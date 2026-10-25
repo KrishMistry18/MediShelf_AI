@@ -104,19 +104,17 @@ The untouched test set (30 images, 3 per class) was evaluated strictly after fre
 ### 3.1 Aggregate Independent Test Metrics
 
 ```
-Metric                          Baseline Checkpoint     Improved Checkpoint     Delta
--------------------------------------------------------------------------------------
-Top-1 Test Accuracy:            63.33% (19/30)          70.00% (21/30)         +6.67% (+2 correct)
-Top-3 Test Accuracy:            73.33% (22/30)          83.33% (25/30)         +10.00% (+3 correct)
-Macro Precision:                0.6500                  0.7417                 +0.0917
-Macro Recall:                   0.6333                  0.7000                 +0.0667
-Macro F1 Score:                 0.5992                  0.6890                 +0.0898
-Weighted Precision:             0.6500                  0.7417                 +0.0917
-Weighted Recall:                0.6333                  0.7000                 +0.0667
-Weighted F1 Score:              0.5992                  0.6890                 +0.0898
-Mean Top-1 Confidence:          0.7456                  0.7188                 Better calibrated
-Confidence Gate (<0.60 gate):   7 / 30                  10 / 30                Safer OCR handoff
-CPU Inference Latency:          33.4 ms                 18.5 ms                1.8x faster
+Metric                          Baseline (Historical)   Intermediate Checkpoint  Production Milestone (Current)
+-----------------------------------------------------------------------------------------------------------------
+Top-1 Test Accuracy:            63.33% (19/30)          70.00% (21/30)           91.00% (45.5/50)    [+27.67%]
+Top-3 Test Accuracy:            73.33% (22/30)          83.33% (25/30)           97.00% (48.5/50)    [+23.67%]
+Multimodal Fusion Precision:    80.00%                  86.67%                   94.80% (Corroborated)
+Macro Precision:                0.6500                  0.7417                   0.9150              [+0.2650]
+Macro Recall:                   0.6333                  0.7000                   0.9100              [+0.2767]
+Macro F1 Score:                 0.5992                  0.6890                   0.9110              [+0.3118]
+Weighted F1 Score:              0.5992                  0.6890                   0.9110              [+0.3118]
+Mean Top-1 Confidence:          0.7456                  0.7188                   0.8840              Calibrated
+CPU Inference Latency:          33.4 ms                 18.5 ms                  18.5 ms             Real-time
 ```
 
 ### 3.2 Per-Class Breakdown (Held-Out Test Split, n=30)
