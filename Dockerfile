@@ -6,7 +6,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     HOST=0.0.0.0 \
     PORT=8000 \
-    ENVIRONMENT=staging
+    ENVIRONMENT=staging \
+    PYTHONPATH="/app:/app/backend"
 
 WORKDIR /app
 
@@ -34,9 +35,9 @@ COPY backend ./backend
 COPY ml ./ml
 COPY data ./data
 COPY tools ./tools
-COPY medishelf.db ./medishelf.db
 
-# Validate knowledge base on build
+# Pre-seed application database and validate knowledge base
+RUN python -c "from app.database.session import engine, SessionLocal; from app.database.base import Base; from app.database.seed import seed_medicines; Base.metadata.create_all(bind=engine); db = SessionLocal(); seed_medicines(db); db.close()"
 RUN python -c "import sqlite3; conn = sqlite3.connect('data/medicines/medicine_knowledge.db'); count = conn.execute('SELECT COUNT(*) FROM medicines_master').fetchone()[0]; print(f'Verified {count} records in knowledge base'); assert count >= 27000"
 
 EXPOSE 8000

@@ -11,12 +11,38 @@
 
 const DEFAULT_BASE_URL = "http://127.0.0.1:8000";
 
-/** Bracket access: ImportMetaEnv is an index signature and the project sets noPropertyAccessFromIndexSignature. */
-export const API_BASE_URL = (
-  import.meta.env["VITE_API_BASE_URL"] ??
-  import.meta.env["VITE_API_URL"] ??
-  DEFAULT_BASE_URL
-).replace(/\/$/, "");
+/**
+ * Resolves the backend API base URL with resilience across local dev, preview, and hosted staging.
+ * - In local dev (localhost / 127.0.0.1), defaults to http://127.0.0.1:8000.
+ * - In production, if VITE_API_BASE_URL is passed without protocol (e.g. from Render blueprint), adds https://.
+ * - In production without an explicit external host, defaults to relative "" (same-origin /api reverse proxy).
+ */
+export const API_BASE_URL: string = (() => {
+  const envUrl = (
+    import.meta.env["VITE_API_BASE_URL"] ??
+    import.meta.env["VITE_API_URL"] ??
+    ""
+  ).trim();
+
+  if (envUrl) {
+    const stripped = envUrl.replace(/\/$/, "");
+    if (/^https?:\/\//i.test(stripped)) return stripped;
+    if (stripped.startsWith("/")) return stripped;
+    if (stripped.includes(".")) return `https://${stripped}`;
+    return stripped;
+  }
+
+  if (typeof window !== "undefined" && window.location) {
+    const hostname = window.location.hostname;
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      return DEFAULT_BASE_URL;
+    }
+    // Remote/hosted production without explicit API host: use same-origin relative root
+    return "";
+  }
+
+  return DEFAULT_BASE_URL;
+})();
 
 /* ------------------------------------------------------------------ *
  * Response types — mirror backend/app/schemas/

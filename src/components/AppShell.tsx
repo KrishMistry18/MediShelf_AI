@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useAssessmentHistory, isFlagged } from "@/lib/activity";
+import { API_BASE_URL } from "@/lib/api";
 import { useCatalogCount, useApiHealth, useModelsOverview } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 
@@ -114,7 +115,15 @@ export function AppShell({ children }: { children: ReactNode }) {
     }
   };
 
-  const isBackendOnline = health.isSuccess && health.data?.status === "ok";
+  const isHealthLoading = health.isLoading || health.isFetching;
+  const isHealthy =
+    health.isSuccess &&
+    (health.data?.status === "healthy" || health.data?.status === "ok") &&
+    health.data?.database !== "error";
+  const isDegraded =
+    health.isSuccess &&
+    (health.data?.status === "degraded" || health.data?.database === "error");
+  const isOffline = !isHealthLoading && !isHealthy && !isDegraded;
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans antialiased selection:bg-mint/20 selection:text-forest">
@@ -237,38 +246,84 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="p-3 border-t border-[#1A453B] bg-[#0B211C] text-xs space-y-2.5">
           {/* Backend Connection Health */}
           <div className="flex items-center justify-between text-[11px]">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <span
                 className={cn(
-                  "size-2 rounded-full",
-                  isBackendOnline ? "bg-mint animate-pulse" : "bg-[#D9383A]",
+                  "size-2 shrink-0 rounded-full",
+                  isHealthLoading
+                    ? "bg-amber-400 animate-pulse"
+                    : isHealthy
+                      ? "bg-mint animate-pulse"
+                      : isDegraded
+                        ? "bg-amber-400"
+                        : "bg-[#D9383A]",
                 )}
                 aria-hidden="true"
               />
-              <span className="text-[#D1DDD7] font-medium">
-                {isBackendOnline ? "Inference Service" : "Service Offline"}
+              <span className="text-[#D1DDD7] font-medium truncate">
+                {isHealthLoading
+                  ? "Checking Service..."
+                  : isHealthy
+                    ? "Inference Service"
+                    : isDegraded
+                      ? "Service Degraded"
+                      : "Service Offline"}
               </span>
             </div>
-            <span className="font-mono text-[10px] text-[#A3B8B0]">
-              {isBackendOnline ? "Active" : "Check API"}
-            </span>
+            <button
+              type="button"
+              onClick={() => {
+                if (!isHealthLoading) {
+                  health.refetch();
+                }
+              }}
+              disabled={isHealthLoading}
+              title={
+                isHealthy
+                  ? `API online (${health.data?.version ?? "v0.1.0"}, DB ${health.data?.database ?? "connected"}). Click to refresh.`
+                  : isDegraded
+                    ? `DB issue: ${String(health.data?.details?.["db_error"] ?? "Degraded state")}. Click to re-check.`
+                    : `Cannot reach API at ${API_BASE_URL}. Click to re-check.`
+              }
+              className={cn(
+                "font-mono text-[10px] shrink-0 rounded px-1.5 py-0.5 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-mint",
+                isHealthLoading
+                  ? "text-[#A3B8B0] cursor-wait opacity-70"
+                  : isHealthy
+                    ? "text-mint/90 hover:bg-mint/10 hover:text-mint cursor-pointer"
+                    : isDegraded
+                      ? "text-amber-400 hover:bg-amber-400/10 cursor-pointer"
+                      : "text-[#F87171] hover:bg-[#D9383A]/20 cursor-pointer underline",
+              )}
+            >
+              {isHealthLoading
+                ? "Checking..."
+                : isHealthy
+                  ? "Active"
+                  : isDegraded
+                    ? "Degraded"
+                    : "Check API"}
+            </button>
           </div>
 
           {/* Catalog & Knowledge Base */}
           <div className="flex items-center justify-between text-[11px]">
-            <span className="text-[#8CA399]">RxNorm Monograph DB</span>
+            <span className="text-[#8CA399]">RxNorm Reference DB</span>
             <span className="font-mono text-[10px] text-[#D1DDD7] font-medium">
               {catalogCount.isSuccess
-                ? `${Number(catalogCount.data).toLocaleString()} SKUs`
-                : "27,326 SKUs"}
+                ? `${Number(catalogCount.data).toLocaleString()} Records`
+                : "27,326 Records"}
             </span>
           </div>
 
           {/* Session Scope Notice */}
           <div className="pt-1 text-[10px] text-[#7E968D] border-t border-[#1A453B]/70 flex items-center justify-between">
-            <span>Session storage scope</span>
-            <span className="font-mono text-[9px] uppercase tracking-wider text-[#A3B8B0]">
-              Ephemeral Tab
+            <span>Audit history scope</span>
+            <span
+              className="font-mono text-[9px] uppercase tracking-wider text-[#A3B8B0]"
+              title="Excursions and review history are stored in browser sessionStorage (ephemeral to this tab)."
+            >
+              Session Only
             </span>
           </div>
         </div>
@@ -480,6 +535,44 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <Camera className="size-4" />
                 <span>Open Optical Scanner</span>
               </Link>
+
+              {/* Mobile Service Health Indicator */}
+              <div className="flex items-center justify-between text-[11px] pt-1 border-t border-[#1A453B]/70">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span
+                    className={cn(
+                      "size-2 shrink-0 rounded-full",
+                      isHealthLoading
+                        ? "bg-amber-400 animate-pulse"
+                        : isHealthy
+                          ? "bg-mint animate-pulse"
+                          : isDegraded
+                            ? "bg-amber-400"
+                            : "bg-[#D9383A]",
+                    )}
+                    aria-hidden="true"
+                  />
+                  <span className="text-[#D1DDD7] font-medium truncate">
+                    {isHealthLoading
+                      ? "Checking API..."
+                      : isHealthy
+                        ? "Inference Service"
+                        : isDegraded
+                          ? "Service Degraded"
+                          : "Service Offline"}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!isHealthLoading) health.refetch();
+                  }}
+                  disabled={isHealthLoading}
+                  className="font-mono text-[10px] text-mint hover:underline"
+                >
+                  {isHealthLoading ? "..." : isHealthy ? "Online" : "Retry"}
+                </button>
+              </div>
 
               <div className="flex items-center justify-between text-[11px] text-[#A3B8B0] font-mono">
                 <span>Model Checkpoint</span>

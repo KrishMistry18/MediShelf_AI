@@ -16,30 +16,6 @@ It pairs a high-performance **27,326-record authentic medicine knowledge base** 
 
 ---
 
-## 📸 Product Interface Walkthrough
-
-| 1. System Overview Dashboard | 2. Catalogue Search (27,326 SKUs) |
-| :---: | :---: |
-| ![System Overview](docs/screenshots/01_overview.png) | ![Catalogue Search](docs/screenshots/02_catalogue_search.png) |
-| *Real-time service health, indexed metrics, and workflow navigation.* | *FTS5 BM25 search across 27,326 SCD/SBD concepts and 62 categories.* |
-
-| 3. Multimodal Packaging Scanner | 4. Scan Result & Fusion Assessment |
-| :---: | :---: |
-| ![Scanner Interface](docs/screenshots/03_scanner_ready.png) | ![Scan Result](docs/screenshots/04_scan_result.png) |
-| *Drag-and-drop packaging photo upload with automated quality checks.* | *Evidence fusion: CV candidate ranking, OCR parsed fields, and consensus.* |
-
-| 5. Storage Compliance & ML Risk | 6. Live Model Insights & Governance |
-| :---: | :---: |
-| ![Storage Assessment](docs/screenshots/05_storage_assessment.png) | ![Model Insights](docs/screenshots/06_model_insights.png) |
-| *Monograph rule comparison alongside GradientBoosting excursion risk.* | *Live metrics, confusion matrices, and feature importances from disk.* |
-
-| 7. Responsive Mobile Layout |
-| :---: |
-| <img src="docs/screenshots/07_mobile_layout.png" width="360" alt="Mobile View" /> |
-| *Touch-friendly responsive layout optimized for mobile browsers.* |
-
----
-
 ## ⚡ Core Capabilities
 
 1. **Large-Scale Authentic Medicine Catalogue (27,326 SKUs)**:
