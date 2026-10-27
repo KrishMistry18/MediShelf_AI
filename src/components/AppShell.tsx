@@ -108,7 +108,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (headerSearch.trim()) {
       navigate({
         to: "/medicines",
-        search: { search: headerSearch.trim() } as any,
+        search: { search: headerSearch.trim() } as Record<string, unknown>,
       });
       setHeaderSearch("");
       searchInputRef.current?.blur();
@@ -121,8 +121,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     (health.data?.status === "healthy" || health.data?.status === "ok") &&
     health.data?.database !== "error";
   const isDegraded =
-    health.isSuccess &&
-    (health.data?.status === "degraded" || health.data?.database === "error");
+    health.isSuccess && (health.data?.status === "degraded" || health.data?.database === "error");
   const isOffline = !isHealthLoading && !isHealthy && !isDegraded;
 
   return (
@@ -171,8 +170,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <nav className="space-y-1" aria-label="Primary Workspace Navigation">
               {PRIMARY_NAV.map((item) => {
                 const Icon = item.icon;
-                const active =
-                  item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+                const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
                 const badge =
                   item.to === "/alerts" && flaggedAlertsCount > 0
                     ? String(flaggedAlertsCount)
@@ -481,8 +479,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <nav className="mt-3 space-y-1" aria-label="Mobile Navigation Links">
                 {PRIMARY_NAV.map((item) => {
                   const Icon = item.icon;
-                  const active =
-                    item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+                  const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
                   const badge =
                     item.to === "/alerts" && flaggedAlertsCount > 0
                       ? String(flaggedAlertsCount)

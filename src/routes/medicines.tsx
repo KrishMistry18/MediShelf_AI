@@ -215,7 +215,10 @@ function MedicinesPage() {
           ) : list.isLoading ? (
             <div className="rounded-xl border border-border bg-card p-4 space-y-3">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="flex items-center gap-4 py-3 border-b border-border/50 last:border-0">
+                <div
+                  key={i}
+                  className="flex items-center gap-4 py-3 border-b border-border/50 last:border-0"
+                >
                   <Skeleton className="h-6 w-20" />
                   <Skeleton className="h-6 w-1/3" />
                   <Skeleton className="h-6 w-1/4" />
@@ -499,11 +502,15 @@ function MedicineDetailModal({
               </div>
               <div className="rounded-lg border border-border bg-background p-2.5">
                 <span className="text-[10px] text-muted-foreground block">Strength</span>
-                <strong className="text-foreground font-semibold">{medicine.strength || "Standard"}</strong>
+                <strong className="text-foreground font-semibold">
+                  {medicine.strength || "Standard"}
+                </strong>
               </div>
               <div className="rounded-lg border border-border bg-background p-2.5">
                 <span className="text-[10px] text-muted-foreground block">Category</span>
-                <strong className="text-foreground font-semibold truncate block">{medicine.category}</strong>
+                <strong className="text-foreground font-semibold truncate block">
+                  {medicine.category}
+                </strong>
               </div>
               <div className="rounded-lg border border-border bg-background p-2.5">
                 <span className="text-[10px] text-muted-foreground block">Permitted Range</span>
@@ -516,7 +523,11 @@ function MedicineDetailModal({
               </div>
               <div className="rounded-lg border border-border bg-background p-2.5">
                 <span className="text-[10px] text-muted-foreground block">Cold Chain</span>
-                <strong className={coldChain ? "text-sky-800 dark:text-sky-300 font-bold" : "text-foreground"}>
+                <strong
+                  className={
+                    coldChain ? "text-sky-800 dark:text-sky-300 font-bold" : "text-foreground"
+                  }
+                >
                   {coldChain ? "Yes (2°C–8°C)" : "No (Ambient)"}
                 </strong>
               </div>
@@ -542,7 +553,8 @@ function MedicineDetailModal({
             </p>
             {coldChain && (
               <p className="text-xs text-destructive font-semibold pt-1">
-                Freeze Hazard: Do not freeze. Exposure below 0°C may cause irreversible protein denaturation or structural degradation.
+                Freeze Hazard: Do not freeze. Exposure below 0°C may cause irreversible protein
+                denaturation or structural degradation.
               </p>
             )}
           </div>

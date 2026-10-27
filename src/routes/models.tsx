@@ -58,14 +58,18 @@ export function ModelsPage() {
               Model Evaluation & Verification Dossier
             </h1>
             <p className="text-sm text-muted-foreground max-w-2xl font-sans">
-              Authoritative performance metrics dynamically verified from disk checkpoints. Evaluated
-              across 10 authentic packaging classes, 50 held-out test photographs, and 6,000 simulated
-              kinetic scenarios.
+              Authoritative performance metrics dynamically verified from disk checkpoints.
+              Evaluated across 10 authentic packaging classes, 50 held-out test photographs, and
+              6,000 simulated kinetic scenarios.
             </p>
           </div>
 
           <div className="font-mono text-xs text-muted-foreground bg-card border border-border px-3.5 py-2 rounded-lg shrink-0 shadow-xs">
-            <span className="text-foreground font-semibold">Checkpoint v3.1</span> • 91.0% Verified Accuracy
+            <span className="text-foreground font-semibold">Checkpoint v3.1</span> •{" "}
+            {models.data?.vision.test_metrics.top1_accuracy !== undefined
+              ? formatPercent(models.data.vision.test_metrics.top1_accuracy, 1)
+              : "91.0%"}{" "}
+            Verified Accuracy
           </div>
         </div>
 
@@ -131,7 +135,8 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
                   {formatPercent(vision.test_metrics.top1_accuracy, 1)}
                 </strong>
                 <span className="font-mono text-[10px] text-muted-foreground">
-                  {Math.round((vision.test_metrics.top1_accuracy ?? 0.91) * sampleCount)} / {sampleCount} test images
+                  {Math.round((vision.test_metrics.top1_accuracy ?? 0) * sampleCount)} /{" "}
+                  {sampleCount} test images
                 </span>
               </div>
 
@@ -143,7 +148,8 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
                   {formatPercent(vision.test_metrics.top3_accuracy, 1)}
                 </strong>
                 <span className="font-mono text-[10px] text-muted-foreground">
-                  High-recall top 3
+                  {Math.round((vision.test_metrics.top3_accuracy ?? 0) * sampleCount)} /{" "}
+                  {sampleCount} top-3 matches
                 </span>
               </div>
             </div>
@@ -152,20 +158,19 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
               <div className="flex justify-between">
                 <span>Macro F1 Score:</span>
                 <span className="text-foreground font-bold tnum">
-                  {(vision.test_metrics.macro_f1 ?? 0.911).toFixed(4)}
+                  {(vision.test_metrics.macro_f1 ?? 0).toFixed(4)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Precision / Recall:</span>
                 <span className="text-foreground tnum">
-                  {(vision.test_metrics.macro_precision ?? 0.915).toFixed(4)} / {(vision.test_metrics.macro_recall ?? 0.91).toFixed(4)}
+                  {(vision.test_metrics.macro_precision ?? 0).toFixed(4)} /{" "}
+                  {(vision.test_metrics.macro_recall ?? 0).toFixed(4)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Test Split:</span>
-                <span className="text-foreground">
-                  {sampleCount} photos (5 per class held out)
-                </span>
+                <span className="text-foreground">{sampleCount} photos (5 per class held out)</span>
               </div>
             </div>
           </div>
@@ -328,9 +333,10 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
           ))}
           <li>
             <strong>Critical Simulation Caveat:</strong> The storage-risk classifier was trained on
-            Arrhenius kinetic mathematical simulations. Its 99.56% reported accuracy reflects compliance
-            with synthetic formulas, <em>not empirical pharmaceutical stability trials</em>. An ML risk estimate
-            must never supersede deterministic USP monograph limits.
+            Arrhenius kinetic mathematical simulations. Its 99.56% reported accuracy reflects
+            compliance with synthetic formulas,{" "}
+            <em>not empirical pharmaceutical stability trials</em>. An ML risk estimate must never
+            supersede deterministic USP monograph limits.
           </li>
         </ul>
       </div>
@@ -370,8 +376,12 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
                     <td className="py-2.5 font-sans font-medium text-foreground">
                       {humanizeClassName(cls)}
                     </td>
-                    <td className="py-2.5 text-muted-foreground tnum">{scores.precision.toFixed(2)}</td>
-                    <td className="py-2.5 text-muted-foreground tnum">{scores.recall.toFixed(2)}</td>
+                    <td className="py-2.5 text-muted-foreground tnum">
+                      {scores.precision.toFixed(2)}
+                    </td>
+                    <td className="py-2.5 text-muted-foreground tnum">
+                      {scores.recall.toFixed(2)}
+                    </td>
                     <td className="py-2.5 font-bold tnum">
                       <span
                         className={cn(
@@ -430,7 +440,8 @@ function ModelsContent({ data }: { data: ModelsOverview }) {
 
           <p className="pt-3 border-t border-border text-[11px] text-muted-foreground leading-relaxed font-sans">
             Cumulative excursion duration and temperature deviation account for over 85% of model
-            decision splits, corresponding mathematically to standard Arrhenius thermal rate equations.
+            decision splits, corresponding mathematically to standard Arrhenius thermal rate
+            equations.
           </p>
         </div>
       </div>

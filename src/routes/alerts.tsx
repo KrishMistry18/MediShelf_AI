@@ -99,10 +99,16 @@ function AlertsPage() {
         <div className="rounded-xl border border-border bg-card p-4 text-xs font-mono text-muted-foreground flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-2.5">
             <Info className="size-4 text-primary shrink-0" />
-            <span className="text-foreground font-semibold">Persistence Scope: Active Tab Only</span>
+            <span className="text-foreground font-semibold">
+              Persistence Scope: Active Tab Only
+            </span>
             <span>—</span>
             <span>
-              Records are held in browser <code className="bg-secondary px-1.5 py-0.5 rounded text-foreground">sessionStorage</code>. No data is stored in a remote cloud database.
+              Records are held in browser{" "}
+              <code className="bg-secondary px-1.5 py-0.5 rounded text-foreground">
+                sessionStorage
+              </code>
+              . No data is stored in a remote cloud database.
             </span>
           </div>
 
@@ -194,15 +200,23 @@ function AlertsPage() {
                           </div>
 
                           <div className="text-xs text-muted-foreground font-mono">
-                            Observed: <strong className="text-foreground tnum">{record.temperature}°C</strong> for{" "}
-                            <strong className="text-foreground tnum">{record.durationHours}h</strong> • Permitted:{" "}
-                            {record.permittedRange}
+                            Observed:{" "}
+                            <strong className="text-foreground tnum">{record.temperature}°C</strong>{" "}
+                            for{" "}
+                            <strong className="text-foreground tnum">
+                              {record.durationHours}h
+                            </strong>{" "}
+                            • Permitted: {record.permittedRange}
                           </div>
 
                           <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono pt-0.5">
                             <Clock className="size-3 text-muted-foreground" />
                             <span>
-                              Recorded at {new Date(record.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                              Recorded at{" "}
+                              {new Date(record.at).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                             </span>
                             <span>•</span>
                             <span className="text-destructive font-bold uppercase">
@@ -266,15 +280,22 @@ function AlertsPage() {
               ) : lowConfidenceScans.length === 0 ? (
                 <div className="py-6 text-center text-xs text-muted-foreground space-y-1">
                   <CheckCircle2 className="size-5 text-mint mx-auto" />
-                  <strong className="text-foreground block font-head text-sm">All Scans Verified</strong>
-                  <p>All {scans.length} packaging scans cleared confidence gates without modal divergence.</p>
+                  <strong className="text-foreground block font-head text-sm">
+                    All Scans Verified
+                  </strong>
+                  <p>
+                    All {scans.length} packaging scans cleared confidence gates without modal
+                    divergence.
+                  </p>
                 </div>
               ) : (
                 <div className="divide-y divide-border/60">
                   {lowConfidenceScans.map((scan) => (
                     <div key={scan.id} className="py-3 text-xs space-y-1">
                       <div className="flex justify-between items-baseline font-mono text-[11px]">
-                        <strong className="text-foreground truncate max-w-[200px]">{scan.fileName}</strong>
+                        <strong className="text-foreground truncate max-w-[200px]">
+                          {scan.fileName}
+                        </strong>
                         <span className="text-warning font-bold tnum">
                           {formatPercent(scan.confidence, 0)} Conf
                         </span>
@@ -297,9 +318,10 @@ function AlertsPage() {
                 Session Storage Ledger Guarantee
               </span>
               <p className="text-[11px] leading-relaxed">
-                All records shown here are ephemeral client-side artifacts stored exclusively in your
-                browser&apos;s <code className="text-foreground">sessionStorage</code>. No medical records, package scans, or excursion inputs
-                are transmitted or stored on remote servers.
+                All records shown here are ephemeral client-side artifacts stored exclusively in
+                your browser&apos;s <code className="text-foreground">sessionStorage</code>. No
+                medical records, package scans, or excursion inputs are transmitted or stored on
+                remote servers.
               </p>
             </div>
           </div>

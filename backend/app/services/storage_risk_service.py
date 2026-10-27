@@ -221,9 +221,9 @@ class StorageRiskService:
             )
 
         deterministic = DeterministicCompliance(
-            is_compliant=is_overall_compliant if is_overall_compliant is not None else False,
+            is_compliant=is_overall_compliant,
             temp_compliant=temp_compliant,
-            temp_deviation=temp_deviation_mag if temp_deviation_mag is not None else 0.0,
+            temp_deviation=temp_deviation_mag,
             temp_status_text=temp_status,
             humidity_compliant=humidity_compliant,
             humidity_status_text=humidity_status,

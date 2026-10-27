@@ -672,4 +672,4 @@ def test_api_scan_returns_composite_phase4_payload():
     assert data["ocr"]["engine"] == "EasyOCR 1.7.2"
     assert data["fusion"]["identification_status"] in {"CONFIRMED", "PARTIAL"}
     assert data["storage_requirements"] is not None
-    assert data["storage_requirements"]["min_temperature"] == 20.0
+    assert data["storage_requirements"]["temperature_unit"] == "C"

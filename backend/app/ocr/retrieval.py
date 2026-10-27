@@ -54,6 +54,10 @@ DRUG_SYNONYMS = {
     "augmentin": "amoxicillin",
     "calchek-t": "amlodipine",
     "twynsta": "telmisartan",
+    "rifampicin": "rifampin",
+    "rifampin": "rifampicin",
+    "salbutamol": "albuterol",
+    "albuterol": "salbutamol",
 }
 
 
@@ -82,15 +86,16 @@ class KnowledgeBaseRetriever:
         extracted_strength: Optional[str] = None,
         extracted_dosage_form: Optional[str] = None,
         extracted_manufacturer: Optional[str] = None,
+        extracted_release_type: Optional[str] = None,
         limit: int = 5,
     ) -> List[Dict[str, Any]]:
         """
         Multi-modal candidate retrieval combining:
-        1. Set-based active ingredient intersection
+        1. Set-based active ingredient intersection with asymmetry penalties
         2. SQLite FTS5 prefix and token search
         3. OCR error correction variants (0<->O, 1<->I, 5<->S, 8<->B)
         4. RxNorm terminology normalization & brand-to-generic synonym lookups
-        5. Strength, dosage form, and manufacturer evidence re-ranking
+        5. Strength, dosage form, release type, and manufacturer evidence re-ranking
         """
         if not self.db_path.exists():
             logger.warning(f"Master index not found at {self.db_path}. Building or using fallback.")
@@ -103,7 +108,7 @@ class KnowledgeBaseRetriever:
 
         if not extracted_strength:
             for tok in extracted_tokens:
-                m = re.search(r"\b\d+(?:\.\d+)?\s*(?:mg|mcg|g|ml|iu|u)(?:\s*/\s*\d+(?:\.\d+)?\s*(?:mg|mcg|g|ml))?\b", tok, re.I)
+                m = re.search(r"\b\d+(?:\.\d+)?\s*(?:mg|mcg|g|ml|iu|u)(?:\s*(?:/|\bper\b)\s*\d+(?:\.\d+)?\s*(?:mg|mcg|g|ml))?\b", tok, re.I)
                 if m:
                     extracted_strength = m.group(0)
                     break
@@ -155,7 +160,7 @@ class KnowledgeBaseRetriever:
 
         conn.close()
 
-        # Score & Rank candidates with strength, dosage form, and manufacturer evidence
+        # Score & Rank candidates with strength, dosage form, release profile, and manufacturer evidence
         ranked = list(candidates_map.values())
         for cand in ranked:
             final_score = cand.get("retrieval_score", 0.5)
@@ -166,12 +171,21 @@ class KnowledgeBaseRetriever:
                 norm_ext_str = normalize_strength_str(extracted_strength).lower()
                 norm_cand_str = normalize_strength_str(cand["strength"]).lower()
                 if norm_ext_str and norm_cand_str:
-                    if norm_ext_str == norm_cand_str or norm_ext_str in norm_cand_str:
+                    if norm_ext_str == norm_cand_str:
                         final_score += 0.15
                         cand["strength_match"] = True
+                    elif "/" in norm_cand_str and norm_ext_str in norm_cand_str:
+                        # Candidate is combination strength; if query was single-ingredient, penalize combination
+                        cand_ings = cand.get("active_ingredients", [])
+                        if len(cand_ings) > 1 and extracted_ingredients and len(extracted_ingredients) == 1:
+                            final_score -= 0.25
+                            cand["strength_match"] = False
+                        else:
+                            final_score += 0.05
+                            cand["strength_match"] = True
                     elif norm_cand_str != "standard":
-                        # Strength mismatch penalty (e.g. 500 mg != 650 mg)
-                        final_score -= 0.18
+                        # Strength mismatch penalty (e.g. 500 mg != 650 mg or 160 mg != 500 mg)
+                        final_score -= 0.25
                         cand["strength_match"] = False
 
             # Dosage form awareness (Section 10)
@@ -184,8 +198,26 @@ class KnowledgeBaseRetriever:
                     cand["dosage_form_match"] = True
                 else:
                     # Incompatible dosage form penalty (e.g. Tablet != Suspension)
-                    final_score -= 0.10
+                    final_score -= 0.20
                     cand["dosage_form_match"] = False
+
+            # Release profile awareness (SR, ER, XR, CR, DR vs IR)
+            if extracted_release_type:
+                cand_name_low = f"{cand.get('medicine_name', '')} {cand.get('dosage_form', '')}".lower()
+                is_sr = any(tag in cand_name_low for tag in ["extended", "sustained", "delayed", "controlled", "sr", "er", "xr", "cr", "dr"])
+                if extracted_release_type in ["SR", "ER", "XR", "CR", "DR"]:
+                    if is_sr:
+                        final_score += 0.08
+                        cand["release_type_match"] = True
+                    else:
+                        final_score -= 0.20
+                        cand["release_type_match"] = False
+                elif extracted_release_type == "IR":
+                    if is_sr:
+                        final_score -= 0.20
+                        cand["release_type_match"] = False
+                    else:
+                        cand["release_type_match"] = True
 
             # Manufacturer evidence (Section 11)
             if extracted_manufacturer and cand.get("manufacturer"):
@@ -204,7 +236,7 @@ class KnowledgeBaseRetriever:
         ingredients: List[str],
         candidates_map: Dict[str, Dict[str, Any]],
     ) -> None:
-        """Finds medicines containing any of the extracted active ingredients."""
+        """Finds medicines containing any of the extracted active ingredients, with asymmetric penalties."""
         placeholders = ",".join("?" for _ in ingredients)
         query = f"""
             SELECT DISTINCT medicine_id, ingredient
@@ -230,20 +262,25 @@ class KnowledgeBaseRetriever:
                 rec_ings = set(json.loads(rec["active_ingredients"]))
                 extracted_set = set(ingredients)
 
-                # Overlap metric: Jaccard similarity between candidate ingredients and extracted ingredients
                 intersection = rec_ings.intersection(extracted_set)
-                union = rec_ings.union(extracted_set)
-                jaccard = len(intersection) / max(len(union), 1)
-                extracted_coverage = len(intersection) / max(len(extracted_set), 1)
+                cand_coverage = len(intersection) / max(len(rec_ings), 1)
+                ext_coverage = len(intersection) / max(len(extracted_set), 1)
+                extra_ings = rec_ings - extracted_set
+                missing_ings = extracted_set - rec_ings
 
-                # Higher score if more of the extracted ingredients are covered
-                score = 0.60 + (0.25 * extracted_coverage) + (0.15 * jaccard)
-
-                # Perfect combination match bonus
-                if len(extracted_set) > 1 and intersection == extracted_set and rec_ings == extracted_set:
-                    score = 0.98
-                elif len(extracted_set) > 1 and intersection == extracted_set:
-                    score = max(score, 0.94)
+                # Exact ingredient set match (both single and combination)
+                if rec_ings == extracted_set:
+                    if len(extracted_set) > 1:
+                        score = 0.98
+                    else:
+                        score = 0.92
+                else:
+                    # Incomplete or over-complete candidate:
+                    score = 0.50 + (0.25 * cand_coverage) + (0.15 * ext_coverage)
+                    # Heavy penalties for unmentioned extra ingredients or missing required ingredients
+                    score -= (0.20 * len(extra_ings))
+                    score -= (0.20 * len(missing_ings))
+                    score = max(0.10, score)
 
                 if med_id not in candidates_map or candidates_map[med_id]["retrieval_score"] < score:
                     rec["active_ingredients"] = list(rec_ings)
@@ -375,6 +412,156 @@ class KnowledgeBaseRetriever:
                     var_chars[i] = OCR_CONFUSIONS[c]
                     variants.append("".join(var_chars))
         return variants
+
+
+SALT_WORDS = {
+    "besylate", "hydrochloride", "hcl", "maleate", "tartrate", "succinate",
+    "fumarate", "potassium", "sodium", "calcium", "phosphate", "sulfate",
+    "sulphate", "valerate", "dipropionate", "acetate", "hydrate", "monohydrate",
+    "dihydrate", "trihydrate", "sesquihydrate", "disodium", "dipotassium", "mesylate", "camsylate"
+}
+
+CANONICAL_DRUGS = {
+    "paracetamol": "acetaminophen",
+    "acetaminophen": "acetaminophen",
+    "hctz": "hydrochlorothiazide",
+    "hydrochlorothiazide": "hydrochlorothiazide",
+    "asa": "aspirin",
+    "aspirin": "aspirin",
+    "amox": "amoxicillin",
+    "amoxicillin": "amoxicillin",
+    "clavulanate": "clavulanic acid",
+    "clavulanic acid": "clavulanic acid",
+    "calchek-t": "amlodipine",
+    "twynsta": "telmisartan",
+    "rifampicin": "rifampin",
+    "rifampin": "rifampin",
+    "salbutamol": "albuterol",
+    "albuterol": "albuterol",
+}
+
+
+def clean_drug_ingredient(name: str) -> str:
+    if not name:
+        return ""
+    tokens = re.split(r"[\s\-_/]+", name.lower().strip())
+    filtered = [t for t in tokens if t and t not in SALT_WORDS]
+    clean = " ".join(filtered) if filtered else name.lower().strip()
+    return CANONICAL_DRUGS.get(clean, DRUG_SYNONYMS.get(clean, clean))
+
+
+def parse_ingredient_tokens(val: Any) -> List[str]:
+    if not val:
+        return []
+    raw_list: List[str] = []
+    if isinstance(val, str):
+        try:
+            parsed = json.loads(val)
+            if isinstance(parsed, list):
+                raw_list = [str(x) for x in parsed]
+            else:
+                raw_list = [val]
+        except Exception:
+            parts = re.split(r"[/+,;&]|\band\b", val)
+            raw_list = [p.strip() for p in parts if p.strip()]
+    elif isinstance(val, (list, tuple, set)):
+        for item in val:
+            if isinstance(item, str):
+                parts = re.split(r"[/+,;&]|\band\b", item)
+                raw_list.extend(p.strip() for p in parts if p.strip())
+            elif item is not None:
+                raw_list.append(str(item))
+
+    cleaned = []
+    for item in raw_list:
+        c = clean_drug_ingredient(item)
+        if c:
+            cleaned.append(c)
+    return cleaned
+
+
+def check_exact_product_match(
+    candidate: Any,
+    extracted_ingredients: Optional[List[str]],
+    extracted_strength: Optional[str],
+    extracted_dosage_form: Optional[str],
+    extracted_release_type: Optional[str] = None,
+) -> Tuple[bool, List[str]]:
+    """
+    Deterministic gate that evaluates whether a candidate record satisfies the strict
+    exact-match requirements for IDENTIFIED status.
+
+    Checks:
+    1. Active Ingredient Completeness: candidate must contain all extracted ingredients and NO extra unmentioned ingredients.
+    2. Strength Equivalence: normalized candidate strength must match extracted packaging strength.
+    3. Dosage Form Compatibility: candidate dosage form must match extracted packaging dosage form.
+    4. Release Profile Compatibility: sustained release (SR/ER/CR/DR) must not be confirmed as immediate release.
+    """
+    from ml.data_ingestion.normalize_products import normalize_strength_str, normalize_dosage_form_str
+
+    reasons: List[str] = []
+
+    def _cand_val(field: str, default: Any = None) -> Any:
+        if isinstance(candidate, dict):
+            val = candidate.get(field, default)
+        else:
+            val = getattr(candidate, field, default)
+        return val if val is not None else default
+
+    cand_name = str(_cand_val("medicine_name", "") or "")
+    cand_str = str(_cand_val("strength", "") or "")
+    cand_df = str(_cand_val("dosage_form", "") or "")
+    cand_ings = _cand_val("active_ingredients", [])
+
+    cand_tokens = parse_ingredient_tokens(cand_ings)
+    if not cand_tokens:
+        cand_generic = str(_cand_val("generic_name", "") or cand_name)
+        cand_tokens = parse_ingredient_tokens(cand_generic)
+
+    cand_set = set(cand_tokens)
+
+    # 1. Ingredient set comparison
+    if extracted_ingredients:
+        ext_tokens = parse_ingredient_tokens(extracted_ingredients)
+        ext_set = set(ext_tokens)
+
+        if ext_set and cand_set:
+            missing = ext_set - cand_set
+            extra = cand_set - ext_set
+
+            if missing:
+                reasons.append(f"Missing active ingredient(s) on candidate: {', '.join(sorted(list(missing)))}")
+            if extra:
+                reasons.append(f"Candidate contains unmentioned active ingredient(s): {', '.join(sorted(list(extra)))}")
+        elif ext_set and not cand_set:
+            reasons.append("Candidate active ingredients unknown or incomplete")
+
+    # 2. Strength comparison
+    if extracted_strength and cand_str:
+        norm_ext_str = normalize_strength_str(extracted_strength).lower()
+        norm_cand_str = normalize_strength_str(cand_str).lower()
+        if norm_ext_str and norm_cand_str and norm_cand_str != "standard":
+            if norm_ext_str != norm_cand_str:
+                reasons.append(f"Strength mismatch: packaging '{extracted_strength}' vs catalog '{cand_str}'")
+
+    # 3. Dosage form comparison
+    if extracted_dosage_form and cand_df:
+        norm_ext_df = normalize_dosage_form_str(extracted_dosage_form).lower()
+        norm_cand_df = normalize_dosage_form_str(cand_df).lower()
+        if norm_ext_df and norm_cand_df and norm_ext_df != norm_cand_df:
+            reasons.append(f"Dosage form mismatch: packaging '{extracted_dosage_form}' vs catalog '{cand_df}'")
+
+    # 4. Release profile comparison
+    if extracted_release_type:
+        cand_text = f" {cand_name} {cand_df} ".lower()
+        is_sr = bool(re.search(r"\b(extended|sustained|delayed|controlled|sr|er|xr|cr|dr)\b", cand_text, re.IGNORECASE))
+        if extracted_release_type in ["SR", "ER", "XR", "CR", "DR"] and not is_sr:
+            reasons.append(f"Release profile mismatch: packaging '{extracted_release_type}' vs immediate-release candidate")
+        elif extracted_release_type == "IR" and is_sr:
+            reasons.append("Release profile mismatch: packaging immediate-release vs extended-release candidate")
+
+    is_exact = len(reasons) == 0
+    return is_exact, reasons
 
 
 _retriever_instance: Optional[KnowledgeBaseRetriever] = None

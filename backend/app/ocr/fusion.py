@@ -257,6 +257,23 @@ def compute_cv_ocr_fusion(
     # Even if CV is uncertain/unseen (e.g. Amlodipine + Telmisartan not in CV classes)
     if candidate_matches and candidate_matches[0].similarity_score >= 0.80:
         top_cand = candidate_matches[0]
+        from app.ocr.retrieval import check_exact_product_match
+
+        # Extract ingredients for candidate verification
+        ext_ings = []
+        if ocr_generic:
+            ext_ings.append(ocr_generic)
+        elif ocr_name:
+            ext_ings.append(ocr_name)
+        elif top_cand.active_ingredients:
+            ext_ings = top_cand.active_ingredients
+        is_exact, exact_reasons = check_exact_product_match(
+            top_cand,
+            extracted_ingredients=ext_ings,
+            extracted_strength=ocr_strength,
+            extracted_dosage_form=ocr_df_val,
+        )
+
         # Check strength alignment if present
         cand_strength_match = False
         if ocr_strength and top_cand.strength:
@@ -267,28 +284,43 @@ def compute_cv_ocr_fusion(
         if ocr_df_val and top_cand.dosage_form:
             cand_df_match = normalize_dosage_form(ocr_df_val) == normalize_dosage_form(top_cand.dosage_form)
 
-        reasons.append(
-            f"Identification evidence is consistent: Packaging text and medicine knowledge base independently identified '{top_cand.medicine_name}'."
-        )
-        if cand_strength_match:
-            reasons.append(f"Packaging strength '{ocr_strength}' matches verified product specification.")
-        if cand_df_match:
-            reasons.append(f"Packaging dosage form '{ocr_df_val}' matches verified product specification.")
-        if cv_confidence < cv_threshold:
-            reasons.append("Visual classifier abstained or reported low confidence on unseen packaging format; text evidence is primary.")
+        if is_exact:
+            reasons.append(
+                f"Identification evidence is consistent: Packaging text and medicine knowledge base independently identified '{top_cand.medicine_name}'."
+            )
+            if cand_strength_match:
+                reasons.append(f"Packaging strength '{ocr_strength}' matches verified product specification.")
+            if cand_df_match:
+                reasons.append(f"Packaging dosage form '{ocr_df_val}' matches verified product specification.")
+            if cv_confidence < cv_threshold:
+                reasons.append("Visual classifier abstained or reported low confidence on packaging outside its 10 supported classes; text evidence is primary.")
 
-        agreement_score = round(float(top_cand.similarity_score), 4)
-        return FusionAssessment(
-            identification_status="CONFIRMED",
-            agreement_score=min(agreement_score, 0.96),
-            cv_prediction=cv_class,
-            ocr_match=top_cand.medicine_name,
-            strength_match=cand_strength_match,
-            dosage_form_match=cand_df_match,
-            reasons=reasons,
-            score_breakdown={"text_identity": top_cand.similarity_score, "knowledge_base": 0.95, "cv_confidence": cv_confidence},
-            evidence_checklist={"label_text_detected": True, "active_ingredients_matched": True, "strength_matched": cand_strength_match, "dosage_form_matched": bool(cand_df_match), "visual_model_corroborated": cv_confidence >= cv_threshold},
-        )
+            agreement_score = round(float(top_cand.similarity_score), 4)
+            return FusionAssessment(
+                identification_status="CONFIRMED",
+                agreement_score=min(agreement_score, 0.96),
+                cv_prediction=cv_class,
+                ocr_match=top_cand.medicine_name,
+                strength_match=cand_strength_match,
+                dosage_form_match=cand_df_match,
+                reasons=reasons,
+                score_breakdown={"text_identity": top_cand.similarity_score, "knowledge_base": 0.95, "cv_confidence": cv_confidence},
+                evidence_checklist={"label_text_detected": True, "active_ingredients_matched": True, "strength_matched": cand_strength_match, "dosage_form_matched": bool(cand_df_match), "visual_model_corroborated": cv_confidence >= cv_threshold},
+            )
+        else:
+            for r in exact_reasons:
+                reasons.append(f"Partial formulation match: {r}.")
+            return FusionAssessment(
+                identification_status="PARTIAL",
+                agreement_score=round(float(top_cand.similarity_score * 0.70), 4),
+                cv_prediction=cv_class,
+                ocr_match=top_cand.medicine_name,
+                strength_match=cand_strength_match,
+                dosage_form_match=cand_df_match,
+                reasons=reasons,
+                score_breakdown={"text_identity": top_cand.similarity_score, "exact_match_failed": 0.0, "cv_confidence": cv_confidence},
+                evidence_checklist={"label_text_detected": True, "active_ingredients_matched": False, "strength_matched": cand_strength_match, "dosage_form_matched": bool(cand_df_match), "visual_model_corroborated": cv_confidence >= cv_threshold},
+            )
 
     # Step 6: Check for PARTIAL status
     # Used when identity agrees but details are incomplete, or moderate confidence without full corroboration

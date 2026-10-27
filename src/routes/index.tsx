@@ -69,7 +69,8 @@ const CURATED_SPECIMENS = [
     provenance: "FDA DailyMed SPL / Eli Lilly",
     rxcui: "582498",
     statusBadge: "Strict Cold Chain",
-    badgeColor: "bg-sky-50 text-sky-800 border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800",
+    badgeColor:
+      "bg-sky-50 text-sky-800 border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800",
   },
   {
     id: "MED-001",
@@ -83,7 +84,8 @@ const CURATED_SPECIMENS = [
     provenance: "USP Monograph / DailyMed",
     rxcui: "198440",
     statusBadge: "Controlled Room Temp",
-    badgeColor: "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800",
+    badgeColor:
+      "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800",
   },
   {
     id: "MED-006",
@@ -97,7 +99,8 @@ const CURATED_SPECIMENS = [
     provenance: "FDA DailyMed Package Insert",
     rxcui: "283742",
     statusBadge: "Moisture Sensitive",
-    badgeColor: "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800",
+    badgeColor:
+      "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800",
   },
   {
     id: "MED-002",
@@ -111,7 +114,8 @@ const CURATED_SPECIMENS = [
     provenance: "USP Monograph / DailyMed",
     rxcui: "213169",
     statusBadge: "Standard Room Temp",
-    badgeColor: "bg-indigo-50 text-indigo-800 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800",
+    badgeColor:
+      "bg-indigo-50 text-indigo-800 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800",
   },
 ] as const;
 
@@ -139,7 +143,7 @@ function OverviewPage() {
     if (quickQuery.trim()) {
       navigate({
         to: "/medicines",
-        search: { search: quickQuery.trim() } as any,
+        search: { search: quickQuery.trim() } as Record<string, unknown>,
       });
     }
   };
@@ -300,14 +304,19 @@ function OverviewPage() {
                     <span className="font-mono text-sm font-bold text-foreground tnum">97.0%</span>
                   </div>
                   <div className="flex items-baseline justify-between">
-                    <span className="text-xs text-muted-foreground">Multimodal Decision Fusion</span>
+                    <span className="text-xs text-muted-foreground">
+                      Multimodal Decision Fusion
+                    </span>
                     <span className="font-mono text-sm font-bold text-mint tnum">94.8%</span>
                   </div>
                 </div>
 
                 <div className="pt-2 border-t border-border/70 text-[11px] text-muted-foreground">
                   <span>Evaluated across 50 held-out authentic packaging photographs. </span>
-                  <Link to="/models" className="text-primary font-medium hover:underline inline-flex items-center gap-0.5">
+                  <Link
+                    to="/models"
+                    className="text-primary font-medium hover:underline inline-flex items-center gap-0.5"
+                  >
                     View dossier <ChevronRight className="size-3" />
                   </Link>
                 </div>
@@ -325,7 +334,9 @@ function OverviewPage() {
               Packaging Vision
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="font-head text-2xl sm:text-3xl font-bold text-foreground tnum">91.0%</span>
+              <span className="font-head text-2xl sm:text-3xl font-bold text-foreground tnum">
+                91.0%
+              </span>
               <span className="font-mono text-xs text-muted-foreground">Top-1 Acc</span>
             </div>
             <p className="text-[11px] text-muted-foreground">
@@ -351,7 +362,9 @@ function OverviewPage() {
               Monograph Knowledge Base
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="font-head text-2xl sm:text-3xl font-bold text-foreground tnum">27,326</span>
+              <span className="font-head text-2xl sm:text-3xl font-bold text-foreground tnum">
+                27,326
+              </span>
               <span className="font-mono text-xs text-muted-foreground">Concepts</span>
             </div>
             <p className="text-[11px] text-muted-foreground">
@@ -364,7 +377,9 @@ function OverviewPage() {
               Storage Risk Model
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="font-head text-2xl sm:text-3xl font-bold text-foreground tnum">99.56%</span>
+              <span className="font-head text-2xl sm:text-3xl font-bold text-foreground tnum">
+                99.56%
+              </span>
               <span className="font-mono text-xs text-muted-foreground">Sim. Kinetic</span>
             </div>
             <p className="text-[11px] text-muted-foreground">
@@ -379,7 +394,12 @@ function OverviewPage() {
         <section aria-labelledby="attention-heading" className="space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-border">
             <div className="flex items-center gap-2">
-              <AlertTriangle className={cn("size-4", flaggedAssessments.length > 0 ? "text-warning" : "text-muted-foreground")} />
+              <AlertTriangle
+                className={cn(
+                  "size-4",
+                  flaggedAssessments.length > 0 ? "text-warning" : "text-muted-foreground",
+                )}
+              />
               <h2 id="attention-heading" className="font-head text-lg font-bold text-foreground">
                 Session Excursion Attention & Audit
               </h2>
@@ -419,7 +439,11 @@ function OverviewPage() {
                   </div>
                   <div className="flex items-center justify-between pt-2 border-t border-warning/20">
                     <span className="font-mono text-[10px] text-muted-foreground">
-                      Recorded {new Date(alert.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      Recorded{" "}
+                      {new Date(alert.at).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                     <Button
                       variant="outline"
@@ -449,7 +473,8 @@ function OverviewPage() {
                     Active Session Ledger Clean — No Flagged Excursions
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    No packaging anomalies or temperature excursions have been flagged in this browser tab.
+                    No packaging anomalies or temperature excursions have been flagged in this
+                    browser tab.
                   </p>
                 </div>
               </div>
@@ -477,7 +502,8 @@ function OverviewPage() {
               End-to-End Multimodal Intelligence Pipeline
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              How MediShelf AI reconciles packaging image pixels, OCR text tokens, and monograph compliance.
+              How MediShelf AI reconciles packaging image pixels, OCR text tokens, and monograph
+              compliance.
             </p>
           </div>
 
@@ -502,7 +528,8 @@ function OverviewPage() {
               </div>
               <h3 className="font-semibold text-xs text-foreground">MobileNetV3-Small</h3>
               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                224×224 feature extraction generating Top-3 medicine candidates & visual confidence scores.
+                224×224 feature extraction generating Top-3 medicine candidates & visual confidence
+                scores.
               </p>
             </div>
 
@@ -514,7 +541,8 @@ function OverviewPage() {
               </div>
               <h3 className="font-semibold text-xs text-foreground">EasyOCR Pipeline</h3>
               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                CRAFT text detection + CRNN recognition extracts drug names, strengths, lots, and expiries.
+                CRAFT text detection + CRNN recognition extracts drug names, strengths, lots, and
+                expiries.
               </p>
             </div>
 
@@ -526,7 +554,8 @@ function OverviewPage() {
               </div>
               <h3 className="font-semibold text-xs text-foreground">Multimodal Fusion</h3>
               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                Cross-references visual predictions with OCR tokens to yield 94.8% verified consensus.
+                Cross-references visual predictions with OCR tokens to yield 94.8% verified
+                consensus.
               </p>
             </div>
 
@@ -538,7 +567,8 @@ function OverviewPage() {
               </div>
               <h3 className="font-semibold text-xs text-foreground">Kinetic Compliance</h3>
               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                Evaluates temperature against USP storage bounds and computes Arrhenius degradation risk.
+                Evaluates temperature against USP storage bounds and computes Arrhenius degradation
+                risk.
               </p>
             </div>
           </div>
@@ -547,13 +577,19 @@ function OverviewPage() {
         {/* =========================================================================
             5. CLINICAL SPECIMEN BENCHMARKS & QUICK EXCURSION EVALUATOR
            ========================================================================= */}
-        <section aria-labelledby="benchmarks-heading" className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <section
+          aria-labelledby="benchmarks-heading"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+        >
           {/* Specimen Benchmark Dock (7 cols) */}
           <div className="lg:col-span-7 space-y-4">
             <div className="rounded-xl border border-border bg-card p-5 sm:p-6 space-y-4 shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-border">
                 <div>
-                  <h2 id="benchmarks-heading" className="font-head text-base font-bold text-foreground">
+                  <h2
+                    id="benchmarks-heading"
+                    className="font-head text-base font-bold text-foreground"
+                  >
                     Clinical Specimen Archetypes
                   </h2>
                   <p className="text-xs text-muted-foreground">
@@ -589,7 +625,12 @@ function OverviewPage() {
                       {activeSpecimen.dosage} • {activeSpecimen.category}
                     </p>
                   </div>
-                  <span className={cn("inline-flex items-center px-2.5 py-1 rounded-md border text-xs font-medium", activeSpecimen.badgeColor)}>
+                  <span
+                    className={cn(
+                      "inline-flex items-center px-2.5 py-1 rounded-md border text-xs font-medium",
+                      activeSpecimen.badgeColor,
+                    )}
+                  >
                     {activeSpecimen.statusBadge}
                   </span>
                 </div>
@@ -612,7 +653,9 @@ function OverviewPage() {
                     <strong className="text-destructive text-sm font-semibold block">
                       {activeSpecimen.freezeHazard}
                     </strong>
-                    <p className="text-[11px] text-muted-foreground">Lineage: {activeSpecimen.provenance}</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      Lineage: {activeSpecimen.provenance}
+                    </p>
                   </div>
                 </div>
 

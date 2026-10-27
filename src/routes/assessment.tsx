@@ -305,7 +305,9 @@ function AssessmentPage() {
                         className="w-full text-left p-2 rounded-md hover:bg-secondary flex items-center justify-between text-xs"
                       >
                         <div className="truncate">
-                          <strong className="text-foreground block truncate">{med.medicine_name}</strong>
+                          <strong className="text-foreground block truncate">
+                            {med.medicine_name}
+                          </strong>
                           <span className="font-mono text-[10px] text-muted-foreground">
                             {med.medicine_id} • {med.dosage_form}
                           </span>
@@ -334,7 +336,8 @@ function AssessmentPage() {
                     {medicines.data?.map((med) => (
                       <option key={med.medicine_id} value={med.medicine_id}>
                         {med.medicine_id}: {med.medicine_name} (
-                        {med.storage_min_temperature !== null && med.storage_max_temperature !== null
+                        {med.storage_min_temperature !== null &&
+                        med.storage_max_temperature !== null
                           ? `${med.storage_min_temperature}°C to ${med.storage_max_temperature}°C`
                           : "CRT"}
                         )
@@ -348,14 +351,20 @@ function AssessmentPage() {
                   <div className="rounded-lg border border-border bg-background p-3 text-xs space-y-1">
                     <div className="flex items-center justify-between font-mono text-[10px]">
                       <strong className="text-foreground">{selected.medicine_name}</strong>
-                      <span className={cn("font-bold", isColdChain ? "text-sky-700 dark:text-sky-300" : "text-primary")}>
+                      <span
+                        className={cn(
+                          "font-bold",
+                          isColdChain ? "text-sky-700 dark:text-sky-300" : "text-primary",
+                        )}
+                      >
                         {isColdChain ? "Strict Cold Chain" : "Controlled Room Temp"}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1">
                       <span>Monograph Limits:</span>
                       <strong className="text-foreground font-mono tnum">
-                        {selected.storage_min_temperature !== null && selected.storage_max_temperature !== null
+                        {selected.storage_min_temperature !== null &&
+                        selected.storage_max_temperature !== null
                           ? `${selected.storage_min_temperature}°C to ${selected.storage_max_temperature}°C`
                           : "20°C to 25°C"}
                       </strong>
@@ -438,7 +447,10 @@ function AssessmentPage() {
                 {/* Optional Environmental Parameters */}
                 <div className="grid grid-cols-2 gap-3 pt-1">
                   <div className="space-y-1">
-                    <label htmlFor="humidity-input" className="text-[11px] text-muted-foreground block">
+                    <label
+                      htmlFor="humidity-input"
+                      className="text-[11px] text-muted-foreground block"
+                    >
                       Relative Humidity (%)
                     </label>
                     <input
@@ -448,13 +460,18 @@ function AssessmentPage() {
                       max={100}
                       placeholder="Optional"
                       value={humidity}
-                      onChange={(e) => setHumidity(e.target.value === "" ? "" : Number(e.target.value))}
+                      onChange={(e) =>
+                        setHumidity(e.target.value === "" ? "" : Number(e.target.value))
+                      }
                       className="w-full h-8 rounded-lg border border-border bg-background px-2.5 text-xs text-foreground focus:outline-none focus:border-primary tnum"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label htmlFor="expiry-input" className="text-[11px] text-muted-foreground block">
+                    <label
+                      htmlFor="expiry-input"
+                      className="text-[11px] text-muted-foreground block"
+                    >
                       Days to Expiry
                     </label>
                     <input
@@ -463,7 +480,9 @@ function AssessmentPage() {
                       min={1}
                       placeholder="Optional"
                       value={daysToExpiry}
-                      onChange={(e) => setDaysToExpiry(e.target.value === "" ? "" : Number(e.target.value))}
+                      onChange={(e) =>
+                        setDaysToExpiry(e.target.value === "" ? "" : Number(e.target.value))
+                      }
                       className="w-full h-8 rounded-lg border border-border bg-background px-2.5 text-xs text-foreground focus:outline-none focus:border-primary tnum"
                     />
                   </div>
@@ -524,7 +543,9 @@ function AssessmentPage() {
               <div className="px-1 pt-1 space-y-3">
                 <div className="flex justify-between font-mono text-[10px] text-muted-foreground tnum">
                   <span>-10°C</span>
-                  <span className={cn(isColdChain ? "text-sky-700 dark:text-sky-300 font-bold" : "")}>
+                  <span
+                    className={cn(isColdChain ? "text-sky-700 dark:text-sky-300 font-bold" : "")}
+                  >
                     {isColdChain ? "2°C–8°C (Cold Chain)" : "2°C"}
                   </span>
                   <span className={cn(!isColdChain ? "text-primary font-bold" : "")}>
@@ -538,7 +559,7 @@ function AssessmentPage() {
                 <div className="relative h-6 w-full rounded-md bg-secondary overflow-hidden border border-border">
                   {/* Freezing zone (-10 to 0) -> 0 to 16.6% */}
                   <div className="absolute left-0 top-0 bottom-0 w-[16.6%] bg-blue-100 dark:bg-blue-950/60 border-r border-blue-200 dark:border-blue-900" />
-                  
+
                   {/* Cold chain zone (2 to 8) -> 20% to 30% */}
                   {isColdChain ? (
                     <div className="absolute left-[20%] top-0 bottom-0 w-[10%] bg-sky-200 dark:bg-sky-900/60 border-x border-sky-400" />
@@ -588,8 +609,8 @@ function AssessmentPage() {
                 </h3>
                 <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
                   Select a medicine monograph, set the observed exposure temperature and duration,
-                  and click &ldquo;Evaluate Excursion&rdquo; to test against monograph limits and the
-                  kinetic GBDT model.
+                  and click &ldquo;Evaluate Excursion&rdquo; to test against monograph limits and
+                  the kinetic GBDT model.
                 </p>
               </div>
             )}
@@ -640,7 +661,11 @@ function DualTrackResultsCanvas({
             The observed conditions breached the documented USP boundary, causing deterministic
             compliance to <strong>FAIL</strong>. However, because exposure was brief, the kinetic
             degradation model predicted LOW degradation probability. Deterministic USP compliance
-            remains the binding release rule: <strong>an ML model estimate must never override a documented storage boundary violation</strong>.
+            remains the binding release rule:{" "}
+            <strong>
+              an ML model estimate must never override a documented storage boundary violation
+            </strong>
+            .
           </p>
         </div>
       )}
@@ -702,7 +727,13 @@ function DualTrackResultsCanvas({
         </div>
 
         {/* Track B: Machine-Learning Kinetic Risk */}
-        <div className={cn("rounded-xl border p-5 space-y-4 shadow-xs", riskTheme.border, riskTheme.bg)}>
+        <div
+          className={cn(
+            "rounded-xl border p-5 space-y-4 shadow-xs",
+            riskTheme.border,
+            riskTheme.bg,
+          )}
+        >
           <div className="flex items-center justify-between pb-3 border-b border-border/60">
             <div className="flex items-center gap-2">
               <Brain className="size-4 text-primary" />
@@ -796,9 +827,10 @@ function DualTrackResultsCanvas({
         {/* Scientific Honesty Disclosure */}
         <div className="rounded-lg bg-secondary/50 p-3 text-[11px] text-muted-foreground leading-relaxed font-sans">
           <strong>Scientific Provenance Disclosure:</strong> Training labels for this degradation
-          model were computed from simulated Arrhenius kinetics formulas across 6,000 scenario permutations.
-          The reported 99.56% model accuracy reflects mathematical compliance with synthetic kinetics
-          simulations, <em>not measured empirical physical stability trial outcomes</em>.
+          model were computed from simulated Arrhenius kinetics formulas across 6,000 scenario
+          permutations. The reported 99.56% model accuracy reflects mathematical compliance with
+          synthetic kinetics simulations,{" "}
+          <em>not measured empirical physical stability trial outcomes</em>.
         </div>
       </div>
     </div>

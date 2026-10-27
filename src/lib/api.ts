@@ -196,8 +196,8 @@ export type ScanResponse = {
   quality: ImageQualityAssessment | null;
   medicine: Medicine | null;
   storage_requirements: {
-    min_temperature: number;
-    max_temperature: number;
+    min_temperature: number | null;
+    max_temperature: number | null;
     min_humidity: number | null;
     max_humidity: number | null;
     temperature_unit: string;
@@ -403,7 +403,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       ...init,
       headers: { Accept: "application/json", ...(init?.headers ?? {}) },
     });
-  } catch {
+  } catch (err: unknown) {
+    if ((err as Error)?.name === "AbortError" || init?.signal?.aborted) {
+      throw err;
+    }
     // fetch only rejects on transport failure, so this branch means the API is unreachable.
     throw new ApiError(OFFLINE_HINT, 0, true);
   }
@@ -469,12 +472,19 @@ export const fetchMedicine = (medicineId: string) =>
 export const searchMedicines = (query: string, limit = 10) =>
   request<Medicine[]>(`/api/medicines/search?q=${encodeURIComponent(query)}&limit=${limit}`);
 
-export function scanMedicineImage(file: File, threshold?: number): Promise<ScanResponse> {
+export function scanMedicineImage(
+  file: File,
+  threshold?: number,
+  signal?: AbortSignal,
+): Promise<ScanResponse> {
   const body = new FormData();
   body.append("file", file);
   const query = threshold === undefined ? "" : `?threshold=${threshold}`;
-  // Content-Type is deliberately omitted so the browser sets the multipart boundary.
-  return request<ScanResponse>(`/api/scan${query}`, { method: "POST", body });
+  return request<ScanResponse>(`/api/scan${query}`, {
+    method: "POST",
+    body,
+    ...(signal ? { signal } : {}),
+  });
 }
 
 export const predictStorageRisk = (payload: StorageRiskRequest) =>

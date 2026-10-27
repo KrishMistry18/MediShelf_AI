@@ -49,12 +49,21 @@ BATCH_PATTERNS = [
 
 # Strength / Dosage patterns
 STRENGTH_PATTERNS = [
-    # Combination e.g. 875 mg / 125 mg
+    # Combination e.g. 875 mg / 125 mg, 1 mg + 500 mg, 1 mg / 500 mg
     re.compile(r"\b(\d+(?:\.\d+)?)\s*(mg|mcg|g)\s*(?:/|\+)\s*(\d+(?:\.\d+)?)\s*(mg|mcg|g)\b", re.IGNORECASE),
-    # Concentration e.g. 100 U/mL, 100 IU/mL, 160 mg/5 mL, 100 mg / 5 mL
-    re.compile(r"\b(\d+(?:\.\d+)?)\s*(?:mg|mcg|U|IU)\s*/\s*(?:\d+(?:\.\d+)?\s*)?(?:mL|ml)\b", re.IGNORECASE),
+    # Concentration e.g. 100 U/mL, 100 IU/mL, 160 mg/5 mL, 160mg per 5mL, 100 mg / 5 mL
+    re.compile(r"\b(\d+(?:\.\d+)?)\s*(?:mg|mcg|U|IU)\s*(?:/|\bper\b)\s*(?:\d+(?:\.\d+)?\s*)?(?:mL|ml)\b", re.IGNORECASE),
     # Standard single strength e.g. 500 mg, 500mg, 20 mg, 90 mcg, 50 mcg
     re.compile(r"\b(\d+(?:\.\d+)?)\s*(mg|mcg|IU|U|g)\b", re.IGNORECASE),
+]
+
+# Release profile patterns
+RELEASE_TYPE_PATTERNS = [
+    (re.compile(r"\b(?:sustained[- ]release|SR)\b", re.IGNORECASE), "SR"),
+    (re.compile(r"\b(?:extended[- ]release|XR|ER|XL)\b", re.IGNORECASE), "ER"),
+    (re.compile(r"\b(?:delayed[- ]release|DR)\b", re.IGNORECASE), "DR"),
+    (re.compile(r"\b(?:controlled[- ]release|CR)\b", re.IGNORECASE), "CR"),
+    (re.compile(r"\b(?:immediate[- ]release|IR)\b", re.IGNORECASE), "IR"),
 ]
 
 # Dosage Form patterns (ordered from most specific multi-word to generic single-word)
@@ -269,6 +278,18 @@ def extract_dosage_form(lines: List[OCRTextLine]) -> Tuple[Optional[str], Option
     return None, None, None, 0.0
 
 
+def extract_release_type(lines: List[OCRTextLine]) -> Optional[str]:
+    """
+    Scans OCR lines for pharmaceutical release profile modifiers (SR, ER, XR, CR, DR, IR).
+    """
+    for line in lines:
+        text = line.text
+        for pattern, canonical in RELEASE_TYPE_PATTERNS:
+            if pattern.search(text):
+                return canonical
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Manufacturer Extraction
 # ---------------------------------------------------------------------------
@@ -345,34 +366,83 @@ KNOWN_ACTIVE_INGREDIENTS = [
     "lisinopril", "sulfamethoxazole", "trimethoprim", "apixaban", "rivaroxaban",
     "furosemide", "spironolactone", "carvedilol", "metoprolol", "tramadol",
     "aspirin", "dipyridamole", "indapamide", "ezetimibe", "escitalopram", "duloxetine",
+    # Essential additions for combination & open-world packaging
+    "glimepiride", "gliclazide", "rifampicin", "rifampin", "ethambutol",
+    "pyrazinamide", "isoniazid", "aliskiren", "perindopril", "celecoxib",
+    "rosiglitazone", "pioglitazone", "linagliptin", "alogliptin", "vildagliptin",
 ]
+
+_ALL_KNOWN_INGREDIENTS: Optional[set] = None
+
+
+def get_all_known_ingredients() -> set:
+    """
+    Dynamically loads all active ingredients from the SQLite ingredient_index,
+    fusing curated medicines and 27,326 DailyMed / RxNorm monographs.
+    """
+    global _ALL_KNOWN_INGREDIENTS
+    if _ALL_KNOWN_INGREDIENTS is not None:
+        return _ALL_KNOWN_INGREDIENTS
+
+    import sqlite3
+    from pathlib import Path
+    ingredients = {ing.lower().strip() for ing in KNOWN_ACTIVE_INGREDIENTS}
+
+    db_path = Path(__file__).resolve().parent.parent.parent.parent / "data" / "medicines" / "medicine_knowledge.db"
+    if db_path.exists():
+        try:
+            conn = sqlite3.connect(db_path)
+            cur = conn.cursor()
+            cur.execute("SELECT DISTINCT ingredient FROM ingredient_index")
+            for row in cur.fetchall():
+                if row[0]:
+                    clean = row[0].strip().lower()
+                    if len(clean) >= 3 and clean.upper() not in _GENERIC_LABEL_WORDS:
+                        ingredients.add(clean)
+            conn.close()
+        except Exception:
+            pass
+
+    _ALL_KNOWN_INGREDIENTS = ingredients
+    return _ALL_KNOWN_INGREDIENTS
 
 
 def extract_active_ingredients(lines: List[OCRTextLine]) -> List[str]:
     """
-    Extracts active ingredients from OCR lines, handling OCR corruptions
-    such as AM0XICILLIN or TELM1SARTAN.
+    Extracts active ingredients from OCR lines, handling multi-word formulations,
+    sub-word variations, and OCR corruptions (e.g. AM0XICILLIN or TELM1SARTAN).
     """
-    from app.ocr.retrieval import KnowledgeBaseRetriever
+    from app.ocr.retrieval import KnowledgeBaseRetriever, DRUG_SYNONYMS
     detected = set()
+    all_known = get_all_known_ingredients()
 
     for line in lines:
         text = line.text.strip()
+        text_lower = text.lower()
+        if not text_lower:
+            continue
+
+        # 1. Check for whole ingredient substring / boundary matches
+        for ing in KNOWN_ACTIVE_INGREDIENTS:
+            ing_low = ing.lower()
+            if re.search(r"(?<![a-z0-9])" + re.escape(ing_low) + r"(?![a-z0-9])", text_lower):
+                canonical = DRUG_SYNONYMS.get(ing_low, ing_low)
+                detected.add(canonical)
+
+        # 2. Token-level check with OCR error corrections
         words = re.findall(r"[A-Za-z0-9-]{3,}", text)
         for w in words:
-            # Generate OCR variants for each word
             variants = KnowledgeBaseRetriever.generate_ocr_variants(w)
             for var in variants:
                 var_lower = var.lower()
-                for ing in KNOWN_ACTIVE_INGREDIENTS:
-                    if ing == var_lower or ing in var_lower:
-                        detected.add(ing)
-                    elif len(var_lower) >= 5 and len(var_lower) >= len(ing) - 2 and var_lower in ing:
-                        detected.add(ing)
-                    elif len(var_lower) >= 5:
-                        sim = difflib.SequenceMatcher(None, var_lower, ing).ratio()
-                        if sim >= 0.82:
-                            detected.add(ing)
+                if var_lower in all_known:
+                    canonical = DRUG_SYNONYMS.get(var_lower, var_lower)
+                    detected.add(canonical)
+                elif len(var_lower) >= 5:
+                    for ing in KNOWN_ACTIVE_INGREDIENTS:
+                        if difflib.SequenceMatcher(None, var_lower, ing).ratio() >= 0.85:
+                            canonical = DRUG_SYNONYMS.get(ing, ing)
+                            detected.add(canonical)
 
     return sorted(list(detected))
 
@@ -383,6 +453,7 @@ def match_medicine_catalog(
     extracted_strength: Optional[str] = None,
     extracted_dosage_form: Optional[str] = None,
     extracted_manufacturer: Optional[str] = None,
+    extracted_release_type: Optional[str] = None,
 ) -> Tuple[Optional[str], Optional[str], Optional[float], float, float, List[CandidateMatch]]:
     """
     Scans OCR lines and matches candidate tokens against both the local database
@@ -415,6 +486,7 @@ def match_medicine_catalog(
         extracted_strength=extracted_strength,
         extracted_dosage_form=extracted_dosage_form,
         extracted_manufacturer=extracted_manufacturer,
+        extracted_release_type=extracted_release_type,
         limit=10,
     )
 
@@ -616,12 +688,14 @@ def parse_structured_fields(lines: List[OCRTextLine], db: Session) -> Tuple[Stru
     )
 
     # 7. Medicine Name & Knowledge Base Candidate Retrieval
+    rel_type = extract_release_type(lines)
     med_val, gen_val, med_ocr_conf, med_parser_conf, db_score, candidates = match_medicine_catalog(
         lines,
         db,
         extracted_strength=str_val,
         extracted_dosage_form=df_val,
         extracted_manufacturer=man_val,
+        extracted_release_type=rel_type,
     )
     med_name_field = ExtractedField(
         field_name="medicine_name",

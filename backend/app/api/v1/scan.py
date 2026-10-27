@@ -20,9 +20,9 @@ from app.schemas.scan import (
 )
 from app.ocr.extractor import get_ocr_extractor
 from app.ocr.fusion import compute_cv_ocr_fusion
-from app.ocr.parser import parse_structured_fields
+from app.ocr.parser import extract_active_ingredients, extract_release_type, parse_structured_fields
 from app.ocr.preprocess import assess_image_quality
-from app.ocr.retrieval import get_retriever
+from app.ocr.retrieval import check_exact_product_match, get_retriever
 from app.ocr.schemas import CandidateMatch, OCRTextLine, StructuredFields
 from ml.inference.classifier import get_classifier
 
@@ -113,6 +113,8 @@ async def scan_medicine(
     ocr_latency_ms = 0.0
     ocr_status = "completed"
     ocr_error: Optional[str] = None
+    extracted_ings: List[str] = []
+    rel_type: Optional[str] = None
 
     if not quality.is_acceptable:
         # Skip the expensive CPU OCR pass on an image we already know is unusable.
@@ -122,6 +124,8 @@ async def scan_medicine(
             extractor = get_ocr_extractor()
             raw_text, lines, _ocr_quality, ocr_latency_ms = extractor.extract_text(image_bytes)
             structured_fields, candidate_matches = parse_structured_fields(lines, db)
+            extracted_ings = extract_active_ingredients(lines)
+            rel_type = extract_release_type(lines)
         except Exception as ocr_err:
             ocr_status = "unavailable"
             ocr_error = str(ocr_err)
@@ -190,46 +194,85 @@ async def scan_medicine(
     # A verified medicine match MUST NOT be overridden by a closed-set CV softmax prediction!
     # Caller-specified threshold must be strictly respected: candidate_threshold = max(0.80, applied_threshold)
     elif top_cand and cand_score >= max(0.80, applied_threshold):
-        # Corroborate CV with candidate matches if available
+        # Corroborate CV with candidate matches only if exact product formulation matches
         corroborated_cv = None
         if is_confident and matched_cv_row:
-            for c in candidate_matches:
-                if c.medicine_id == matched_cv_row.medicine_id and c.similarity_score >= 0.70:
-                    corroborated_cv = _resolve_medicine(matched_cv_row.medicine_id)
-                    break
+            cv_exact, _ = check_exact_product_match(
+                matched_cv_row,
+                extracted_ingredients=extracted_ings,
+                extracted_strength=structured_fields.strength.value,
+                extracted_dosage_form=structured_fields.dosage_form.value,
+                extracted_release_type=rel_type,
+            )
+            if cv_exact:
+                for c in candidate_matches:
+                    if c.similarity_score >= 0.70:
+                        if c.medicine_id == matched_cv_row.medicine_id:
+                            corroborated_cv = _resolve_medicine(matched_cv_row.medicine_id)
+                            break
+                        cand_exact, _ = check_exact_product_match(
+                            candidate=matched_cv_row,
+                            extracted_ingredients=c.active_ingredients or ([c.generic_name] if c.generic_name else []),
+                            extracted_strength=c.strength,
+                            extracted_dosage_form=c.dosage_form,
+                        )
+                        if cand_exact:
+                            corroborated_cv = _resolve_medicine(matched_cv_row.medicine_id)
+                            break
+
         resolved = corroborated_cv or _resolve_medicine(top_cand.medicine_id)
         if resolved:
             matched_medicine = resolved
             storage_summary = StorageRequirementsSummary(
-                min_temperature=resolved.storage_min_temperature or 20.0,
-                max_temperature=resolved.storage_max_temperature or 25.0,
+                min_temperature=resolved.storage_min_temperature,
+                max_temperature=resolved.storage_max_temperature,
                 min_humidity=resolved.storage_min_humidity,
                 max_humidity=resolved.storage_max_humidity,
                 temperature_unit="C",
                 regulatory_source=resolved.source,
             )
-            product_status = "IDENTIFIED"
-            final_recognized = True
-            final_is_confident = True
 
-            # Corroborating CV signal
-            if is_confident and matched_cv_row and matched_cv_row.medicine_id == resolved.medicine_id:
-                message = (
-                    f"Successfully identified '{resolved.medicine_name}' with matching visual model score "
-                    f"({top_conf * 100:.1f}%) and OCR packaging text ({cand_score * 100:.1f}%). Official storage parameters retrieved from {resolved.source}."
-                )
-            # Closed-set visual model disagreement / outside scope
-            elif is_confident and matched_cv_row:
-                message = (
-                    f"Medicine identified: '{resolved.medicine_name}' based on packaging text and verified database monograph "
-                    f"({cand_score * 100:.1f}% match). Visual classifier suggested '{matched_cv_row.medicine_name}' ({top_conf * 100:.1f}%), "
-                    f"but the 10-class closed-set visual model cannot reliably classify medicines outside its trained scope. "
-                    f"Official storage parameters retrieved from {resolved.source}."
-                )
+            # Strict Exact-Match Verification Gate
+            is_exact, exact_reasons = check_exact_product_match(
+                candidate=resolved,
+                extracted_ingredients=extracted_ings,
+                extracted_strength=structured_fields.strength.value,
+                extracted_dosage_form=structured_fields.dosage_form.value,
+                extracted_release_type=rel_type,
+            )
+
+            if is_exact:
+                product_status = "IDENTIFIED"
+                final_recognized = True
+                final_is_confident = True
+
+                # Corroborating CV signal
+                if is_confident and matched_cv_row and matched_cv_row.medicine_id == resolved.medicine_id:
+                    message = (
+                        f"Successfully identified '{resolved.medicine_name}' with matching visual model score "
+                        f"({top_conf * 100:.1f}%) and OCR packaging text ({cand_score * 100:.1f}%). Official storage parameters retrieved from {resolved.source}."
+                    )
+                # Closed-set visual model disagreement / outside scope
+                elif is_confident and matched_cv_row:
+                    message = (
+                        f"Medicine identified: '{resolved.medicine_name}' based on packaging text and verified database monograph "
+                        f"({cand_score * 100:.1f}% match). Visual classifier suggested nearest trained class '{matched_cv_row.medicine_name}' ({top_conf * 100:.1f}%), "
+                        f"but the 10-class closed-set visual model cannot reliably classify medicines outside its trained scope. "
+                        f"Official storage parameters retrieved from {resolved.source}."
+                    )
+                else:
+                    message = (
+                        f"Successfully identified '{resolved.medicine_name}' based on packaging text and verified database monograph "
+                        f"({cand_score * 100:.1f}% match). Official storage parameters retrieved from {resolved.source}."
+                    )
             else:
+                # Incomplete candidate match (e.g. combination mismatch, single ingredient vs multi, strength or release mismatch)
+                product_status = "PARTIAL_MATCH"
+                final_recognized = False
+                final_is_confident = False
                 message = (
-                    f"Successfully identified '{resolved.medicine_name}' based on packaging text and verified database monograph "
-                    f"({cand_score * 100:.1f}% match). Official storage parameters retrieved from {resolved.source}."
+                    f"Partial identification: Product candidate '{resolved.medicine_name}' matched general active principles, "
+                    f"but does not satisfy exact formulation criteria ({'; '.join(exact_reasons)}). Manual verification required."
                 )
 
     # Case C: Genuine Conflicting Evidence Between Classes with Indecisive Text (< 0.80)
@@ -259,19 +302,29 @@ async def scan_medicine(
             temperature_unit="C",
             regulatory_source=matched_cv_row.source,
         )
-        final_recognized = True
-        final_is_confident = True
-        if fusion_assessment.identification_status == "CONFIRMED":
+        is_exact, exact_reasons = check_exact_product_match(
+            candidate=matched_cv_row,
+            extracted_ingredients=extracted_ings,
+            extracted_strength=structured_fields.strength.value,
+            extracted_dosage_form=structured_fields.dosage_form.value,
+            extracted_release_type=rel_type,
+        )
+        if fusion_assessment.identification_status == "CONFIRMED" and is_exact:
             product_status = "IDENTIFIED"
+            final_recognized = True
+            final_is_confident = True
             message = (
                 f"Successfully identified '{matched_medicine.medicine_name}' with {top_conf * 100:.1f}% visual model score "
                 f"and matching OCR packaging text. Official storage parameters retrieved from {matched_medicine.source}."
             )
         else:
             product_status = "PARTIAL_MATCH"
+            final_recognized = False
+            final_is_confident = False
+            detail = f" ({'; '.join(exact_reasons)})" if exact_reasons else ""
             message = (
                 f"Partial identification: Recognized '{matched_medicine.medicine_name}' with {top_conf * 100:.1f}% visual model score. "
-                f"Packaging text could not independently corroborate identity. Storage parameters retrieved from {matched_medicine.source}."
+                f"Packaging text could not independently corroborate exact identity{detail}. Storage parameters retrieved from {matched_medicine.source}."
             )
 
     # Case E: Moderate / Likely Match (cand_score >= 0.65)

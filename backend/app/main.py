@@ -32,7 +32,25 @@ async def lifespan(app: FastAPI):
         logger.warning(f"Startup auto-seed skipped or encountered error: {exc}")
     finally:
         db.close()
-        
+
+    # Pre-warm inference models in daemon thread to eliminate first-request cold-start latency
+    import threading
+    def _warm_models():
+        try:
+            from ml.inference.classifier import get_classifier
+            from app.ocr.extractor import get_ocr_extractor
+            from app.ocr.retrieval import get_retriever
+            from app.ocr.parser import get_all_known_ingredients
+            get_classifier()
+            get_ocr_extractor()
+            get_retriever()
+            get_all_known_ingredients()
+            logger.info("Inference models and knowledge base pre-warmed successfully.")
+        except Exception as warm_err:
+            logger.warning(f"Model pre-warming deferred: {warm_err}")
+
+    threading.Thread(target=_warm_models, daemon=True).start()
+
     yield
 
 

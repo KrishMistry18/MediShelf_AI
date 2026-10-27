@@ -68,28 +68,34 @@ const ACCEPTED = ["image/jpeg", "image/png", "image/webp", "image/bmp"];
 
 const BENCHMARK_SPECIMENS = [
   {
+    file: "atorvastatin_sample.jpg",
+    label: "Atorvastatin 20 mg",
+    category: "Oral Solid • DailyMed Positive Control",
+    classDesc: "Blister Pack Tablet • Supported Class",
+  },
+  {
     file: "paracetamol_sample.jpg",
-    label: "Paracetamol 500 mg",
-    category: "Oral Solid • Room Temp",
-    classDesc: "Blister Pack Tablet",
+    label: "Acetaminophen 160 mg / 5 mL",
+    category: "Pediatric Oral Suspension (Challenge Specimen)",
+    classDesc: "Liquid Suspension • Room Temp 20–25°C",
+  },
+  {
+    file: "calchek_test.jpg",
+    label: "Calchek-T 40 (Amlodipine 5 mg + Telmisartan 40 mg)",
+    category: "Open-World Combination Challenge",
+    classDesc: "Dual Ingredient Tablet • Pharmacopeial Arbitration",
   },
   {
     file: "humulin_sample.jpg",
     label: "Humulin R 100 U/mL",
     category: "Biological • Cold Chain 2–8°C",
-    classDesc: "Vial",
+    classDesc: "Vial • Supported Class",
   },
   {
     file: "metformin_sample.jpg",
     label: "Metformin HCl 500 mg",
     category: "Oral Solid • Room Temp",
-    classDesc: "Blister Pack Tablet",
-  },
-  {
-    file: "atorvastatin_sample.jpg",
-    label: "Atorvastatin 20 mg",
-    category: "Oral Solid • DailyMed",
-    classDesc: "Blister Pack Tablet",
+    classDesc: "Blister Pack Tablet • Supported Class",
   },
 ] as const;
 
@@ -97,6 +103,7 @@ function ScanPage() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -107,13 +114,25 @@ function ScanPage() {
   const [userVerifiedNote, setUserVerifiedNote] = useState<string | null>(null);
 
   const scan = useMutation({
-    mutationFn: (payload: { file: File; threshold: number }) =>
-      scanMedicineImage(payload.file, payload.threshold),
+    mutationFn: (payload: { file: File; threshold: number }) => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+      return scanMedicineImage(payload.file, payload.threshold, controller.signal);
+    },
     onSuccess: (result, variables) => {
       recordScan(variables.file.name, result);
       if (result.medicine?.medicine_id) {
         setSelectedCandidateId(result.medicine.medicine_id);
       }
+    },
+    onError: (err: unknown) => {
+      if ((err as Error)?.name === "AbortError") {
+        return;
+      }
+      setLocalError((err as Error)?.message || "Inference failed");
     },
   });
 
@@ -142,6 +161,10 @@ function ScanPage() {
         );
         return;
       }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
       setLocalError(null);
       setSelectedCandidateId(null);
       setUserVerifiedNote(null);
@@ -153,6 +176,13 @@ function ScanPage() {
 
   const loadSample = useCallback(
     async (name: string) => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+      scan.reset();
+      setSelectedCandidateId(null);
+      setUserVerifiedNote(null);
       setLocalError(null);
       try {
         const response = await fetch(`/samples/${name}`);
@@ -163,10 +193,14 @@ function ScanPage() {
         setLocalError(`Could not load benchmark sample /samples/${name}.`);
       }
     },
-    [acceptFile],
+    [acceptFile, scan],
   );
 
   const reset = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
     setFile(null);
     setLocalError(null);
     setSelectedCandidateId(null);
@@ -203,8 +237,8 @@ function ScanPage() {
               Packaging Scanner & Label Extraction
             </h1>
             <p className="text-sm text-muted-foreground max-w-2xl font-sans">
-              Guided pharmaceutical packaging ingestion: visual candidate ranking, text token extraction,
-              and cross-reconciliation against 27,326 DailyMed and RxNorm monographs.
+              Guided pharmaceutical packaging ingestion: visual candidate ranking, text token
+              extraction, and cross-reconciliation against 27,326 DailyMed and RxNorm monographs.
             </p>
           </div>
 
@@ -412,7 +446,9 @@ function ScanPage() {
                 <span className="font-mono text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   Pre-Loaded Benchmark Examples
                 </span>
-                <span className="text-[10px] font-mono text-muted-foreground">Optional Samples</span>
+                <span className="text-[10px] font-mono text-muted-foreground">
+                  Optional Samples
+                </span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Test the recognition pipeline with authentic pharmaceutical packaging photographs:
@@ -659,7 +695,10 @@ function ReconciledEvidenceCanvas({
 
         {/* Scientific Honesty Notice */}
         <div className="rounded-lg bg-secondary/50 p-2.5 text-[11px] text-muted-foreground font-mono flex items-center justify-between">
-          <span>Softmax model score: {formatPercent(result.confidence, 1)} (Ranking indicator, not clinical certainty)</span>
+          <span>
+            Softmax model score: {formatPercent(result.confidence, 1)} (Ranking indicator, not
+            clinical certainty)
+          </span>
           <span className="text-foreground font-semibold">Pharmacopeial Checkpoint v3.1</span>
         </div>
       </div>
@@ -672,10 +711,12 @@ function ReconciledEvidenceCanvas({
             <div className="flex items-center gap-2">
               <Eye className="size-3.5 text-mint" />
               <span className="font-mono text-[10px] uppercase font-bold text-foreground">
-                Visual Packaging Model
+                Nearest Trained Visual Class
               </span>
             </div>
-            <span className="font-mono text-[10px] text-muted-foreground">MobileNetV3</span>
+            <span className="font-mono text-[10px] text-muted-foreground">
+              MobileNetV3 (10 Classes)
+            </span>
           </div>
 
           <div className="space-y-1.5">
@@ -744,13 +785,17 @@ function ReconciledEvidenceCanvas({
             {result.ocr?.fields.batch_number?.value && (
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Batch / Lot:</span>
-                <span className="text-foreground font-semibold">{result.ocr.fields.batch_number.value}</span>
+                <span className="text-foreground font-semibold">
+                  {result.ocr.fields.batch_number.value}
+                </span>
               </div>
             )}
             {result.ocr?.fields.expiry_date?.value && (
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Expiry Label:</span>
-                <span className="text-foreground font-semibold">{result.ocr.fields.expiry_date.value}</span>
+                <span className="text-foreground font-semibold">
+                  {result.ocr.fields.expiry_date.value}
+                </span>
               </div>
             )}
           </div>
@@ -888,12 +933,18 @@ function ReconciledEvidenceCanvas({
               <strong
                 className={cn(
                   "text-sm font-semibold block mt-0.5",
-                  (storage.min_temperature != null && storage.min_temperature >= 2 && storage.max_temperature <= 8)
+                  storage.min_temperature != null &&
+                    storage.min_temperature >= 2 &&
+                    storage.max_temperature != null &&
+                    storage.max_temperature <= 8
                     ? "text-destructive"
                     : "text-muted-foreground",
                 )}
               >
-                {(storage.min_temperature != null && storage.min_temperature >= 2 && storage.max_temperature <= 8)
+                {storage.min_temperature != null &&
+                storage.min_temperature >= 2 &&
+                storage.max_temperature != null &&
+                storage.max_temperature <= 8
                   ? "CRITICAL FREEZE SENSITIVE (<0°C)"
                   : "Non-critical (Solid Matrix)"}
               </strong>
