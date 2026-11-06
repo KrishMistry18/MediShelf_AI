@@ -104,19 +104,13 @@ function MedicinesPage() {
            ========================================================================= */}
         <div className="border-b border-border pb-6 space-y-4">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-                <span className="size-2 rounded-full bg-mint" />
-                <span>FDA DailyMed & NLM RxNorm Lineage</span>
-                <span>•</span>
-                <span>27,326 Clinical Records</span>
-              </div>
+            <div className="space-y-1">
               <h1 className="font-head text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                Pharmacopeial Knowledge Library
+                Medicine Library
               </h1>
               <p className="text-sm text-muted-foreground max-w-2xl font-sans">
-                Search verified temperature envelopes, chemical formulations, and USP stability
-                monographs across 27,326 indexed clinical drug records.
+                Search verified temperature envelopes, active ingredients, and pharmacopeial
+                monographs sourced from FDA DailyMed and NLM RxNorm.
               </p>
             </div>
 
@@ -164,7 +158,7 @@ function MedicinesPage() {
                 aria-label="Filter by therapeutic category"
                 className="h-11 rounded-lg border border-border bg-card px-3.5 text-xs text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs min-w-[200px]"
               >
-                <option value="ALL">All Categories (27,326)</option>
+                <option value="ALL">All Categories</option>
                 {categories.data?.map((entry) => (
                   <option key={entry.category} value={entry.category}>
                     {entry.category} ({entry.count})
@@ -188,17 +182,11 @@ function MedicinesPage() {
 
           {/* Results Telemetry Bar */}
           <div className="flex items-center justify-between text-xs font-mono text-muted-foreground pt-1">
-            <div className="flex items-center gap-3">
-              <span className="text-foreground font-semibold">
-                {list.isLoading
-                  ? "Searching index..."
-                  : `${total.toLocaleString()} concept${total === 1 ? "" : "s"} found`}
-              </span>
-              <span>•</span>
-              <span className="hidden sm:inline">25 Curated Monographs</span>
-              <span className="hidden sm:inline">•</span>
-              <span className="hidden sm:inline">27,301 Clinical RxNorm Records</span>
-            </div>
+            <span className="text-foreground font-semibold">
+              {list.isLoading
+                ? "Searching index..."
+                : `${total.toLocaleString()} concept${total === 1 ? "" : "s"} found`}
+            </span>
 
             <span className="text-[11px] tnum">
               Page {page} of {totalPages}
@@ -253,10 +241,12 @@ function MedicinesPage() {
                 <table className="w-full text-left border-collapse min-w-[700px]">
                   <thead>
                     <tr className="border-b border-border bg-secondary/40 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
-                      <th className="py-3 px-4 font-semibold w-28">Concept ID</th>
-                      <th className="py-3 px-4 font-semibold">Medicine & Formulation</th>
-                      <th className="py-3 px-4 font-semibold">Active Substance & Strength</th>
-                      <th className="py-3 px-4 font-semibold w-48">Storage Range</th>
+                      <th className="py-3 px-4 font-semibold">Medicine Name</th>
+                      <th className="py-3 px-4 font-semibold">Active Ingredient</th>
+                      <th className="py-3 px-4 font-semibold">Strength & Dosage Form</th>
+                      <th className="py-3 px-4 font-semibold w-48">
+                        Documented Storage Requirement
+                      </th>
                       <th className="py-3 px-4 font-semibold text-right w-36">Actions</th>
                     </tr>
                   </thead>
@@ -275,49 +265,36 @@ function MedicinesPage() {
                           onClick={() => setSelected(medicine)}
                           className="hover:bg-secondary/40 transition-colors cursor-pointer group"
                         >
-                          {/* Concept ID & Badges */}
+                          {/* Medicine Name */}
                           <td className="py-3.5 px-4 align-top">
-                            <span className="font-mono text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
-                              {medicine.medicine_id}
-                            </span>
-                            <div className="mt-1">
-                              {coldChain ? (
-                                <span className="inline-flex items-center gap-1 rounded bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 px-1.5 py-0.5 font-mono text-[9px] font-bold">
-                                  <Snowflake className="size-2.5" />
-                                  <span>Cold Chain</span>
-                                </span>
-                              ) : scannable ? (
-                                <span className="rounded bg-mint/15 text-forest dark:text-mint px-1.5 py-0.5 font-mono text-[9px] font-bold">
-                                  Vision Class
-                                </span>
-                              ) : (
-                                <span className="text-[10px] font-mono text-muted-foreground">
-                                  RxNorm
-                                </span>
-                              )}
+                            <div className="flex items-center gap-2">
+                              <strong className="font-head text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                                {medicine.medicine_name}
+                              </strong>
+                              <span className="font-mono text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+                                {medicine.medicine_id}
+                              </span>
                             </div>
-                          </td>
-
-                          {/* Medicine & Formulation */}
-                          <td className="py-3.5 px-4 align-top">
-                            <strong className="font-head text-sm font-bold text-foreground group-hover:text-primary transition-colors block">
-                              {medicine.medicine_name}
-                            </strong>
                             <span className="text-[11px] text-muted-foreground block mt-0.5">
-                              {medicine.dosage_form} • {medicine.category}
+                              {medicine.category}
                             </span>
                           </td>
 
-                          {/* Active Substance & Strength */}
-                          <td className="py-3.5 px-4 align-top font-mono text-[11px]">
+                          {/* Active Ingredient */}
+                          <td className="py-3.5 px-4 align-top font-mono text-xs">
                             <span className="text-foreground font-semibold">
                               {medicine.generic_name}
                             </span>
-                            {medicine.strength && (
-                              <span className="text-muted-foreground block mt-0.5">
-                                {medicine.strength}
-                              </span>
-                            )}
+                          </td>
+
+                          {/* Strength & Dosage Form */}
+                          <td className="py-3.5 px-4 align-top font-mono text-xs">
+                            <span className="text-foreground">
+                              {medicine.strength || "Standard formulation"}
+                            </span>
+                            <span className="text-[11px] text-muted-foreground block mt-0.5">
+                              {medicine.dosage_form}
+                            </span>
                           </td>
 
                           {/* Storage Range */}

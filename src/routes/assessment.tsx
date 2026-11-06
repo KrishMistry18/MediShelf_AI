@@ -235,12 +235,11 @@ function AssessmentPage() {
               <span>Deterministic USP Monograph Rules + GBDT Kinetics</span>
             </div>
             <h1 className="font-head text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              Storage Excursion & Kinetic Risk Studio
+              Storage Assessment
             </h1>
             <p className="text-sm text-muted-foreground max-w-2xl font-sans">
-              Evaluate temperature excursions against official USP and DailyMed storage boundaries.
-              Deterministic compliance rules and mathematical kinetic risk degradation are reported
-              separately.
+              Evaluate observed temperature excursions against official monograph boundaries and
+              kinetic degradation risk models.
             </p>
           </div>
 
@@ -824,13 +823,13 @@ function DualTrackResultsCanvas({
           </div>
         )}
 
-        {/* Scientific Honesty Disclosure */}
+        {/* Scientific HonProvenance Disclosure */}
         <div className="rounded-lg bg-secondary/50 p-3 text-[11px] text-muted-foreground leading-relaxed font-sans">
           <strong>Scientific Provenance Disclosure:</strong> Training labels for this degradation
-          model were computed from simulated Arrhenius kinetics formulas across 6,000 scenario
-          permutations. The reported 99.56% model accuracy reflects mathematical compliance with
-          synthetic kinetics simulations,{" "}
-          <em>not measured empirical physical stability trial outcomes</em>.
+          model were derived from simulated Arrhenius kinetics formulas across 6,000 scenario
+          permutations. The kinetic model reflects mathematical agreement with simulated excursion
+          rules, <em>not experimentally measured physical stability trial outcomes</em>. Monograph
+          compliance limits remain the binding clinical standard.
         </div>
       </div>
     </div>

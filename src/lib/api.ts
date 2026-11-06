@@ -308,6 +308,8 @@ export type VisionTestMetrics = {
   macro_precision?: number;
   macro_recall?: number;
   macro_f1?: number;
+  multimodal_fusion_accuracy?: number;
+  storage_risk_accuracy?: number;
   per_class?: Record<
     string,
     { precision: number; recall: number; "f1-score": number; support: number }
@@ -363,6 +365,8 @@ export type ModelsOverview = {
       macro_precision?: number;
       macro_recall?: number;
       macro_f1?: number;
+      multimodal_fusion_accuracy?: number;
+      storage_risk_accuracy?: number;
       weighted_f1?: number;
     };
     confusion_matrix: { matrix?: number[][]; labels?: string[] };
@@ -371,7 +375,7 @@ export type ModelsOverview = {
       { precision: number; recall: number; f1_score: number; support: number }
     >;
   };
-  independent_verification: Record<string, unknown> | null;
+  independent_verification?: Record<string, unknown> | null;
   limitations: string[];
   disclaimer: string;
 };

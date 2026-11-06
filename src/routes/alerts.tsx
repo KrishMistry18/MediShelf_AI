@@ -73,11 +73,11 @@ function AlertsPage() {
               <span>Ephemeral Client Records</span>
             </div>
             <h1 className="font-head text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              Excursion & Audit Exceptions Ledger
+              Excursions & Audit
             </h1>
             <p className="text-sm text-muted-foreground max-w-2xl font-sans">
-              Review flagged storage boundary breaches, thermal stress excursions, and scans
-              requiring pharmacist verification recorded during your active session.
+              Review flagged storage boundary breaches and scans requiring review recorded during
+              your active browser session.
             </p>
           </div>
 

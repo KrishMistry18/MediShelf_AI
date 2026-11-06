@@ -83,30 +83,30 @@
   --radius: 0.5rem;
 
   /* Sophisticated Clinical-Intelligence Workspace Theme: Light */
-  --background: #f7f6f0;       /* Ivory canvas */
-  --foreground: #17251f;       /* Main text */
-  --card: #ffffff;             /* Crisp white surfaces */
+  --background: #f7f6f0; /* Ivory canvas */
+  --foreground: #17251f; /* Main text */
+  --card: #ffffff; /* Crisp white surfaces */
   --card-foreground: #17251f;
   --popover: #ffffff;
   --popover-foreground: #17251f;
 
-  --primary: #123e32;          /* Primary forest green */
+  --primary: #123e32; /* Primary forest green */
   --primary-foreground: #f7f6f0;
 
-  --secondary: #f0efe8;        /* Muted surface */
+  --secondary: #f0efe8; /* Muted surface */
   --secondary-foreground: #17251f;
   --muted: #f0efe8;
-  --muted-foreground: #66756d;  /* Secondary text */
+  --muted-foreground: #66756d; /* Secondary text */
 
-  --accent: #3ecf8e;           /* Accent mint */
+  --accent: #3ecf8e; /* Accent mint */
   --accent-foreground: #0b211c;
 
-  --destructive: #d9383a;      /* Restrained accessible red */
+  --destructive: #d9383a; /* Restrained accessible red */
   --destructive-foreground: #ffffff;
-  --warning: #d97706;          /* Accessible amber */
-  --info: #0d9488;             /* Accessible blue-green */
+  --warning: #d97706; /* Accessible amber */
+  --info: #0d9488; /* Accessible blue-green */
 
-  --border: #e3e1d7;           /* Structural borders */
+  --border: #e3e1d7; /* Structural borders */
   --input: #e3e1d7;
   --ring: #3ecf8e;
 
@@ -125,7 +125,7 @@
   --chart-4: #123e32;
   --chart-5: #0d9488;
 
-  --sidebar: #102d26;          /* Deep forest sidebar */
+  --sidebar: #102d26; /* Deep forest sidebar */
   --sidebar-foreground: #f7f6f0;
   --sidebar-primary: #3ecf8e;
   --sidebar-primary-foreground: #0b211c;
@@ -364,13 +364,14 @@
 }
 
 .graticule-dark {
-  background-image: radial-gradient(rgba(221, 233, 223, 0.10) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(221, 233, 223, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
 .subtle-grid {
-  background-image: linear-gradient(to right, rgba(18, 62, 50, 0.04) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(18, 62, 50, 0.04) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, rgba(18, 62, 50, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(18, 62, 50, 0.04) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -494,4 +495,3 @@
   height: 1px;
   background: var(--border);
 }
-

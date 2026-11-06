@@ -7,22 +7,17 @@ import {
   Camera,
   Check,
   CheckCircle2,
+  ChevronDown,
   Database,
-  Edit2,
-  ExternalLink,
   Eye,
   FileText,
-  HelpCircle,
   ImagePlus,
   Info,
   Layers,
   Minus,
-  Pill,
   RefreshCw,
   RotateCcw,
   ScanLine,
-  ShieldAlert,
-  ShieldCheck,
   Sliders,
   Sparkles,
   Thermometer,
@@ -35,17 +30,14 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/Button";
 import { recordScan } from "@/lib/activity";
 import {
-  FUSION_LABELS,
   OCR_STATUS_LABELS,
   PRODUCT_STATUS_CONFIG,
   formatPercent,
   humanizeClassName,
   scanMedicineImage,
   type CandidateMatch,
-  type IdentificationStatus,
   type ProductStatus,
   type ScanResponse,
-  type StructuredFields,
 } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -56,7 +48,7 @@ export const Route = createFileRoute("/scan")({
       {
         name: "description",
         content:
-          "Multimodal packaging intelligence workspace: MobileNetV3 visual classification, EasyOCR text extraction, and pharmacopeial concept arbitration.",
+          "Optical packaging scanner: MobileNetV3 visual classification, EasyOCR label text extraction, and reference catalogue reconciliation.",
       },
     ],
   }),
@@ -68,34 +60,28 @@ const ACCEPTED = ["image/jpeg", "image/png", "image/webp", "image/bmp"];
 
 const BENCHMARK_SPECIMENS = [
   {
+    file: "paracetamol_sample.jpg",
+    label: "Paracetamol 500 mg",
+    category: "Oral Solid • Controlled Room Temp",
+    classDesc: "Blister Pack Tablet",
+  },
+  {
     file: "atorvastatin_sample.jpg",
     label: "Atorvastatin 20 mg",
-    category: "Oral Solid • DailyMed Positive Control",
-    classDesc: "Blister Pack Tablet • Supported Class",
-  },
-  {
-    file: "paracetamol_sample.jpg",
-    label: "Acetaminophen 160 mg / 5 mL",
-    category: "Pediatric Oral Suspension (Challenge Specimen)",
-    classDesc: "Liquid Suspension • Room Temp 20–25°C",
-  },
-  {
-    file: "calchek_test.jpg",
-    label: "Calchek-T 40 (Amlodipine 5 mg + Telmisartan 40 mg)",
-    category: "Open-World Combination Challenge",
-    classDesc: "Dual Ingredient Tablet • Pharmacopeial Arbitration",
+    category: "Oral Solid • Controlled Room Temp",
+    classDesc: "Blister Pack Tablet",
   },
   {
     file: "humulin_sample.jpg",
     label: "Humulin R 100 U/mL",
-    category: "Biological • Cold Chain 2–8°C",
-    classDesc: "Vial • Supported Class",
+    category: "Biological • Cold Chain (2–8°C)",
+    classDesc: "Injectable Solution Vial",
   },
   {
     file: "metformin_sample.jpg",
     label: "Metformin HCl 500 mg",
-    category: "Oral Solid • Room Temp",
-    classDesc: "Blister Pack Tablet • Supported Class",
+    category: "Oral Solid • Controlled Room Temp",
+    classDesc: "Blister Pack Tablet",
   },
 ] as const;
 
@@ -226,27 +212,21 @@ function ScanPage() {
             HEADER & WORKSPACE CONTEXT
            ========================================================================= */}
         <div className="border-b border-border pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-              <span className="size-2 rounded-full bg-mint" />
-              <span>Multimodal Optical Laboratory</span>
-              <span>•</span>
-              <span>MobileNetV3 + EasyOCR CRAFT/CRNN</span>
-            </div>
+          <div className="space-y-1">
             <h1 className="font-head text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              Packaging Scanner & Label Extraction
+              Optical Packaging Scanner
             </h1>
             <p className="text-sm text-muted-foreground max-w-2xl font-sans">
-              Guided pharmaceutical packaging ingestion: visual candidate ranking, text token
-              extraction, and cross-reconciliation against 27,326 DailyMed and RxNorm monographs.
+              Upload or capture a medicine package photograph to identify the product, extract
+              printed label text, and evaluate storage limits.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
-            {/* Softmax Confidence Gate Control */}
+            {/* Confidence Threshold Gate */}
             <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-mono">
               <Sliders className="size-3.5 text-muted-foreground" />
-              <span className="text-muted-foreground">Gate:</span>
+              <span className="text-muted-foreground">Confidence Gate:</span>
               <strong className="text-foreground">{threshold.toFixed(2)}</strong>
               <input
                 type="range"
@@ -273,10 +253,10 @@ function ScanPage() {
         </div>
 
         {/* =========================================================================
-            MAIN WORKSPACE GRID (Left: Ingestion & Benchmarks, Right: Evidence Panel)
+            MAIN WORKSPACE GRID (Left: Ingestion & Samples, Right: Results & Evidence)
            ========================================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* ── Left Column (5 Cols): Optical Capture Surface & Sample Benchmarks ── */}
+          {/* ── Left Column (5 Cols): Optical Capture Surface ── */}
           <div className="lg:col-span-5 space-y-6">
             <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-xs">
               <div className="flex items-center justify-between text-xs font-mono">
@@ -305,7 +285,7 @@ function ScanPage() {
                 onChange={(e) => acceptFile(e.target.files?.[0])}
               />
 
-              {/* Capture Viewport with Reticle Overlay */}
+              {/* Capture Viewport */}
               <div
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -326,7 +306,7 @@ function ScanPage() {
                       : "border-border bg-background subtle-grid",
                 )}
               >
-                {/* Precision Reticle Calipers */}
+                {/* Viewfinder corner accents */}
                 <div className="reticle-corner-tl" />
                 <div className="reticle-corner-tr" />
                 <div className="reticle-corner-bl" />
@@ -351,8 +331,8 @@ function ScanPage() {
                         Position Medicine Packaging
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground max-w-xs leading-relaxed">
-                        Drag and drop packaging image or click to capture. Ensure brand name,
-                        strength, and dosage form are legible.
+                        Drag and drop a photograph or choose a file / camera capture. Ensure brand
+                        name and strength are visible.
                       </p>
                     </div>
                     <div className="pt-2 flex flex-wrap justify-center gap-2">
@@ -376,36 +356,36 @@ function ScanPage() {
                   </div>
                 )}
 
-                {/* Progressive Processing Overlay */}
+                {/* Processing Overlay */}
                 {scan.isPending && (
                   <div className="absolute inset-0 bg-background/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center z-30">
                     <div className="size-10 rounded-full border-2 border-mint border-t-transparent animate-spin mb-4" />
                     <span className="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-                      Executing Multimodal Inference
+                      Analysing Packaging Image...
                     </span>
                     <div className="mt-4 space-y-2 text-xs text-muted-foreground font-mono text-left max-w-xs">
                       <div className="flex items-center gap-2">
                         <Check className="size-3 text-mint" />
-                        <span>OpenCV Quality & Blur Check</span>
+                        <span>Quality &amp; Resolution Check</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Check className="size-3 text-mint" />
-                        <span>MobileNetV3 Feature Extraction</span>
+                        <span>MobileNetV3 Visual Analysis</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="size-1.5 rounded-full bg-mint animate-pulse" />
-                        <span className="text-foreground">EasyOCR Label Tokenization</span>
+                        <span className="text-foreground">EasyOCR Label Text Extraction</span>
                       </div>
                       <div className="flex items-center gap-2 text-muted-foreground/60">
                         <Minus className="size-3" />
-                        <span>Catalogue Arbitration (27k Records)</span>
+                        <span>Reference Catalogue Matching</span>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Action Strip below capture surface */}
+              {/* Action Strip */}
               <div className="pt-2 flex items-center justify-between border-t border-border">
                 {file ? (
                   <Button
@@ -417,7 +397,7 @@ function ScanPage() {
                   </Button>
                 ) : (
                   <span className="text-[11px] font-mono text-muted-foreground">
-                    Accepts JPG, PNG, WEBP, BMP ≤ 15 MB
+                    JPG, PNG, WebP ≤ 15 MB
                   </span>
                 )}
 
@@ -440,19 +420,14 @@ function ScanPage() {
               )}
             </div>
 
-            {/* Optional Pre-Loaded Benchmark Specimens */}
+            {/* Benchmark Examples */}
             <div className="rounded-xl border border-border bg-card p-5 space-y-3 shadow-xs">
               <div className="flex items-center justify-between pb-2 border-b border-border">
                 <span className="font-mono text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                  Pre-Loaded Benchmark Examples
+                  Benchmark Specimens
                 </span>
-                <span className="text-[10px] font-mono text-muted-foreground">
-                  Optional Samples
-                </span>
+                <span className="text-[10px] font-mono text-muted-foreground">Quick Testing</span>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Test the recognition pipeline with authentic pharmaceutical packaging photographs:
-              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                 {BENCHMARK_SPECIMENS.map((sample) => (
                   <button
@@ -479,10 +454,10 @@ function ScanPage() {
             </div>
           </div>
 
-          {/* ── Right Column (7 Cols): Reconciled Evidence & Decision Panel ── */}
+          {/* ── Right Column (7 Cols): Results & Evidence ── */}
           <div className="lg:col-span-7 space-y-6">
             {!result && !scan.isPending && (
-              <div className="rounded-xl border border-border bg-card p-10 text-center space-y-3 shadow-xs">
+              <div className="rounded-xl border border-border bg-card p-12 text-center space-y-3 shadow-xs">
                 <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-secondary text-primary">
                   <ScanLine className="size-6 text-mint" />
                 </div>
@@ -490,8 +465,8 @@ function ScanPage() {
                   Awaiting Packaging Ingestion
                 </h3>
                 <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
-                  Provide an image or select a benchmark specimen to view visual classification
-                  rankings, EasyOCR text tokens, and pharmacopeial concept resolution.
+                  Upload an image or pick a benchmark specimen to view visual classification, OCR
+                  label extraction, and catalogue reconciliation.
                 </p>
               </div>
             )}
@@ -504,7 +479,7 @@ function ScanPage() {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   The backend inference service returned an error. Ensure the FastAPI backend is
-                  running at port 8000.
+                  running.
                 </p>
                 <Button
                   variant="outline"
@@ -537,7 +512,7 @@ function ScanPage() {
   );
 }
 
-/* ── Integrated Multi-Stream Evidence Canvas ────────────────────────── */
+/* ── Primary Result & Secondary Evidence Panels ────────────────────────── */
 
 function ReconciledEvidenceCanvas({
   result,
@@ -570,50 +545,80 @@ function ReconciledEvidenceCanvas({
 
   const handoffId = selectedCandidateId ?? medicine?.medicine_id ?? kbCandidates[0]?.medicine_id;
 
+  // Determine concise explanation of evidence agreement or conflict
+  const getEvidenceExplanation = () => {
+    if (result.fusion?.identification_status === "DIVERGENT" || status === "CONFLICTING_EVIDENCE") {
+      return "Visual classification and OCR label text point to different medicines. Physical packaging must be verified manually.";
+    }
+    if (status === "IDENTIFIED") {
+      return "Visual packaging features and extracted label text corroborate the medicine identity against catalogue records.";
+    }
+    if (status === "LIKELY_MATCH") {
+      return "Strong visual and textual evidence found, with minor variations in packaging format or strength designation.";
+    }
+    if (status === "PARTIAL_MATCH") {
+      return "Partial match: medicine entity identified, but strength or dosage form requires physical label verification.";
+    }
+    return "Insufficient evidence to confirm medicine concept. Please ensure adequate lighting and clear label text.";
+  };
+
+  const evidenceExplanation = getEvidenceExplanation();
+
   return (
     <div className="space-y-6">
-      {/* 1. Primary Reconciled Decision Dossier */}
-      <div className="rounded-xl border border-border bg-card p-6 space-y-4 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-border">
+      {/* =========================================================================
+          1. PRIMARY RESULT CARD
+         ========================================================================= */}
+      <div className="rounded-xl border border-border bg-card p-6 space-y-5 shadow-xs">
+        {/* Status bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border">
           <div className="flex items-center gap-2.5">
             <span
               className={cn(
-                "rounded px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider",
+                "rounded px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider border",
                 statusConfig.badgeClass,
               )}
             >
               {statusConfig.label}
             </span>
             <span className="font-mono text-xs text-muted-foreground">
-              Inference Latency: {result.inference_time_ms.toFixed(0)} ms
+              Latency: {result.inference_time_ms.toFixed(0)} ms
             </span>
           </div>
 
-          <span className="font-mono text-xs font-semibold text-primary">
-            Retrieval Score:{" "}
-            {result.product_status === "IDENTIFIED" &&
-            (result.retrieval_match_score ?? result.score_breakdown?.["text_identity_score"])
-              ? formatPercent(
-                  result.retrieval_match_score ??
-                    result.score_breakdown?.["text_identity_score"] ??
-                    0,
-                  1,
-                )
-              : formatPercent(result.confidence, 1)}
-          </span>
+          {result.retrieval_match_score !== undefined && (
+            <span className="font-mono text-xs text-muted-foreground">
+              Similarity Score:{" "}
+              <strong className="text-foreground font-bold">
+                {formatPercent(result.retrieval_match_score, 1)}
+              </strong>
+            </span>
+          )}
         </div>
 
+        {/* Resolved Concept Details */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          <div className="space-y-1">
-            <span className="font-mono text-[10px] text-primary uppercase font-bold tracking-wider">
-              {handoffId ?? "Unresolved Concept"}
-            </span>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] text-primary uppercase font-bold tracking-wider">
+                {handoffId ?? "Unresolved Concept"}
+              </span>
+              {medicine?.category && (
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  • {medicine.category}
+                </span>
+              )}
+            </div>
+
             <h2 className="font-head text-2xl font-bold text-foreground">
               {activeCandidate?.medicine_name ??
                 medicine?.medicine_name ??
-                humanizeClassName(result.predicted_class)}
+                (status === "UNKNOWN"
+                  ? "Unresolved Packaging Concept"
+                  : humanizeClassName(result.predicted_class))}
             </h2>
-            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground pt-1">
+
+            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground pt-0.5">
               <span>
                 Active Entity:{" "}
                 <strong className="text-foreground">
@@ -631,7 +636,7 @@ function ReconciledEvidenceCanvas({
               <span>
                 Form:{" "}
                 <strong className="text-foreground">
-                  {activeCandidate?.dosage_form ?? medicine?.dosage_form ?? "Package form"}
+                  {activeCandidate?.dosage_form ?? medicine?.dosage_form ?? "Packaging form"}
                 </strong>
               </span>
             </div>
@@ -662,24 +667,34 @@ function ReconciledEvidenceCanvas({
           </div>
         </div>
 
+        {/* Concise Evidence Agreement / Conflict Notice */}
+        <div
+          className={cn(
+            "rounded-lg p-3 text-xs leading-relaxed border flex items-start gap-2.5",
+            status === "CONFLICTING_EVIDENCE" ||
+              result.fusion?.identification_status === "DIVERGENT"
+              ? "bg-rose-50 border-rose-200 text-rose-900 dark:bg-rose-950/40 dark:border-rose-800 dark:text-rose-200"
+              : status === "IDENTIFIED"
+                ? "bg-mint/10 border-mint/30 text-forest dark:text-mint"
+                : "bg-secondary/60 border-border text-muted-foreground",
+          )}
+        >
+          {status === "CONFLICTING_EVIDENCE" ||
+          result.fusion?.identification_status === "DIVERGENT" ? (
+            <AlertTriangle className="size-4 shrink-0 text-destructive mt-0.5" />
+          ) : status === "IDENTIFIED" ? (
+            <CheckCircle2 className="size-4 shrink-0 text-mint mt-0.5" />
+          ) : (
+            <Info className="size-4 shrink-0 text-muted-foreground mt-0.5" />
+          )}
+          <span>{evidenceExplanation}</span>
+        </div>
+
         {userVerifiedNote && (
-          <div className="rounded-lg border border-mint/40 bg-mint/10 p-3 text-xs text-forest flex items-start gap-2">
+          <div className="rounded-lg border border-mint/40 bg-mint/10 p-3 text-xs text-forest dark:text-mint flex items-start gap-2">
             <CheckCircle2 className="size-4 shrink-0 text-mint mt-0.5" />
             <div>
               <strong>Pharmacist Verified:</strong> {userVerifiedNote}
-            </div>
-          </div>
-        )}
-
-        {/* Uncertainty or Divergence Warnings */}
-        {(result.fusion?.identification_status === "DIVERGENT" ||
-          result.identification_status === "DIVERGENT") && (
-          <div className="rounded-lg border border-warning/40 bg-warning/10 p-3 text-xs text-warning flex items-start gap-2.5">
-            <AlertTriangle className="size-4 shrink-0 mt-0.5" />
-            <div>
-              <strong>Modal Divergence Warning:</strong> Visual packaging classification differs
-              from OCR extracted label text. Pharmacist manual verification is recommended before
-              logging storage compliance.
             </div>
           </div>
         )}
@@ -692,268 +707,260 @@ function ReconciledEvidenceCanvas({
             </div>
           </div>
         )}
-
-        {/* Scientific Honesty Notice */}
-        <div className="rounded-lg bg-secondary/50 p-2.5 text-[11px] text-muted-foreground font-mono flex items-center justify-between">
-          <span>
-            Softmax model score: {formatPercent(result.confidence, 1)} (Ranking indicator, not
-            clinical certainty)
-          </span>
-          <span className="text-foreground font-semibold">Pharmacopeial Checkpoint v3.1</span>
-        </div>
       </div>
 
-      {/* 2. Dual-Track Visual & OCR Evidence Streams */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Stream A: Visual Classifier Output */}
-        <div className="rounded-xl border border-border bg-card p-5 space-y-3 shadow-xs">
-          <div className="flex items-center justify-between pb-2 border-b border-border">
-            <div className="flex items-center gap-2">
-              <Eye className="size-3.5 text-mint" />
-              <span className="font-mono text-[10px] uppercase font-bold text-foreground">
-                Nearest Trained Visual Class
-              </span>
-            </div>
-            <span className="font-mono text-[10px] text-muted-foreground">
-              MobileNetV3 (10 Classes)
-            </span>
-          </div>
+      {/* =========================================================================
+          2. SECONDARY EVIDENCE (Organized in Expandable Panels)
+         ========================================================================= */}
+      <div className="space-y-3">
+        <h3 className="font-head text-sm font-bold text-foreground">Detailed Technical Evidence</h3>
 
-          <div className="space-y-1.5">
-            <div className="flex justify-between items-baseline text-xs">
-              <span className="font-semibold text-foreground">
-                {humanizeClassName(result.predicted_class)}
+        {/* Panel A: Visual Classifier Evidence */}
+        <details
+          open
+          className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs group"
+        >
+          <summary className="flex items-center justify-between cursor-pointer list-none text-xs font-semibold text-foreground select-none">
+            <div className="flex items-center gap-2">
+              <Eye className="size-4 text-mint" />
+              <span>Visual Packaging Classification (MobileNetV3)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs text-primary font-bold">
+                {formatPercent(result.confidence, 1)} score
               </span>
-              <span className="font-mono text-mint font-bold tnum">
+              <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180" />
+            </div>
+          </summary>
+
+          <div className="pt-3 border-t border-border/60 space-y-3 text-xs font-mono">
+            <div className="flex justify-between items-baseline">
+              <span className="text-muted-foreground font-sans">Nearest Trained Class:</span>
+              <strong className="text-foreground">
+                {humanizeClassName(result.predicted_class)}
+              </strong>
+            </div>
+            <div className="flex justify-between items-baseline">
+              <span className="text-muted-foreground font-sans">Inference Confidence:</span>
+              <span className="text-primary font-bold tnum">
                 {formatPercent(result.confidence, 1)}
               </span>
             </div>
             <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
               <div
                 className="h-full bg-mint rounded-full"
-                style={{ width: `${result.confidence * 100}%` }}
+                style={{ width: `${Math.min(result.confidence * 100, 100)}%` }}
               />
             </div>
+
+            {visualPredictions.length > 1 && (
+              <div className="pt-2 border-t border-border/40 space-y-1.5">
+                <span className="text-[10px] uppercase text-muted-foreground font-bold font-sans block">
+                  Top Visual Alternatives
+                </span>
+                {visualPredictions.slice(1, 4).map((pred) => (
+                  <div
+                    key={pred.class_name}
+                    className="flex justify-between text-[11px] text-muted-foreground"
+                  >
+                    <span>{humanizeClassName(pred.class_name)}</span>
+                    <span className="tnum font-bold">{formatPercent(pred.confidence, 1)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+        </details>
 
-          {visualPredictions.length > 1 && (
-            <div className="pt-2 border-t border-border/60 space-y-1">
-              <span className="font-mono text-[9px] uppercase text-muted-foreground block">
-                Top Visual Alternatives
-              </span>
-              {visualPredictions.slice(1, 3).map((pred) => (
-                <div
-                  key={pred.class_name}
-                  className="flex justify-between text-[11px] font-mono text-muted-foreground"
-                >
-                  <span>{humanizeClassName(pred.class_name)}</span>
-                  <span className="tnum">{formatPercent(pred.confidence, 0)}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Stream B: EasyOCR Label Reader */}
-        <div className="rounded-xl border border-border bg-card p-5 space-y-3 shadow-xs">
-          <div className="flex items-center justify-between pb-2 border-b border-border">
+        {/* Panel B: OCR Label Reader Evidence */}
+        <details
+          open
+          className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs group"
+        >
+          <summary className="flex items-center justify-between cursor-pointer list-none text-xs font-semibold text-foreground select-none">
             <div className="flex items-center gap-2">
-              <ScanLine className="size-3.5 text-mint" />
-              <span className="font-mono text-[10px] uppercase font-bold text-foreground">
-                OCR Label Reader
-              </span>
+              <ScanLine className="size-4 text-mint" />
+              <span>Extracted Label Text (EasyOCR)</span>
             </div>
-            <span
-              className={cn(
-                "rounded px-1.5 py-0.5 font-mono text-[9px] font-bold",
-                result.ocr_status === "completed"
-                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
-                  : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
-              )}
-            >
-              {OCR_STATUS_LABELS[result.ocr_status]}
-            </span>
-          </div>
+            <div className="flex items-center gap-2">
+              <span
+                className={cn(
+                  "rounded px-1.5 py-0.5 font-mono text-[10px] font-bold",
+                  result.ocr_status === "completed"
+                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                    : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
+                )}
+              >
+                {OCR_STATUS_LABELS[result.ocr_status]}
+              </span>
+              <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180" />
+            </div>
+          </summary>
 
-          <div className="space-y-1.5 font-mono text-xs">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Tokens Read:</span>
-              <span className="text-foreground font-semibold">
-                {result.ocr?.raw_text ? result.ocr.raw_text.split(/\s+/).length : 0} tokens
-              </span>
-            </div>
-            {result.ocr?.fields.batch_number?.value && (
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Batch / Lot:</span>
-                <span className="text-foreground font-semibold">
-                  {result.ocr.fields.batch_number.value}
-                </span>
+          <div className="pt-3 border-t border-border/60 space-y-3 text-xs font-mono">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+              <div>
+                <span className="text-muted-foreground font-sans">Batch / Lot: </span>
+                <strong className="text-foreground">
+                  {result.ocr?.fields.batch_number?.value || "Not found on packaging"}
+                </strong>
               </div>
-            )}
-            {result.ocr?.fields.expiry_date?.value && (
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Expiry Label:</span>
-                <span className="text-foreground font-semibold">
-                  {result.ocr.fields.expiry_date.value}
-                </span>
+              <div>
+                <span className="text-muted-foreground font-sans">Expiry Date: </span>
+                <strong className="text-foreground">
+                  {result.ocr?.fields.expiry_date?.value || "Not found on packaging"}
+                </strong>
               </div>
-            )}
-          </div>
-
-          {result.ocr?.raw_text && (
-            <div className="pt-2 border-t border-border/60">
-              <span className="font-mono text-[9px] uppercase text-muted-foreground block mb-1">
-                Extracted Text Snippet
-              </span>
-              <p className="font-mono text-[10px] bg-background p-2 rounded-md border border-border text-muted-foreground truncate">
-                {result.ocr.raw_text}
-              </p>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* 3. Actionable Candidate Ranking Ledger */}
-      <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-xs">
-        <div className="flex items-center justify-between pb-3 border-b border-border">
-          <div>
-            <h3 className="font-head text-base font-bold text-foreground">
-              Candidate Concept Ranking
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Select an alternative pharmacopeial candidate to switch target monograph:
-            </p>
-          </div>
-          <span className="font-mono text-[10px] text-muted-foreground">
-            {kbCandidates.length} Matches Found
-          </span>
-        </div>
-
-        {kbCandidates.length > 0 ? (
-          <div className="space-y-2">
-            {kbCandidates.slice(0, 5).map((cand, idx) => {
-              const isSelected = cand.medicine_id === handoffId;
-              return (
-                <div
-                  key={cand.medicine_id}
-                  onClick={() => onSelectCandidate(cand.medicine_id)}
-                  className={cn(
-                    "rounded-lg border p-3 cursor-pointer transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3",
-                    isSelected
-                      ? "border-mint bg-mint/5"
-                      : "border-border bg-background hover:border-primary/40",
-                  )}
-                >
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-[10px] text-muted-foreground">
-                        #{idx + 1}
-                      </span>
-                      <strong className="text-xs font-bold text-foreground truncate">
-                        {cand.medicine_name}
-                      </strong>
-                      <span className="font-mono text-[9px] bg-secondary px-1.5 py-0.5 rounded text-muted-foreground">
-                        {cand.medicine_id}
-                      </span>
-                    </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground font-mono">
-                      {cand.generic_name && <span>{cand.generic_name}</span>}
-                      {cand.strength && <span>• {cand.strength}</span>}
-                      {cand.dosage_form && <span>• {cand.dosage_form}</span>}
-                      {cand.source_name && <span>• {cand.source_name}</span>}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 shrink-0">
-                    <span className="font-mono text-xs font-bold text-primary tnum">
-                      {formatPercent(cand.similarity_score, 1)}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onAssess(cand.medicine_id);
-                      }}
-                      className="px-2.5 py-1 rounded bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
-                    >
-                      Audit
-                    </button>
-                  </div>
+            {result.ocr?.raw_text ? (
+              <div className="space-y-1">
+                <span className="text-[10px] uppercase text-muted-foreground font-sans font-bold block">
+                  Raw OCR Text Stream
+                </span>
+                <div className="p-3 bg-secondary/40 rounded-lg border border-border text-[11px] text-foreground font-mono break-words leading-relaxed max-h-36 overflow-y-auto">
+                  {result.ocr.raw_text}
                 </div>
-              );
-            })}
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground font-sans">
+                No printed text tokens extracted from this image.
+              </p>
+            )}
           </div>
-        ) : (
-          <div className="py-6 text-center text-xs text-muted-foreground">
-            No direct matches above threshold in the 27,326 knowledge base.
-          </div>
+        </details>
+
+        {/* Panel C: Candidate Medicine List & Retrieval Score */}
+        {kbCandidates.length > 0 && (
+          <details className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs group">
+            <summary className="flex items-center justify-between cursor-pointer list-none text-xs font-semibold text-foreground select-none">
+              <div className="flex items-center gap-2">
+                <Layers className="size-4 text-primary" />
+                <span>Candidate Medicine Matches ({kbCandidates.length})</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  Ranked by text &amp; visual similarity
+                </span>
+                <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180" />
+              </div>
+            </summary>
+
+            <div className="pt-3 border-t border-border/60 space-y-2">
+              <p className="text-[11px] text-muted-foreground font-sans">
+                Similarity score represents text/catalogue ranking similarity, not an absolute
+                probability:
+              </p>
+
+              <div className="space-y-2">
+                {kbCandidates.slice(0, 5).map((cand, idx) => {
+                  const isSelected = cand.medicine_id === handoffId;
+                  return (
+                    <div
+                      key={cand.medicine_id}
+                      onClick={() => onSelectCandidate(cand.medicine_id)}
+                      className={cn(
+                        "rounded-lg border p-3 cursor-pointer transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs",
+                        isSelected
+                          ? "border-mint bg-mint/5"
+                          : "border-border bg-background hover:border-primary/40",
+                      )}
+                    >
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[10px] text-muted-foreground">
+                            #{idx + 1}
+                          </span>
+                          <strong className="font-bold text-foreground truncate">
+                            {cand.medicine_name}
+                          </strong>
+                          <span className="font-mono text-[9px] bg-secondary px-1.5 py-0.5 rounded text-muted-foreground">
+                            {cand.medicine_id}
+                          </span>
+                        </div>
+                        <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground font-mono">
+                          {cand.generic_name && <span>{cand.generic_name}</span>}
+                          {cand.strength && <span>• {cand.strength}</span>}
+                          {cand.dosage_form && <span>• {cand.dosage_form}</span>}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <div className="text-right">
+                          <span className="font-mono text-xs font-bold text-primary tnum block">
+                            {formatPercent(cand.similarity_score, 1)}
+                          </span>
+                          <span className="text-[9px] font-mono text-muted-foreground">
+                            similarity
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onAssess(cand.medicine_id);
+                          }}
+                          className="px-2.5 py-1 rounded bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
+                        >
+                          Audit
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </details>
+        )}
+
+        {/* Panel D: Documented Storage Boundaries & Source Provenance */}
+        {storage && (
+          <details className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs group">
+            <summary className="flex items-center justify-between cursor-pointer list-none text-xs font-semibold text-foreground select-none">
+              <div className="flex items-center gap-2">
+                <Thermometer className="size-4 text-warning" />
+                <span>Documented Storage Requirements &amp; Provenance</span>
+              </div>
+              <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180" />
+            </summary>
+
+            <div className="pt-3 border-t border-border/60 space-y-3 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-lg border border-border bg-background p-3">
+                  <span className="font-mono text-[10px] uppercase text-muted-foreground block">
+                    Prescribed Temperature
+                  </span>
+                  <strong className="text-foreground text-sm font-semibold block mt-0.5 font-mono">
+                    {storage.min_temperature != null && storage.max_temperature != null
+                      ? `${storage.min_temperature}°C to ${storage.max_temperature}°C`
+                      : "Not specified"}
+                  </strong>
+                </div>
+
+                <div className="rounded-lg border border-border bg-background p-3">
+                  <span className="font-mono text-[10px] uppercase text-muted-foreground block">
+                    Regulatory Standard
+                  </span>
+                  <strong className="text-foreground text-xs font-medium block mt-0.5">
+                    {storage.regulatory_source || "USP Monograph Specification"}
+                  </strong>
+                </div>
+
+                <div className="rounded-lg border border-border bg-background p-3">
+                  <span className="font-mono text-[10px] uppercase text-muted-foreground block">
+                    Source Provenance
+                  </span>
+                  <strong className="text-foreground text-xs font-mono block mt-0.5">
+                    {provenance?.source_name ?? medicine?.source ?? "DailyMed / RxNorm"}
+                  </strong>
+                </div>
+              </div>
+            </div>
+          </details>
         )}
       </div>
 
-      {/* 4. Documented Storage Boundaries Ribbon */}
-      {medicine && storage && (
-        <div className="rounded-xl border border-border bg-card p-5 space-y-3 shadow-xs">
-          <div className="flex items-center justify-between pb-3 border-b border-border">
-            <div className="flex items-center gap-2">
-              <Thermometer className="size-4 text-warning" />
-              <h3 className="font-head text-base font-bold text-foreground">
-                Documented Pharmacopeial Storage Boundaries
-              </h3>
-            </div>
-            <span className="font-mono text-[10px] text-muted-foreground">
-              {provenance?.source_name ?? medicine.source}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div className="rounded-lg border border-border bg-background p-3">
-              <span className="font-mono text-[10px] uppercase text-muted-foreground block">
-                Prescribed Temperature
-              </span>
-              <strong className="text-foreground text-sm font-semibold block mt-0.5">
-                {storage.min_temperature != null && storage.max_temperature != null
-                  ? `${storage.min_temperature}°C to ${storage.max_temperature}°C`
-                  : "Not specified"}
-              </strong>
-            </div>
-
-            <div className="rounded-lg border border-border bg-background p-3">
-              <span className="font-mono text-[10px] uppercase text-muted-foreground block">
-                Regulatory Standards
-              </span>
-              <strong className="text-foreground text-sm font-semibold block mt-0.5">
-                {storage.regulatory_source || "USP Monograph Specification"}
-              </strong>
-            </div>
-
-            <div className="rounded-lg border border-border bg-background p-3">
-              <span className="font-mono text-[10px] uppercase text-muted-foreground block">
-                Freeze Hazard
-              </span>
-              <strong
-                className={cn(
-                  "text-sm font-semibold block mt-0.5",
-                  storage.min_temperature != null &&
-                    storage.min_temperature >= 2 &&
-                    storage.max_temperature != null &&
-                    storage.max_temperature <= 8
-                    ? "text-destructive"
-                    : "text-muted-foreground",
-                )}
-              >
-                {storage.min_temperature != null &&
-                storage.min_temperature >= 2 &&
-                storage.max_temperature != null &&
-                storage.max_temperature <= 8
-                  ? "CRITICAL FREEZE SENSITIVE (<0°C)"
-                  : "Non-critical (Solid Matrix)"}
-              </strong>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Manual Pharmacist Verification Dialog / Sheet */}
+      {/* Manual Pharmacist Verification Dialog */}
       {showVerifyDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/60 backdrop-blur-xs">
           <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 space-y-4 shadow-xl">

@@ -35,7 +35,7 @@ const PRIMARY_NAV = [
   {
     to: "/",
     label: "Overview",
-    description: "Intelligence workspace & telemetry",
+    description: "System introduction & workflow",
     icon: Boxes,
   },
   {
@@ -47,7 +47,7 @@ const PRIMARY_NAV = [
   {
     to: "/medicines",
     label: "Medicine Library",
-    description: "27,326 pharmacopeial monographs",
+    description: "Pharmacopeial monograph database",
     icon: BookOpen,
   },
   {
@@ -175,7 +175,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   item.to === "/alerts" && flaggedAlertsCount > 0
                     ? String(flaggedAlertsCount)
                     : item.to === "/models"
-                      ? "91%"
+                      ? null
                       : null;
 
                 return (
@@ -365,7 +365,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               type="search"
               value={headerSearch}
               onChange={(e) => setHeaderSearch(e.target.value)}
-              placeholder="Search 27,326 medicines, active ingredients, or RxNorm codes..."
+              placeholder="Search medicines, active ingredients, or RxNorm codes..."
               aria-label="Global medicine catalogue search"
               className="w-full h-9.5 rounded-lg border border-border bg-background pl-9 pr-9 text-xs text-foreground placeholder:text-muted-foreground transition-colors focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs"
             />
@@ -396,17 +396,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <Thermometer className="size-3.5 text-warning" />
               <span>Check Excursion</span>
-            </Link>
-
-            {/* Audited Model Accuracy Badge */}
-            <Link
-              to="/models"
-              className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg border border-mint/40 bg-mint/10 text-xs font-mono font-medium text-forest hover:bg-mint/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint transition-colors"
-              title="Audited Model Accuracy: 91.0% Top-1 / 97.0% Top-3 on 50 test photographs"
-            >
-              <Sparkles className="size-3.5 text-mint" />
-              <span className="hidden sm:inline font-semibold">91.0% Acc</span>
-              <span className="sm:hidden font-semibold">91%</span>
             </Link>
           </div>
         </div>
@@ -469,7 +458,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     type="search"
                     value={headerSearch}
                     onChange={(e) => setHeaderSearch(e.target.value)}
-                    placeholder="Search 27k medicines..."
+                    placeholder="Search medicines..."
                     className="w-full h-9 rounded-md bg-[#0B211C] border border-[#1A453B] pl-9 pr-3 text-xs text-[#F7F6F0] placeholder:text-[#7E968D] focus:outline-none focus:border-mint"
                   />
                 </form>
@@ -484,7 +473,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     item.to === "/alerts" && flaggedAlertsCount > 0
                       ? String(flaggedAlertsCount)
                       : item.to === "/models"
-                        ? "91%"
+                        ? null
                         : null;
 
                   return (
@@ -573,7 +562,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
               <div className="flex items-center justify-between text-[11px] text-[#A3B8B0] font-mono">
                 <span>Model Checkpoint</span>
-                <span className="text-white font-bold">v3.1 (91% Acc)</span>
+                <span className="text-white font-bold">v3.1</span>
               </div>
             </div>
           </div>
@@ -602,7 +591,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span>FDA DailyMed & RxNorm Lineage</span>
             <span>•</span>
             <Link to="/models" className="text-primary hover:underline font-semibold">
-              Model Evaluation Dossier (v3.1)
+              Model Insights & Evaluation Dossier
             </Link>
             <span>•</span>
             <span className="text-muted-foreground/80">Clinical Research Workspace</span>
